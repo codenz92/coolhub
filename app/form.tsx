@@ -20,7 +20,7 @@ export function Form({
         <input
           id="username"
           name="username"
-          type="username"
+          type="text"
           placeholder="username"
           autoComplete="username"
           required
