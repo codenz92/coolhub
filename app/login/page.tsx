@@ -15,7 +15,8 @@ export default function Login() {
           </p>
         </div>
         <Form
-          action={async (formData: FormData) => {
+          // Added prevState as the first argument to match useFormState
+          action={async (prevState: any, formData: FormData) => {
             'use server';
             try {
               await signIn('credentials', {
@@ -24,13 +25,10 @@ export default function Login() {
                 password: formData.get('password') as string,
               });
             } catch (error) {
-              // If it's a redirect error, we MUST re-throw it so Next.js can redirect
               if (isRedirectError(error)) {
                 throw error;
               }
 
-              // For credential errors, return a string to your Form component
-              // Your 'app/form' component should be set up to display this string
               return 'Invalid username or password';
             }
           }}
