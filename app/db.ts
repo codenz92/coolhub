@@ -42,7 +42,7 @@ async function ensureTableExists() {
 
   const table = pgTable('User', {
     id: serial('id').primaryKey(),
-    email: varchar('email', { length: 64 }),
+    email: varchar('username', { length: 64 }),
     password: varchar('password', { length: 64 }),
   });
 
