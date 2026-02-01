@@ -39,7 +39,7 @@ export default async function Dashboard() {
       <nav className="border-b bg-white px-6 py-4 flex justify-between items-center shadow-sm">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">COOLHUB</span>
+            <span className="text-white font-bold text-sm">CH</span>
           </div>
           <span className="font-semibold text-xl tracking-tight">Dashboard</span>
         </div>
