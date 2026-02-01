@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Form } from 'app/form';
 import { signIn } from 'app/auth';
 import { SubmitButton } from 'app/submit-button';
+import { isRedirectError } from 'next/dist/client/components/redirect';
 
 export default function Login() {
   return (
@@ -16,11 +17,22 @@ export default function Login() {
         <Form
           action={async (formData: FormData) => {
             'use server';
-            await signIn('credentials', {
-              redirectTo: '/protected',
-              username: formData.get('username') as string,
-              password: formData.get('password') as string,
-            });
+            try {
+              await signIn('credentials', {
+                redirectTo: '/protected',
+                username: formData.get('username') as string,
+                password: formData.get('password') as string,
+              });
+            } catch (error) {
+              // If it's a redirect error, we MUST re-throw it so Next.js can redirect
+              if (isRedirectError(error)) {
+                throw error;
+              }
+
+              // For credential errors, return a string to your Form component
+              // Your 'app/form' component should be set up to display this string
+              return 'Invalid username or password';
+            }
           }}
         >
           <SubmitButton>Sign in</SubmitButton>
