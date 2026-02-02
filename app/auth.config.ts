@@ -14,13 +14,14 @@ export const authConfig = {
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       const isOnAdmin = nextUrl.pathname.startsWith('/admin');
 
-      // 1. Protect Admin and Dashboard routes
+      // 1. Protect routes: If trying to access Dashboard or Admin
       if (isOnDashboard || isOnAdmin) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login
       }
 
       // 2. ONLY redirect to dashboard if they are logged in and hitting the login page
+      // This prevents the loop when trying to access /admin
       if (isLoggedIn && nextUrl.pathname === '/login') {
         return Response.redirect(new URL('/dashboard', nextUrl));
       }
