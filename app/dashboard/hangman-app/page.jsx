@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from './page.module.scss'
-import { mouse_memoirs } from "@/app/ui/fonts";
+import { mouse_memoirs } from "./ui/fonts";
 
 export default function Home() {
   return (
@@ -18,7 +18,7 @@ export default function Home() {
         <div className={styles.containerLink}>
           <Link className={styles.link} href='/Instructions'>
             <p className={`${styles.instructions} ${mouse_memoirs.className} antialised`}>HOW TO PLAY</p>
-          </Link>             
+          </Link>
         </div>
       </div>
     </main>
