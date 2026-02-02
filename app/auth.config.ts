@@ -13,9 +13,10 @@ export const authConfig = {
       let isLoggedIn = !!auth?.user;
       let isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       let isOnAdmin = nextUrl.pathname.startsWith('/admin');
+      let isOnDemo = nextUrl.pathname.startsWith('/demo-app');
 
       // Logic for protected routes
-      if (isOnDashboard || isOnAdmin) {
+      if (isOnDashboard || isOnAdmin || isOnDemo) {
         if (isLoggedIn) return true;
         return false; // Redirect to login
       }
