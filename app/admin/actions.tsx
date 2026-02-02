@@ -45,5 +45,6 @@ export async function updateUserRole(formData: FormData) {
         .set({ role: newRole })
         .where(eq(users.id, id));
 
+    // Refresh the admin page data
     revalidatePath("/admin");
 }

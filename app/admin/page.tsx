@@ -70,7 +70,7 @@ export default async function AdminPage() {
                                             name="role"
                                             defaultValue={user.role || 'user'}
                                             onChange={(e) => e.target.form?.requestSubmit()}
-                                            className="text-sm border rounded px-2 py-1 bg-transparent focus:ring-2 focus:ring-black outline-none"
+                                            className="text-sm border rounded px-2 py-1 bg-transparent focus:ring-2 focus:ring-black outline-none cursor-pointer"
                                         >
                                             <option value="user">User</option>
                                             <option value="admin">Admin</option>
