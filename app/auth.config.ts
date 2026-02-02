@@ -11,7 +11,7 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       const isOnAdmin = nextUrl.pathname.startsWith('/admin');
-      const isOnDemo = nextUrl.pathname.startsWith('/demo-app');
+      const isOnDemo = nextUrl.pathname.startsWith('/dashboard/demo-app');
 
       // 1. Protect routes: If trying to access Dashboard, Admin, or Demo
       if (isOnDashboard || isOnAdmin || isOnDemo) {
