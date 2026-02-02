@@ -2,9 +2,8 @@
 import { db, users } from "../db";
 import { auth } from "../auth";
 import { redirect } from "next/navigation";
-import { deleteUser } from "./actions";
+import { deleteUser, addUser } from "./actions";
 import Link from "next/link";
-
 export default async function AdminPage() {
     const session = await auth(); //
 
@@ -28,7 +27,28 @@ export default async function AdminPage() {
                     ← Back to Dashboard
                 </Link>
             </div>
-
+            {/* Create User Form */}
+            <div className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
+                <h2 className="text-lg font-semibold mb-4">Create New User</h2>
+                <form action={addUser} className="flex flex-col md:flex-row gap-4">
+                    <input
+                        name="username"
+                        placeholder="Username"
+                        className="flex-1 border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-black"
+                        required
+                    />
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        className="flex-1 border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-black"
+                        required
+                    />
+                    <button type="submit" className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+                        Add User
+                    </button>
+                </form>
+            </div>
             <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
                 <table className="w-full text-left">
                     <thead className="bg-gray-50 border-b">
