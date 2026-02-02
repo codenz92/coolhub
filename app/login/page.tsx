@@ -20,7 +20,7 @@ export default function Login() {
             'use server';
             try {
               await signIn('credentials', {
-                redirectTo: '/protected',
+                redirectTo: '/dashboard',
                 username: formData.get('username') as string,
                 password: formData.get('password') as string,
               });
