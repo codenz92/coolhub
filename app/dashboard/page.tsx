@@ -1,6 +1,7 @@
 // app/dashboard/page.tsx
 import { auth, signOut } from '../auth';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 // 1. Data Structure (Static for now, can be moved to Neon/Drizzle later)
 const MY_APPS = [
@@ -46,11 +47,13 @@ export default async function Dashboard() {
 
         <div className="flex items-center gap-4">
           <span className="hidden md:block text-sm text-gray-500">{session.user?.username}</span>
-
-          {/* Admin Button - Built-in so you don't need a separate component file */}
-          <a href="/admin" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
+          {/* Admin Button */}
+          <Link
+            href="/admin"
+            className="text-sm font-medium bg-black text-white px-3 py-1.5 rounded-md hover:bg-gray-800 transition-colors"
+          >
             Admin Panel
-          </a>
+          </Link>
           {/* Sign Out Button - Built-in so you don't need a separate component file */}
           <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
             <button className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
