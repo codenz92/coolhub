@@ -15,7 +15,6 @@ export default function Login() {
             return 'User already exists'; // TODO: Handle errors with useFormStatus
         } else {
             await createUser(username, password);
-            redirect('/login');
         }
     }
 
