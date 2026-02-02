@@ -47,6 +47,12 @@ export default async function Dashboard() {
         <div className="flex items-center gap-4">
           <span className="hidden md:block text-sm text-gray-500">{session.user?.username}</span>
 
+          {/* Admin Button - Built-in so you don't need a separate component file */}
+          <form action={async () => { "use server"; await signOut({ redirectTo: "/admin" }); }}>
+            <button className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
+              Admin
+            </button>
+          </form>
           {/* Sign Out Button - Built-in so you don't need a separate component file */}
           <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
             <button className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
