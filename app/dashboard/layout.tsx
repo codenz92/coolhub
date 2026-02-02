@@ -26,14 +26,14 @@ export default async function DashboardLayout({
                         {session.user?.username}
                     </span>
                     {/* Corrected Admin visibility check */}
-                    {(session.user as any)?.username === "dev" || (session.user as any)?.username === "rio" && (
+                    {(session.user as any)?.username === "dev" || (session.user as any)?.username === "rio" ? (
                         <Link
                             href="/admin"
                             className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
                         >
                             Admin Panel
                         </Link>
-                    )}
+                    ) : null}
 
                     <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
                         <button className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors">
