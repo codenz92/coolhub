@@ -29,7 +29,6 @@ export const {
       // 'user' is the object returned from authorize() above
       if (user) {
         token.username = (user as any).username;
-        token.role = (user as any).role;
       }
       return token;
     },
@@ -37,7 +36,6 @@ export const {
       if (session.user) {
         // Assign the username from the token to the session
         (session.user as any).username = token.username;
-        (session.user as any).role = token.role;
       }
       return session;
     },

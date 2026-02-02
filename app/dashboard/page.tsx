@@ -51,7 +51,7 @@ export default async function Dashboard() {
 
           {/* Updated Admin Button */}
           {/* Replace 'admin_user' with your actual username stored in Neon */}
-          {(session.user as any)?.role === "admin" && (
+          {(session.user as any)?.username === "dev" && (
             <Link
               href="/admin"
               className="text-sm font-medium text-gray-600 hover:text-black transition-colors"

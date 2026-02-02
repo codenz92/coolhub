@@ -8,7 +8,7 @@ export default async function AdminPage() {
     const session = await auth(); //
 
     // Replace 'admin_user' with your actual username for security
-    if (session?.user?.role !== "admin") {
+    if (session?.user?.username !== "dev") {
         redirect("/dashboard");
     }
 
