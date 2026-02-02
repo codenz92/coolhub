@@ -19,7 +19,8 @@
     "postgres": "^3.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "sass": "^1.97.3"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",
