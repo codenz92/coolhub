@@ -1,47 +1,42 @@
-import { db, users } from "@/app/db";
-import { auth } from "@/app/auth";
-import { deleteUser } from "./actions";
-import { redirect } from "next/navigation";
+import Link from 'next/link';
+import { Form } from 'app/form';
+import { redirect } from 'next/navigation';
+import { createUser, getUser } from 'app/db';
+import { SubmitButton } from 'app/submit-button';
 
-export default async function AdminPage() {
-    const session = await auth();
+export default function Login() {
+    async function register(formData: FormData) {
+        'use server';
+        let username = formData.get('username') as string;
+        let password = formData.get('password') as string;
+        let user = await getUser(username);
 
-    // Basic Security Check
-    // Note: You should eventually add a 'role' check here
-    if (!session) redirect("/login");
-
-    const allUsers = await db.select().from(users);
+        if (user.length > 0) {
+            return 'User already exists'; // TODO: Handle errors with useFormStatus
+        } else {
+            await createUser(username, password);
+        }
+    }
 
     return (
-        <div className="p-8 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
-
-            <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
-                <table className="w-full text-left border-collapse">
-                    <thead className="bg-gray-50 border-b">
-                        <tr>
-                            <th className="p-4 font-semibold text-gray-700">ID</th>
-                            <th className="p-4 font-semibold text-gray-700">Username</th>
-                            <th className="p-4 text-right font-semibold text-gray-700">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {allUsers.map((user) => (
-                            <tr key={user.id} className="border-b hover:bg-gray-50 transition">
-                                <td className="p-4 text-gray-600">{user.id}</td>
-                                <td className="p-4 font-medium">{user.username}</td>
-                                <td className="p-4 text-right">
-                                    <form action={deleteUser}>
-                                        <input type="hidden" name="id" value={user.id} />
-                                        <button className="bg-red-50 text-red-600 px-3 py-1 rounded hover:bg-red-100 transition border border-red-200">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+        <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
+            <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-xl">
+                <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 bg-white px-4 py-6 pt-8 text-center sm:px-16">
+                    <h3 className="text-xl font-semibold">Sign Up</h3>
+                    <p className="text-sm text-gray-500">
+                        Create an account with your username and password
+                    </p>
+                </div>
+                <Form action={register}>
+                    <SubmitButton>Sign Up</SubmitButton>
+                    <p className="text-center text-sm text-gray-600">
+                        {'Go back to dashboard'}
+                        <Link href="/dashboard" className="font-semibold text-gray-800">
+                            Dashboard
+                        </Link>
+                        {' instead.'}
+                    </p>
+                </Form>
             </div>
         </div>
     );
