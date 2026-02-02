@@ -31,7 +31,7 @@ export default async function DashboardLayout({
 
                     {(session.user as any)?.role === "admin" && (
                         <Link href="/admin" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
-                            Admin
+                            Admin Panel
                         </Link>
                     )}
 

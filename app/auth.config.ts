@@ -1,29 +1,27 @@
+// app/auth.config.ts
 import { NextAuthConfig } from 'next-auth';
 
 export const authConfig = {
   pages: {
     signIn: '/login',
   },
-  providers: [
-    // added later in auth.ts since it requires bcrypt which is only compatible with Node.js
-    // while this file is also used in non-Node.js environments
-  ],
+  providers: [],
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
-      let isLoggedIn = !!auth?.user;
-      let isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      let isOnAdmin = nextUrl.pathname.startsWith('/admin');
-      let isOnDemo = nextUrl.pathname.startsWith('/dashboard/demo-app');
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      const isOnAdmin = nextUrl.pathname.startsWith('/admin');
+      const isOnDemo = nextUrl.pathname.startsWith('/demo-app');
 
-      // Logic for protected routes
+      // 1. Protect routes: If trying to access Dashboard, Admin, or Demo
       if (isOnDashboard || isOnAdmin || isOnDemo) {
         if (isLoggedIn) return true;
-        return false; // Redirect to login
+        return false; // Redirect unauthenticated users to login
       }
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
+
+      // 2. Only redirect to dashboard if they are already logged in AND hitting login
+      // This prevents the redirect loop when trying to go to /admin
+      if (isLoggedIn && nextUrl.pathname === '/login') {
         return Response.redirect(new URL('/dashboard', nextUrl));
       }
 
