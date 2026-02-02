@@ -26,7 +26,7 @@ export default async function DashboardLayout({
                         {session.user?.username} ({(session.user as any)?.username})
                     </span>
                     {/* Corrected Admin visibility check */}
-                    {(session.user as any)?.username === "admin" && (
+                    {(session.user as any)?.username === "dev" && (
                         <Link
                             href="/admin"
                             className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"

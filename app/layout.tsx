@@ -4,7 +4,7 @@ import { GeistSans } from 'geist/font/sans';
 
 let title = 'CoolHub - Dashboard';
 let description =
-  'This is a full stack website built with Next.js, PostgreSQL, and NextAuth.js for authentication.';
+  'This is one of the biggest secrets ever.';
 
 export const metadata = {
   title,

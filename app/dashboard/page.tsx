@@ -26,69 +26,36 @@ export default async function Dashboard() {
   if (!session) redirect('/login');
 
   return (
-    <div className="min-h-screen bg-gray-50/50 text-slate-900">
-      <nav className="border-b bg-white px-6 py-4 flex justify-between items-center shadow-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">CH</span>
-          </div>
-          <span className="font-semibold text-xl tracking-tight">Dashboard</span>
-        </div>
+    <main className="max-w-7xl mx-auto px-6 py-12">
+      <header className="mb-10">
+        <h1 className="text-4xl font-extrabold tracking-tight">Welcome back</h1>
+        <p className="text-lg text-gray-500 mt-2 font-light">
+          Logged in as <span className="font-medium text-black">{session.user?.username}</span>
+        </p>
+      </header>
 
-        <div className="flex items-center gap-4">
-          <span className="hidden md:block text-sm text-gray-500">
-            {session.user?.username} ({(session.user as any)?.role})
-          </span>
-
-          {/* Corrected Admin visibility check */}
-          {(session.user as any)?.role === "admin" && (
-            <Link
-              href="/admin"
-              className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
-            >
-              Admin Panel
-            </Link>
-          )}
-
-          <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
-            <button className="text-sm font-medium text-gray-600 hover:text-black">
-              Sign Out
-            </button>
-          </form>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-6 py-12">
-        <header className="mb-10">
-          <h1 className="text-4xl font-extrabold tracking-tight">Welcome back</h1>
-          <p className="text-lg text-gray-500 mt-2 font-light">
-            Logged in as <span className="font-medium text-black">{session.user?.username}</span>
-          </p>
-        </header>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MY_APPS.map((app) => (
-            <Link
-              key={app.name}
-              href={app.url}
-              className="group relative bg-white border border-gray-200 rounded-2xl p-6 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
-            >
-              <div className={`w-12 h-12 ${app.color} rounded-xl mb-4 flex items-center justify-center text-2xl text-white shadow-inner`}>
-                {app.icon}
-              </div>
-              <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">
-                {app.name}
-              </h3>
-              <p className="text-gray-500 text-sm mt-2 leading-relaxed">
-                {app.description}
-              </p>
-              <div className="mt-6 flex items-center text-sm font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transition-all">
-                Launch Application →
-              </div>
-            </Link>
-          ))}
-        </div>
-      </main>
-    </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {MY_APPS.map((app) => (
+          <Link
+            key={app.name}
+            href={app.url}
+            className="group relative bg-white border border-gray-200 rounded-2xl p-6 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
+          >
+            <div className={`w-12 h-12 ${app.color} rounded-xl mb-4 flex items-center justify-center text-2xl text-white shadow-inner`}>
+              {app.icon}
+            </div>
+            <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">
+              {app.name}
+            </h3>
+            <p className="text-gray-500 text-sm mt-2 leading-relaxed">
+              {app.description}
+            </p>
+            <div className="mt-6 flex items-center text-sm font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transition-all">
+              Launch Application →
+            </div>
+          </Link>
+        ))}
+      </div>
+    </main>
   );
 }
