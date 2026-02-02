@@ -17,8 +17,27 @@ export const {
         let user = await getUser(username);
         if (user.length === 0) return null;
         let passwordsMatch = await compare(password, user[0].password!);
+
+        // Ensure the object returned here contains the username
         if (passwordsMatch) return user[0] as any;
+        return null;
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      // 'user' is the object returned from authorize() above
+      if (user) {
+        token.username = (user as any).username;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        // Assign the username from the token to the session
+        (session.user as any).username = token.username;
+      }
+      return session;
+    },
+  },
 });

@@ -45,7 +45,7 @@ export default async function Dashboard() {
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="hidden md:block text-sm text-gray-500">{session.user?.email}</span>
+          <span className="hidden md:block text-sm text-gray-500">{session.user?.username}</span>
 
           {/* Sign Out Button - Built-in so you don't need a separate component file */}
           <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
@@ -61,7 +61,7 @@ export default async function Dashboard() {
         <header className="mb-10">
           <h1 className="text-4xl font-extrabold tracking-tight">Welcome back</h1>
           <p className="text-lg text-gray-500 mt-2 font-light">
-            You are logged in as <span className="font-medium text-black">{session.user?.email}</span>
+            You are logged in as <span className="font-medium text-black">{session.user?.username}</span>
           </p>
         </header>
 
