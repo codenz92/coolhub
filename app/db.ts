@@ -10,17 +10,17 @@ import { genSaltSync, hashSync } from 'bcrypt-ts';
 let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 let db = drizzle(client);
 
-export async function getUser(email: string) {
+export async function getUser(username: string) {
   const users = await ensureTableExists();
-  return await db.select().from(users).where(eq(users.email, email));
+  return await db.select().from(users).where(eq(users.username, username));
 }
 
-export async function createUser(email: string, password: string) {
+export async function createUser(username: string, password: string) {
   const users = await ensureTableExists();
   let salt = genSaltSync(10);
   let hash = hashSync(password, salt);
 
-  return await db.insert(users).values({ email, password: hash });
+  return await db.insert(users).values({ username, password: hash });
 }
 
 async function ensureTableExists() {
@@ -35,14 +35,14 @@ async function ensureTableExists() {
     await client`
       CREATE TABLE "User" (
         id SERIAL PRIMARY KEY,
-        email VARCHAR(64),
+        username VARCHAR(64),
         password VARCHAR(64)
       );`;
   }
 
   const table = pgTable('User', {
     id: serial('id').primaryKey(),
-    email: varchar('username', { length: 64 }),
+    username: varchar('username', { length: 64 }),
     password: varchar('password', { length: 64 }),
   });
 
