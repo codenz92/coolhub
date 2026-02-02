@@ -61,6 +61,7 @@ export default async function AdminPage() {
                     <tbody>
                         {allUsers.map((user) => (
                             <tr key={user.id} className="border-b last:border-0 hover:bg-gray-50">
+                                <td className="p-4">{user.username}</td>
                                 <td className="p-4">
                                     {/* Role Selection Form */}
                                     <form action={updateUserRole} className="inline-block">
