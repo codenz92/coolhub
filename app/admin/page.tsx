@@ -2,7 +2,7 @@
 import { db, users } from "../db";
 import { auth } from "../auth";
 import { redirect } from "next/navigation";
-import { deleteUser, addUser } from "./actions";
+import { deleteUser, addUser, updateUserRole } from "./actions";
 import Link from "next/link";
 export default async function AdminPage() {
     const session = await auth(); //
@@ -54,6 +54,7 @@ export default async function AdminPage() {
                     <thead className="bg-gray-50 border-b">
                         <tr>
                             <th className="p-4 font-semibold">Username</th>
+                            <th className="p-4 font-semibold">Role</th>
                             <th className="p-4 text-right">Action</th>
                         </tr>
                     </thead>
@@ -61,6 +62,21 @@ export default async function AdminPage() {
                         {allUsers.map((user) => (
                             <tr key={user.id} className="border-b last:border-0 hover:bg-gray-50">
                                 <td className="p-4">{user.username}</td>
+                                <td className="p-4">
+                                    {/* Role Selection Form */}
+                                    <form action={updateUserRole} className="inline-block">
+                                        <input type="hidden" name="id" value={user.id} />
+                                        <select
+                                            name="role"
+                                            defaultValue={user.role || 'user'}
+                                            onChange={(e) => e.target.form?.requestSubmit()}
+                                            className="text-sm border rounded px-2 py-1 bg-transparent focus:ring-2 focus:ring-black outline-none"
+                                        >
+                                            <option value="user">User</option>
+                                            <option value="admin">Admin</option>
+                                        </select>
+                                    </form>
+                                </td>
                                 <td className="p-4 text-right">
                                     <form action={deleteUser}>
                                         <input type="hidden" name="id" value={user.id} />

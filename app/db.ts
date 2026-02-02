@@ -40,7 +40,8 @@ async function ensureTableExists() {
       CREATE TABLE "User" (
         id SERIAL PRIMARY KEY,
         username VARCHAR(64),
-        password VARCHAR(64)
+        password VARCHAR(64),
+        role VARCHAR(20) DEFAULT 'user'
       );`;
   }
 
