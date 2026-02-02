@@ -18,7 +18,7 @@ export default async function DashboardLayout({
                     <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                         <span className="text-white font-bold text-sm">CH</span>
                     </div>
-                    <span className="font-semibold text-xl tracking-tight">Dashboard</span>
+                    <span className="font-semibold text-xl tracking-tight">COOLHUB</span>
                 </div>
 
                 <div className="flex items-center gap-4">
