@@ -7,7 +7,8 @@ export default function DemoApp() {
             <div className="max-w-2xl mx-auto text-center">
                 <h1 className="text-4xl font-bold mb-4">Demo Application 🚀</h1>
                 <p className="text-gray-600 mb-8">
-                    This is a separate "app" living inside your Next.js project.
+                    {/* Change: Use &quot; instead of " */}
+                    This is a separate &quot;app&quot; living inside your Next.js project.
                 </p>
                 <Link
                     href="/dashboard"
