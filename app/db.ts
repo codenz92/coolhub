@@ -8,14 +8,13 @@ export const users = pgTable('User', {
   id: serial('id').primaryKey(),
   username: varchar('username', { length: 64 }),
   password: varchar('password', { length: 64 }),
-  role: varchar('role', { length: 20 }).default('user'),
 });
 
 let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 export const db = drizzle(client);
 
 export async function getUser(username: string) {
-  // Use the top-level exported 'users' directly
+  const users = await ensureTableExists();
   return await db.select().from(users).where(eq(users.username, username));
 }
 
@@ -40,8 +39,7 @@ async function ensureTableExists() {
       CREATE TABLE "User" (
         id SERIAL PRIMARY KEY,
         username VARCHAR(64),
-        password VARCHAR(64),
-        role VARCHAR(20) DEFAULT 'user'
+        password VARCHAR(64)
       );`;
   }
 
