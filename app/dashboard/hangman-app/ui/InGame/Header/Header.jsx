@@ -1,17 +1,17 @@
 'use client'
 
 import Image from "next/image"
-import { useAppSelector } from "@/app/redux/hooks"
-import { mouse_memoirs } from '@/app/ui/fonts'
+import { useAppSelector } from "../../../redux/hooks"
+import { mouse_memoirs } from '../../../ui/fonts'
 import { useState } from "react"
 import Menu from "../Menu/Menu"
 import styles from './Header.module.scss'
 
-export default function Header({ lifeBar }){
+export default function Header({ lifeBar }) {
   const [pause, setPause] = useState(false)
   const category = useAppSelector((state) => state.categoryReducer)
 
-  return(
+  return (
     <header className={styles.header}>
       <span className={styles.menu}>
         <button className={styles.pause} onClick={() => setPause(true)}>
@@ -19,7 +19,7 @@ export default function Header({ lifeBar }){
             <Image priority src='/assets/images/icon-menu.svg' alt='Menu' layout='fill' objectFit='contain' />
           </div>
         </button>
-        <p className={`${styles.category} ${mouse_memoirs.className} antialised`}>{category}</p>          
+        <p className={`${styles.category} ${mouse_memoirs.className} antialised`}>{category}</p>
       </span>
       <span className={styles.health}>
         <div className={styles.bgprogress}>

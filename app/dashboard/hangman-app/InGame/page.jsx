@@ -4,7 +4,7 @@ import Answer from '../ui/InGame/Answer/Answer'
 import Header from "../ui/InGame/Header/Header"
 import Keyboard from '../ui/InGame/Keyboard/Keyboard'
 import Menu from '../ui/InGame/Menu/Menu'
-import { useAppSelector, useAppDispatch } from '@/app/redux/hooks'
+import { useAppSelector, useAppDispatch } from '../redux/hooks'
 import { selectGame } from '../redux/features/gamesSlice'
 import { selectTitle } from '../redux/features/titleSlice'
 import { useState } from 'react'
