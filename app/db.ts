@@ -8,6 +8,7 @@ export const users = pgTable('User', {
   id: serial('id').primaryKey(),
   username: varchar('username', { length: 64 }),
   password: varchar('password', { length: 64 }),
+  role: varchar('role', { length: 20 }).default('user'),
 });
 
 let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
@@ -48,6 +49,7 @@ async function ensureTableExists() {
     id: serial('id').primaryKey(),
     username: varchar('username', { length: 64 }),
     password: varchar('password', { length: 64 }),
+    role: varchar('role', { length: 20 }).default('user'),
   });
 
   return table;
