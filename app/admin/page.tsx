@@ -1,42 +1,47 @@
-import Link from 'next/link';
-import { Form } from 'app/form';
-import { redirect } from 'next/navigation';
-import { createUser, getUser } from 'app/db';
-import { SubmitButton } from 'app/submit-button';
+// app/admin/page.tsx
+import { db, users } from "../db";
+import { auth } from "../auth";
+import { redirect } from "next/navigation";
+import { deleteUser } from "./actions";
 
-export default function Login() {
-    async function register(formData: FormData) {
-        'use server';
-        let username = formData.get('username') as string;
-        let password = formData.get('password') as string;
-        let user = await getUser(username);
+export default async function AdminPage() {
+    const session = await auth(); //
 
-        if (user.length > 0) {
-            return 'User already exists'; // TODO: Handle errors with useFormStatus
-        } else {
-            await createUser(username, password);
-        }
+    // Replace 'admin_user' with your actual username for security
+    if (session?.user?.username !== "admin_user") {
+        redirect("/dashboard");
     }
 
+    const allUsers = await db.select().from(users);
+
     return (
-        <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
-            <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-xl">
-                <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 bg-white px-4 py-6 pt-8 text-center sm:px-16">
-                    <h3 className="text-xl font-semibold">Sign Up</h3>
-                    <p className="text-sm text-gray-500">
-                        Create an account with your username and password
-                    </p>
-                </div>
-                <Form action={register}>
-                    <SubmitButton>Sign Up</SubmitButton>
-                    <p className="text-center text-sm text-gray-600">
-                        {'Go back to dashboard'}
-                        <Link href="/dashboard" className="font-semibold text-gray-800">
-                            Dashboard
-                        </Link>
-                        {' instead.'}
-                    </p>
-                </Form>
+        <div className="p-8 max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold mb-8">User Management</h1>
+
+            <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
+                <table className="w-full text-left">
+                    <thead className="bg-gray-50 border-b">
+                        <tr>
+                            <th className="p-4 font-semibold">Username</th>
+                            <th className="p-4 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {allUsers.map((user) => (
+                            <tr key={user.id} className="border-b last:border-0 hover:bg-gray-50">
+                                <td className="p-4">{user.username}</td>
+                                <td className="p-4 text-right">
+                                    <form action={deleteUser}>
+                                        <input type="hidden" name="id" value={user.id} />
+                                        <button className="text-red-500 hover:text-red-700 font-medium px-4">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

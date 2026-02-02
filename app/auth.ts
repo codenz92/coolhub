@@ -25,7 +25,7 @@ export const {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user?: any }) {
       // 'user' is the object returned from authorize() above
       if (user) {
         token.username = (user as any).username;

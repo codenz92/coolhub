@@ -1,0 +1,18 @@
+"use server";
+
+import { db, users } from "../db"; // This will now work correctly
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+
+export async function deleteUser(formData: FormData) {
+    const idString = formData.get("id") as string;
+    const id = Number(idString);
+
+    if (!id) return;
+
+    // Drizzle delete command using the exported users table
+    await db.delete(users).where(eq(users.id, id));
+
+    // Refreshes the admin page data immediately on Vercel
+    revalidatePath("/admin");
+}
