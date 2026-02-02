@@ -1,7 +1,8 @@
 // app/dashboard/page.tsx
 import { auth, signOut } from '../auth';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
+import { deleteUser, addUser } from "../admin/actions"; // 1. Ensure addUser is imported here
+import Link from "next/link";
 
 // 1. Data Structure (Static for now, can be moved to Neon/Drizzle later)
 const MY_APPS = [
@@ -58,6 +59,29 @@ export default async function Dashboard() {
               Admin Panel
             </Link>
           )}
+
+          {/* Create User Form */}
+          <div className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
+            <h2 className="text-lg font-semibold mb-4">Create New User</h2>
+            <form action={addUser} className="flex flex-col md:flex-row gap-4">
+              <input
+                name="username"
+                placeholder="Username"
+                className="flex-1 border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-black"
+                required
+              />
+              <input
+                name="password"
+                type="password"
+                placeholder="Password"
+                className="flex-1 border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-black"
+                required
+              />
+              <button type="submit" className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+                Add User
+              </button>
+            </form>
+          </div>
 
           {/* Sign Out Button - Built-in so you don't need a separate component file */}
           <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>

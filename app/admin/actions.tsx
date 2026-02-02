@@ -3,6 +3,7 @@
 import { db, users } from "../db"; // This will now work correctly
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { genSaltSync, hashSync } from 'bcrypt-ts';
 
 export async function deleteUser(formData: FormData) {
     const idString = formData.get("id") as string;
@@ -14,5 +15,21 @@ export async function deleteUser(formData: FormData) {
     await db.delete(users).where(eq(users.id, id));
 
     // Refreshes the admin page data immediately on Vercel
+    revalidatePath("/admin");
+}
+
+export async function addUser(formData: FormData) {
+    const username = formData.get("username") as string;
+    const password = formData.get("password") as string;
+
+    if (!username || !password) return;
+
+    const salt = genSaltSync(10);
+    const hash = hashSync(password, salt);
+
+    await db.insert(users).values({
+        username,
+        password: hash
+    });
     revalidatePath("/admin");
 }
