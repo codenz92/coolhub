@@ -12,7 +12,13 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       let isLoggedIn = !!auth?.user;
       let isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      let isOnAdmin = nextUrl.pathname.startsWith('/admin');
 
+      // Logic for protected routes
+      if (isOnDashboard || isOnAdmin) {
+        if (isLoggedIn) return true;
+        return false; // Redirect to login
+      }
       if (isOnDashboard) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
