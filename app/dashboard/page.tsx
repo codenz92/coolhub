@@ -48,11 +48,9 @@ export default async function Dashboard() {
           <span className="hidden md:block text-sm text-gray-500">{session.user?.username}</span>
 
           {/* Admin Button - Built-in so you don't need a separate component file */}
-          <form action={async () => { "use server"; ({ redirectTo: "/admin" }); }}>
-            <button className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
-              Admin Panel
-            </button>
-          </form>
+          <a href="/admin" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
+            Admin Panel
+          </a>
           {/* Sign Out Button - Built-in so you don't need a separate component file */}
           <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
             <button className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
