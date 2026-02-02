@@ -50,7 +50,7 @@ export default async function Dashboard() {
           {/* Admin Button - Built-in so you don't need a separate component file */}
           <form action={async () => { "use server"; await signOut({ redirectTo: "/admin" }); }}>
             <button className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
-              Admin
+              Admin Panel
             </button>
           </form>
           {/* Sign Out Button - Built-in so you don't need a separate component file */}
