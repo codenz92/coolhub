@@ -84,8 +84,6 @@ export default async function Dashboard() {
             <a
               key={app.name}
               href={app.url}
-              target="_blank"
-              rel="noopener noreferrer"
               className="group relative bg-white border border-gray-200 rounded-2xl p-6 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 hover:border-blue-200"
             >
               <div className={`w-12 h-12 ${app.color} rounded-xl mb-4 flex items-center justify-center text-2xl shadow-inner text-white`}>

@@ -14,7 +14,7 @@ export default function DemoApp() {
                     href="/dashboard"
                     className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
                 >
-                    Return to Dashboard
+                    ← Return to Dashboard
                 </Link>
             </div>
         </div>
