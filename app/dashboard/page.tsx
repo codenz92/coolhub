@@ -7,7 +7,7 @@ const MY_APPS = [
   {
     name: "Internal Demo",
     description: "Launch the internal demo app living in your project.",
-    url: "/demo-app", // Ensure this matches your folder name in /app
+    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
     icon: "🚀",
     color: "bg-orange-500",
   },
