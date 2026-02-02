@@ -11,13 +11,6 @@ const MY_APPS = [
     icon: "🚀",
     color: "bg-orange-500",
   },
-  {
-    name: "Analytics Pro",
-    description: "Real-time traffic tracking and user behavior insights.",
-    url: "https://analytics.example.com",
-    icon: "📊",
-    color: "bg-blue-500",
-  },
 ];
 
 export default async function Dashboard() {
