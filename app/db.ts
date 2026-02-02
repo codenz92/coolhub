@@ -15,7 +15,7 @@ let client = postgres(`${process.env.POSTGRES_URL!}?sslmode=require`);
 export const db = drizzle(client);
 
 export async function getUser(username: string) {
-  const users = await ensureTableExists();
+  // Use the top-level exported 'users' directly
   return await db.select().from(users).where(eq(users.username, username));
 }
 
