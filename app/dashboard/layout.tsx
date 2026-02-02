@@ -23,7 +23,7 @@ export default async function DashboardLayout({
 
                 <div className="flex items-center gap-4">
                     <span className="hidden md:block text-sm text-gray-500">
-                        {session.user?.username} ({(session.user as any)?.username})
+                        {session.user?.username}
                     </span>
                     {/* Corrected Admin visibility check */}
                     {(session.user as any)?.username === "dev" && (
