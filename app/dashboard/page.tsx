@@ -9,7 +9,7 @@ const MY_APPS = [
   {
     name: "Internal Demo",
     description: "Launch the demo app we just created in our own project.",
-    url: "/demo-app",
+    url: "/dashboard/demo-app",
     icon: "🚀",
     color: "bg-orange-500",
   },
