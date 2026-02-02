@@ -12,9 +12,9 @@ const MY_APPS = [
     color: "bg-orange-500",
   },
   {
-    name: "Internal Demo 2",
+    name: "Hangman Game",
     description: "Launch the internal demo app living in your project.",
-    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
+    url: "/dashboard/hangman", // Ensure this matches your folder name in /app
     icon: "🚀",
     color: "bg-orange-500",
   },
