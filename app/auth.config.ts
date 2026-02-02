@@ -10,19 +10,18 @@ export const authConfig = {
   ],
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
-      let isLoggedIn = !!auth?.user;
-      let isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      let isOnAdmin = nextUrl.pathname.startsWith('/admin');
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      const isOnAdmin = nextUrl.pathname.startsWith('/admin');
 
-      // Logic for protected routes
+      // 1. Protect Admin and Dashboard routes
       if (isOnDashboard || isOnAdmin) {
         if (isLoggedIn) return true;
-        return false; // Redirect to login
+        return false; // Redirect unauthenticated users to login
       }
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
+
+      // 2. ONLY redirect to dashboard if they are logged in and hitting the login page
+      if (isLoggedIn && nextUrl.pathname === '/login') {
         return Response.redirect(new URL('/dashboard', nextUrl));
       }
 
