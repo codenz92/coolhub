@@ -52,7 +52,7 @@ export default async function Dashboard() {
   const session = await auth();
 
   if (!session) redirect('/login');
-
+  const isAdminUser = ["dev", "rio"].includes(session.user?.username || "") || (session.user as any)?.role === "admin";
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
       <header className="mb-10">
