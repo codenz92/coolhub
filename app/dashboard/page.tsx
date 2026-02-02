@@ -37,37 +37,6 @@ export default async function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 text-slate-900">
-      {/* Navigation Header */}
-      <nav className="border-b bg-white px-6 py-4 flex justify-between items-center shadow-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">CH</span>
-          </div>
-          <span className="font-semibold text-xl tracking-tight">Dashboard</span>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span className="hidden md:block text-sm text-gray-500">{session.user?.username}</span>
-
-          {/* Updated Admin Button */}
-          {/* Replace 'admin_user' with your actual username stored in Neon */}
-          {(session.user as any)?.username === "dev" && (
-            <Link
-              href="/admin"
-              className="text-sm font-medium text-gray-600 hover:text-black transition-colors"
-            >
-              Admin Panel
-            </Link>
-          )}
-
-          {/* Sign Out Button - Built-in so you don't need a separate component file */}
-          <form action={async () => { "use server"; await signOut({ redirectTo: "/" }); }}>
-            <button className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
-              Sign Out
-            </button>
-          </form>
-        </div>
-      </nav>
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-6 py-12">
