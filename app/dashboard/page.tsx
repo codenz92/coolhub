@@ -7,11 +7,11 @@ import Link from "next/link";
 // 1. Data Structure (Static for now, can be moved to Neon/Drizzle later)
 const MY_APPS = [
   {
-    name: "Analytics Pro",
-    description: "Real-time traffic tracking and user behavior insights.",
-    url: "https://analytics.example.com",
-    icon: "📊",
-    color: "bg-blue-500",
+    name: "Internal Demo",
+    description: "Launch the demo app we just created in our own project.",
+    url: "/demo-app",
+    icon: "🚀",
+    color: "bg-orange-500",
   },
   {
     name: "Inventory Manager",
