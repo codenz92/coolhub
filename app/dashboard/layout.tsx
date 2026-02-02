@@ -13,24 +13,24 @@ export default async function DashboardLayout({
 
     return (
         <div className="min-h-screen bg-gray-50/50">
-            {/* Universal Navigation Bar */}
-            <nav className="border-b bg-white px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
+            <nav className="border-b bg-white px-6 py-4 flex justify-between items-center shadow-sm">
                 <div className="flex items-center gap-2">
-                    <Link href="/dashboard" className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">CH</span>
-                        </div>
-                        <span className="font-semibold text-xl tracking-tight text-slate-900">Platform</span>
-                    </Link>
+                    <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">CH</span>
+                    </div>
+                    <span className="font-semibold text-xl tracking-tight">Dashboard</span>
                 </div>
 
-                <div className="flex items-center gap-6">
-                    <Link href="/dashboard" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
-                        Dashboard
-                    </Link>
-
-                    {(session.user as any)?.role === "admin" && (
-                        <Link href="/admin" className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
+                <div className="flex items-center gap-4">
+                    <span className="hidden md:block text-sm text-gray-500">
+                        {session.user?.username} ({(session.user as any)?.username})
+                    </span>
+                    {/* Corrected Admin visibility check */}
+                    {(session.user as any)?.username === "admin" && (
+                        <Link
+                            href="/admin"
+                            className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+                        >
                             Admin Panel
                         </Link>
                     )}
@@ -42,7 +42,6 @@ export default async function DashboardLayout({
                     </form>
                 </div>
             </nav>
-
             {/* This is where the specific page content (Dashboard or Demo) will load */}
             <main>{children}</main>
         </div>
