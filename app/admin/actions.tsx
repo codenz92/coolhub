@@ -33,18 +33,3 @@ export async function addUser(formData: FormData) {
     });
     revalidatePath("/admin");
 }
-
-export async function updateUserRole(formData: FormData) {
-    const id = Number(formData.get("id"));
-    const newRole = formData.get("role") as string;
-
-    if (!id || !newRole) return;
-
-    // Update the role in the Neon database
-    await db.update(users)
-        .set({ role: newRole })
-        .where(eq(users.id, id));
-
-    // Refresh the admin page data
-    revalidatePath("/admin");
-}

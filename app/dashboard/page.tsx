@@ -1,8 +1,7 @@
 // app/dashboard/page.tsx
 import { auth, signOut } from '../auth';
 import { redirect } from 'next/navigation';
-import { deleteUser, addUser } from "../admin/actions"; // 1. Ensure addUser is imported here
-import Link from "next/link";
+import Link from 'next/link';
 
 // 1. Data Structure (Static for now, can be moved to Neon/Drizzle later)
 const MY_APPS = [
