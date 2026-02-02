@@ -5,9 +5,9 @@ import Link from "next/link";
 
 const MY_APPS = [
   {
-    name: "Internal Demo",
-    description: "Launch the internal demo app living in your project.",
-    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
+    name: "COOLCHAT",
+    description: "Launch coolchat.",
+    url: "/dashboard/coolchat", // Ensure this matches your folder name in /app
     icon: "🚀",
     color: "bg-orange-500",
   },
