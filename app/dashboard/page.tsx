@@ -11,6 +11,20 @@ const MY_APPS = [
     icon: "🚀",
     color: "bg-orange-500",
   },
+  {
+    name: "Internal Demo 2",
+    description: "Launch the internal demo app living in your project.",
+    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
+    icon: "🚀",
+    color: "bg-orange-500",
+  },
+  {
+    name: "Internal Demo 3",
+    description: "Launch the internal demo app living in your project.",
+    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
+    icon: "🚀",
+    color: "bg-orange-500",
+  },
 ];
 
 export default async function Dashboard() {
