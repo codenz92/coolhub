@@ -1,26 +1,21 @@
-import Link from "next/link";
-import Image from "next/image";
-import styles from './page.module.scss'
-import { mouse_memoirs } from "./ui/fonts";
+// app/demo-app/page.tsx
+import Link from 'next/link';
 
-export default function Home() {
+export default function DemoApp() {
   return (
-    <main className={styles.main}>
-      <div className={styles.container}>
-        <div className={styles.logo}>
-          <Image priority src='/assets/images/logo.svg' alt='Logo' layout='fill' objectFit='contain' />
-        </div>
-        <Link href='/Categories' className={styles.play}>
-          <div className={styles.image}>
-            <Image priority src='/assets/images/icon-play.svg' alt='Play button' layout='fill' objectFit='contain' />
-          </div>
+    <div className="min-h-screen bg-white p-12">
+      <div className="max-w-2xl mx-auto text-center">
+        <h1 className="text-4xl font-bold mb-4 text-black">Demo Application 🚀</h1>
+        <p className="text-gray-600 mb-8 font-light">
+          This is a separate &quot;app&quot; living inside your Next.js project.
+        </p>
+        <Link
+          href="/dashboard"
+          className="bg-black text-white px-6 py-3 rounded-lg hover:bg-zinc-800 transition-all inline-block"
+        >
+          ← Return to Dashboard
         </Link>
-        <div className={styles.containerLink}>
-          <Link className={styles.link} href='/Instructions'>
-            <p className={`${styles.instructions} ${mouse_memoirs.className} antialised`}>HOW TO PLAY</p>
-          </Link>
-        </div>
       </div>
-    </main>
+    </div>
   );
 }
