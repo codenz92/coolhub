@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
+import { useRef } from 'react';
 
 export default function CoolChat() {
   const [messages, setMessages] = useState([]);
@@ -77,11 +78,12 @@ export default function CoolChat() {
     });
   };
 
+  // 1. IMPORTANT: Add this line at the very top of your CoolChat component
   const inputRef = useRef(null);
 
   if (isLocked) {
     return (
-      /* Removes the black bars and centers the terminal on a clean white page */
+      /* We use 'fixed inset-0' to fill the screen and 'bg-white' to remove the black bars */
       <div className="fixed inset-0 bg-white flex items-center justify-center z-[9999]">
         <div className="w-full max-w-md text-center px-6">
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
@@ -92,7 +94,7 @@ export default function CoolChat() {
           </p>
 
           <input
-            ref={inputRef}
+            ref={inputRef} // This connects the input to the button logic
             type="password"
             placeholder="SECRET_KEY"
             className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
@@ -106,13 +108,13 @@ export default function CoolChat() {
 
           <button
             onClick={() => {
-              /* This safely grabs the value without causing a client-side error */
+              /* This fix captures the value when the button is clicked */
               if (inputRef.current) {
                 handleUnlock(inputRef.current.value);
                 inputRef.current.value = '';
               }
             }}
-            className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6"
+            className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6 active:scale-95"
           >
             UNLOCK STEALTH MODE
           </button>
