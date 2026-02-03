@@ -1,24 +1,61 @@
-import { db } from '../../db'; // Adjust path to your db file
+import { postgres } from '@/app/db';
+import { auth } from '@/app/auth';
 import { NextResponse } from 'next/server';
-import { sql } from 'drizzle-orm';
 
-export async function GET(request: Request) {
-    // 1. Verify this is a legitimate request from Vercel
-    const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-        return new NextResponse('Unauthorized', { status: 401 });
+export async function GET() {
+    try {
+        // 1. AUTO-DELETE: Purge messages older than 24 hours based on server_timestamp
+        await postgres`
+            DELETE FROM "ChatMessage" 
+            WHERE server_timestamp < NOW() - INTERVAL '24 hours'
+        `;
+
+        // 2. Fetch fresh messages
+        const messages = await postgres`SELECT * FROM "ChatMessage" ORDER BY id ASC LIMIT 50`;
+        return NextResponse.json(messages);
+    } catch (error) {
+        console.error("DB Error:", error);
+        return NextResponse.json({ error: "Table error" }, { status: 500 });
     }
+}
+
+export async function POST(req: Request) {
+    const session = await auth();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { username, text, created_at } = await req.json();
 
     try {
-        // 2. Delete messages older than 24 hours
-        // This ensures a "rolling window" of messages
-        await db.execute(
-            sql`DELETE FROM "ChatMessage" WHERE created_at < NOW() - INTERVAL '24 hours'`
-        );
-
-        return NextResponse.json({ success: true, message: "Old messages purged." });
+        await postgres`
+            INSERT INTO "ChatMessage" (username, text, created_at) 
+            VALUES (${username}, ${text}, ${created_at})
+        `;
+        return NextResponse.json({ success: true });
     } catch (error) {
-        console.error('Cleanup failed:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        console.error("Post Error:", error);
+        return NextResponse.json({ error: "Failed to save encrypted message" }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: Request) {
+    const session = await auth();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    try {
+        const { ids } = await req.json();
+        if (!ids || !Array.isArray(ids)) {
+            return NextResponse.json({ error: "Invalid IDs" }, { status: 400 });
+        }
+
+        // 3. TARGETED DELETE: Clears only the IDs currently decrypted by the user
+        await postgres`
+            DELETE FROM "ChatMessage" 
+            WHERE id IN (${ids})
+        `;
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Delete Error:", error);
+        return NextResponse.json({ error: "Failed to clear targeted messages" }, { status: 500 });
     }
 }
