@@ -6,18 +6,15 @@ import CryptoJS from 'crypto-js';
 export default function CoolChat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [chatPassword, setChatPassword] = useState(''); // The new Secret Key
+  const [chatPassword, setChatPassword] = useState('');
   const [isLocked, setIsLocked] = useState(true);
   const scrollRef = useRef(null);
+  const inputRef = useRef(null); // Added for the button logic
 
-  // 2. ADD THIS FUNCTION HERE:
+  // Function to handle the unlock trigger
   const handleUnlock = (enteredValue) => {
     if (!enteredValue) return;
-
-    // This sets the global password used for decryption
     setChatPassword(enteredValue);
-
-    // This physically removes the lock screen
     setIsLocked(false);
   };
 
@@ -29,19 +26,20 @@ export default function CoolChat() {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
 
+        // Updated mapping logic to filter out locked messages
         const decryptedData = data.map(msg => {
           try {
-            // Decrypting using the password you provided manually
-            const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
-            const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
-
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
+            // If decryption results in an empty string, it's the wrong key
+            if (!decryptedText) return null;
+
+            const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
+            const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
+
             const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', chatPassword);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
-
-            if (!decryptedText) throw new Error("Wrong Key");
 
             return {
               ...msg,
@@ -50,9 +48,10 @@ export default function CoolChat() {
               displayTime: decryptedTime || ''
             };
           } catch (e) {
-            return { ...msg, username: 'LOCKED', text: '[Incorrect Password / Encrypted]', displayTime: '' };
+            // Return null so these can be filtered out
+            return null;
           }
-        });
+        }).filter(Boolean); // This removes all 'LOCKED' placeholders
 
         setMessages(decryptedData);
       } catch (err) { console.error(err); }
@@ -72,7 +71,6 @@ export default function CoolChat() {
     const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // Encrypt using the local Chat Password
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
     const encryptedTime = CryptoJS.AES.encrypt(now, chatPassword).toString();
@@ -88,12 +86,8 @@ export default function CoolChat() {
     });
   };
 
-  // 1. IMPORTANT: Add this line at the very top of your CoolChat component
-  const inputRef = useRef(null);
-
   if (isLocked) {
     return (
-      /* We use 'fixed inset-0' to fill the screen and 'bg-white' to remove the black bars */
       <div className="fixed inset-0 bg-white flex items-center justify-center z-[9999]">
         <div className="w-full max-w-md text-center px-6">
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
@@ -104,7 +98,7 @@ export default function CoolChat() {
           </p>
 
           <input
-            ref={inputRef} // This connects the input to the button logic
+            ref={inputRef}
             type="password"
             placeholder="SECRET_KEY"
             className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
@@ -118,7 +112,6 @@ export default function CoolChat() {
 
           <button
             onClick={() => {
-              /* This fix captures the value when the button is clicked */
               if (inputRef.current) {
                 handleUnlock(inputRef.current.value);
                 inputRef.current.value = '';
@@ -141,14 +134,14 @@ export default function CoolChat() {
   }
 
   return (
+    /* This is your actual chat UI once unlocked */
     <div className="fixed inset-0 bg-zinc-300 flex items-center justify-center p-4 z-[999]">
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
-
         <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
           <div>
             <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
             <div className="flex items-center gap-1 mt-0.5">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.8)]" />
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
               <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest">User-Key Stealth Active</span>
             </div>
           </div>
@@ -157,17 +150,16 @@ export default function CoolChat() {
 
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
-            const isAdmin = msg.username?.toLowerCase() === 'dev' || msg.username?.toLowerCase() === 'rio';
+            const isAdmin = msg.username?.toLowerCase() === 'dev';
             return (
-              <div key={i} className="flex flex-col items-start animate-in fade-in slide-in-from-bottom-1">
+              <div key={i} className="flex flex-col items-start">
                 <div className="flex items-center gap-2 mb-1 ml-1">
                   <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
                     {msg.username} {isAdmin && '• ADMIN'}
                   </span>
                   <span className="text-[8px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
-                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'
-                  }`}>
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
                   {msg.text}
                 </div>
               </div>
@@ -184,7 +176,7 @@ export default function CoolChat() {
               placeholder="Secure transmission..."
               className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono"
             />
-            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors">
+            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest">
               SEND
             </button>
           </form>
