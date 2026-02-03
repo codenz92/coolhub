@@ -79,26 +79,22 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
+      /* fixed inset-0 ensures the black covers the entire screen, even the gaps */
       <div className="fixed inset-0 bg-black flex items-center justify-center z-[9999]">
-        {/* The "Box" Container */}
-        <div className="bg-white p-10 rounded-[40px] shadow-[0_0_100px_rgba(255,255,255,0.1)] w-full max-w-md border-[6px] border-zinc-900 mx-4 transform transition-all">
 
-          <div className="mb-8">
-            <h1 className="font-black text-3xl mb-1 tracking-tighter text-black uppercase">
-              Encrypted Terminal
-            </h1>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">
-                System Locked • Access Required
-              </p>
-            </div>
-          </div>
+        {/* This is your original white box style from image 647386 */}
+        <div className="bg-white p-12 w-full max-w-md text-center shadow-2xl">
+          <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
+            ENCRYPTED TERMINAL
+          </h1>
+          <p className="text-[10px] font-bold text-black mb-8 uppercase tracking-widest">
+            ENTER CHAT SECRET TO ACCESS
+          </p>
 
           <input
             type="password"
             placeholder="SECRET_KEY"
-            className="w-full p-5 border-4 border-black mb-4 font-mono text-sm outline-none focus:bg-zinc-50 transition-colors text-black placeholder:text-zinc-300"
+            className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 handleUnlock(e.target.value);
@@ -112,17 +108,16 @@ export default function CoolChat() {
               const val = document.querySelector('input[type="password"]').value;
               handleUnlock(val);
             }}
-            className="w-full bg-black text-white p-5 font-black uppercase tracking-widest hover:bg-zinc-800 transition-all active:scale-95 mb-8 shadow-[6px_6px_0px_rgba(0,0,0,0.2)]"
+            className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6"
           >
-            Unlock Stealth Mode
+            UNLOCK STEALTH MODE
           </button>
 
           <Link
             href="/dashboard"
-            className="group flex items-center justify-center gap-2 text-[10px] font-black text-zinc-400 hover:text-black uppercase tracking-[0.2em] transition-colors"
+            className="block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors"
           >
-            <span className="transition-transform group-hover:-translate-x-1">←</span>
-            Return to Dashboard
+            ← RETURN TO DASHBOARD
           </Link>
         </div>
       </div>
