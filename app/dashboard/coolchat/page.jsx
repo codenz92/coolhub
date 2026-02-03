@@ -79,7 +79,7 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      <div className="fixed inset-0 bg-zinc-900 flex items-center justify-center z-[999]">
+      <div className="fixed inset-0 bg-black flex items-center justify-center z-[999]">
         <div className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border-4 border-black">
           <h1 className="font-black text-2xl mb-2 tracking-tighter text-black">ENCRYPTED TERMINAL</h1>
           <p className="text-xs font-bold text-zinc-400 mb-6 uppercase tracking-widest">Enter Chat Secret to Access</p>
