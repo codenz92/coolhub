@@ -166,17 +166,17 @@ export default function CoolChat() {
       {/* Boxed Terminal Layout */}
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* FIXED HEADER: Absolute Side-to-Side Alignment */}
-        <div className="w-full px-6 py-5 border-b flex justify-between items-center bg-white relative">
+        {/* FIXED HEADER: Absolute Edge Alignment */}
+        <div className="w-full px-6 py-5 border-b flex items-center bg-white justify-between">
 
-          {/* 1. Left Section: Magnetized to Left Wall */}
+          {/* 1. Left Section: Magnetized to Left */}
           <div className="flex-1 flex justify-start">
             <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
               COOLCHAT
             </h1>
           </div>
 
-          {/* 2. Center Section: Mathematically Centered */}
+          {/* 2. Center Section: Dead Center */}
           <div className="flex-1 flex flex-col items-center justify-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
@@ -189,7 +189,7 @@ export default function CoolChat() {
             </span>
           </div>
 
-          {/* 3. Right Section: MAGNETIZED TO FAR RIGHT WALL */}
+          {/* 3. Right Section: FORCED TO THE ABSOLUTE RIGHT EDGE */}
           <div className="flex-1 flex justify-end items-center gap-4">
             <button
               onClick={clearChat}
