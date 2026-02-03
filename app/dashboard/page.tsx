@@ -49,10 +49,13 @@ const MY_APPS = [
 ];
 
 export default async function Dashboard() {
-  const session = await auth();
+  const session = await auth(); //
 
-  if (!session) redirect('/login');
-  const isAdminUser = ["dev", "rio"].includes(session.user?.username || "") || (session.user as any)?.role === "admin";
+  if (!session) redirect('/login'); //
+
+  // Logic to allow both dev and rio admin-level view
+  const isAdminUser = ["dev", "rio"].includes(session.user?.username || "") || (session.user as any)?.role === "admin"; //
+
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
       <header className="mb-10">
@@ -72,9 +75,20 @@ export default async function Dashboard() {
             <div className={`w-12 h-12 ${app.color} rounded-xl mb-4 flex items-center justify-center text-2xl text-white shadow-inner`}>
               {app.icon}
             </div>
-            <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">
-              {app.name}
-            </h3>
+
+            {/* Wrapper for Title and Badge */}
+            <div className="flex items-center gap-2">
+              <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">
+                {app.name}
+              </h3>
+              {/* Only show the FREE badge for the COOLCHAT card */}
+              {app.name === "COOLCHAT" && (
+                <span className="text-[10px] font-black text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
+                  FREE
+                </span>
+              )}
+            </div>
+
             <p className="text-gray-500 text-sm mt-2 leading-relaxed">
               {app.description}
             </p>
