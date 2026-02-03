@@ -31,35 +31,31 @@ export default function CoolChat() {
   };
 
   return (
-    // This outer div ensures the chat stays centered and doesn't fill the screen
-    <div className="fixed inset-0 bg-gray-100 flex items-center justify-center p-4">
+    // This centered layout prevents it from taking up the whole screen
+    <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-6">
 
-      {/* This is the Chat Window - strictly limited in size */}
-      <div className="w-full max-w-[400px] h-[600px] bg-white rounded-3xl shadow-xl flex flex-col border border-gray-200 overflow-hidden">
+      {/* Strictly limited size container */}
+      <div className="w-full max-w-md h-[600px] bg-white rounded-[2rem] shadow-2xl border border-zinc-200 flex flex-col overflow-hidden">
 
         {/* Header */}
-        <div className="p-4 border-b flex justify-between items-center bg-white">
+        <div className="p-5 border-b flex justify-between items-center bg-white">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-sm tracking-tight">COOLCHAT</span>
-            <span className="text-[8px] font-black text-green-600 bg-green-50 px-1.5 py-0.5 rounded border border-green-200">FREE</span>
+            <h1 className="font-bold text-sm tracking-tighter text-black">COOLCHAT</h1>
+            <span className="text-[9px] font-black text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-200">FREE</span>
           </div>
-          <Link href="/dashboard" className="text-[10px] font-bold text-gray-400 hover:text-black">EXIT</Link>
+          <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black">EXIT</Link>
         </div>
 
-        {/* Messages - Slim Bubbles */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/30">
+        {/* Message Feed - Slim bubbles */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-zinc-50/50">
           {messages.map((msg, i) => {
-            const isDev = msg.username?.toLowerCase() === 'dev';
-            const isRio = msg.username?.toLowerCase() === 'rio';
-
+            const isAdmin = msg.username?.toLowerCase() === 'dev' || msg.username?.toLowerCase() === 'rio';
             return (
-              <div key={i} className="flex flex-col">
-                <span className={`text-[9px] font-bold mb-0.5 ml-1 uppercase ${isDev ? 'text-indigo-500' : isRio ? 'text-emerald-500' : 'text-gray-400'}`}>
-                  {msg.username} {(isDev || isRio) && '• Admin'}
+              <div key={i} className="flex flex-col items-start">
+                <span className={`text-[9px] font-black mb-1 ml-1 uppercase ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
+                  {msg.username} {isAdmin && '• ADMIN'}
                 </span>
-                <div className={`inline-block self-start max-w-[85%] px-3 py-1.5 rounded-2xl rounded-tl-none border text-sm ${isDev ? 'bg-indigo-50 border-indigo-100 text-indigo-900' :
-                  isRio ? 'bg-emerald-50 border-emerald-100 text-emerald-900' :
-                    'bg-white border-gray-200 text-gray-700'
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-sm max-w-[85%] ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900' : 'bg-white border-zinc-200 text-zinc-700'
                   }`}>
                   {msg.text}
                 </div>
@@ -70,14 +66,14 @@ export default function CoolChat() {
         </div>
 
         {/* Input area */}
-        <form onSubmit={handleSend} className="p-3 bg-white border-t flex gap-2">
+        <form onSubmit={handleSend} className="p-4 bg-white border-t flex gap-2">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Message..."
-            className="flex-1 bg-gray-100 px-4 py-2 rounded-full text-sm outline-none"
+            className="flex-1 bg-zinc-100 px-4 py-2.5 rounded-xl text-sm outline-none focus:bg-white focus:ring-1 focus:ring-zinc-300 transition-all"
           />
-          <button type="submit" className="bg-black text-white px-4 py-2 rounded-full text-xs font-bold active:scale-95 transition-transform">
+          <button type="submit" className="bg-black text-white px-5 py-2.5 rounded-xl text-xs font-bold active:scale-95 transition-transform">
             SEND
           </button>
         </form>
