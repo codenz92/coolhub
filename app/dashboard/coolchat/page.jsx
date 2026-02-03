@@ -166,19 +166,21 @@ export default function CoolChat() {
       {/* Boxed Terminal Layout */}
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* FIXED HEADER: Explicitly justifying each grid column */}
+        {/* FIXED HEADER: Ensuring explicit side-to-side alignment */}
         <div className="px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
 
-          {/* Left Column: Title pinned to left edge */}
+          {/* 1. Left Section: Justify Start */}
           <div className="flex justify-start">
-            <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
+            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
+              COOLCHAT
+            </h1>
           </div>
 
-          {/* Center Column: Status pinned to middle */}
+          {/* 2. Center Section: Justify Center */}
           <div className="flex flex-col items-center justify-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] font-bold text-green-600 uppercase tracking-[0.15em] whitespace-nowrap">
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
                 🔒 END-TO-END ENCRYPTION ACTIVE 🔒
               </span>
             </div>
@@ -187,17 +189,17 @@ export default function CoolChat() {
             </span>
           </div>
 
-          {/* Right Column: Buttons pinned to far right edge */}
+          {/* 3. Right Section: Justify End (This forces them to the right wall) */}
           <div className="flex justify-end gap-4">
             <button
               onClick={clearChat}
-              className="text-[10px] font-bold text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest"
+              className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-tighter"
             >
-              Clear Vault
+              CLEAR VAULT
             </button>
             <button
               onClick={() => setIsLocked(true)}
-              className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors uppercase"
+              className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-tighter"
             >
               LOCK
             </button>
