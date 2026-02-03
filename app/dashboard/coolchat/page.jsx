@@ -79,19 +79,26 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      /* 1. Change inset-0 to fixed w-screen h-screen to force full coverage.
-         2. Use bg-black to match your COOLCHAT app color.
-         3. flex items-center justify-center ensures it is perfectly centered.
-      */
-      <div className="fixed top-0 left-0 w-screen h-screen bg-black flex items-center justify-center z-[9999]">
-        <div className="bg-white p-10 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] w-full max-w-md border-4 border-zinc-800 mx-4">
-          <h1 className="font-black text-2xl mb-2 tracking-tighter text-black">ENCRYPTED TERMINAL</h1>
-          <p className="text-xs font-bold text-zinc-400 mb-8 uppercase tracking-widest">Enter Chat Secret to Access</p>
+      <div className="fixed inset-0 bg-black flex items-center justify-center z-[9999]">
+        {/* The "Box" Container */}
+        <div className="bg-white p-10 rounded-[40px] shadow-[0_0_100px_rgba(255,255,255,0.1)] w-full max-w-md border-[6px] border-zinc-900 mx-4 transform transition-all">
+
+          <div className="mb-8">
+            <h1 className="font-black text-3xl mb-1 tracking-tighter text-black uppercase">
+              Encrypted Terminal
+            </h1>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">
+                System Locked • Access Required
+              </p>
+            </div>
+          </div>
 
           <input
             type="password"
             placeholder="SECRET_KEY"
-            className="w-full p-4 border-2 border-black mb-4 font-mono outline-none focus:ring-2 focus:ring-zinc-400 transition-all text-black"
+            className="w-full p-5 border-4 border-black mb-4 font-mono text-sm outline-none focus:bg-zinc-50 transition-colors text-black placeholder:text-zinc-300"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 handleUnlock(e.target.value);
@@ -105,16 +112,17 @@ export default function CoolChat() {
               const val = document.querySelector('input[type="password"]').value;
               handleUnlock(val);
             }}
-            className="w-full bg-black text-white p-4 font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors mb-6 shadow-lg"
+            className="w-full bg-black text-white p-5 font-black uppercase tracking-widest hover:bg-zinc-800 transition-all active:scale-95 mb-8 shadow-[6px_6px_0px_rgba(0,0,0,0.2)]"
           >
-            UNLOCK STEALTH MODE
+            Unlock Stealth Mode
           </button>
 
           <Link
             href="/dashboard"
-            className="block text-center text-[10px] font-black text-zinc-400 hover:text-black uppercase tracking-[0.2em] transition-colors"
+            className="group flex items-center justify-center gap-2 text-[10px] font-black text-zinc-400 hover:text-black uppercase tracking-[0.2em] transition-colors"
           >
-            ← Return to Dashboard
+            <span className="transition-transform group-hover:-translate-x-1">←</span>
+            Return to Dashboard
           </Link>
         </div>
       </div>
