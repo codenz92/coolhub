@@ -11,9 +11,13 @@ export default function CoolChat() {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Unlocks the UI and sets the session's decryption key
   const handleUnlock = (enteredValue) => {
     if (!enteredValue) return;
+
+    // 1. Clear old messages immediately to prevent the "flicker"
+    setMessages([]);
+
+    // 2. Set the new key and unlock
     setChatPassword(enteredValue);
     setIsLocked(false);
   };
