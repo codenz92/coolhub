@@ -142,7 +142,7 @@ export default function CoolChat() {
               onClick={clearChat}
               className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest whitespace-nowrap"
             >
-              CLEAR VAULT
+              CLEAR CHAT
             </button>
             <button
               onClick={() => setIsLocked(true)}
