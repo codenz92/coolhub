@@ -38,36 +38,46 @@ export default function CoolChat() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-100">
-      <div className="p-4 bg-white border-b flex justify-between items-center">
-        <h1 className="font-bold text-xl">CoolChat 💬</h1>
-        <Link href="/dashboard" className="text-blue-600 font-medium">Exit</Link>
-      </div>
+    <div className="min-h-screen bg-zinc-50 flex items-center justify-center p-4">
+      {/* Container with restricted width and height */}
+      <div className="w-full max-w-md h-[600px] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-zinc-200">
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {error && <div className="text-red-500 text-center bg-red-50 p-2 rounded">Error: {error}</div>}
-        {messages.length === 0 && !error && <div className="text-center text-zinc-400 mt-10">No messages yet...</div>}
+        {/* Compact Header */}
+        <div className="p-4 bg-white border-b flex justify-between items-center">
+          <h1 className="font-bold text-lg">CoolChat 💬</h1>
+          <Link href="/dashboard" className="text-xs bg-zinc-100 px-3 py-1 rounded-full hover:bg-zinc-200 transition">
+            Exit
+          </Link>
+        </div>
 
-        {messages.map((msg, i) => (
-          <div key={i} className="flex flex-col items-start">
-            <span className="text-[10px] font-bold text-zinc-500 ml-1 uppercase">{msg.username}</span>
-            <div className="bg-white border border-zinc-200 px-4 py-2 rounded-2xl rounded-tl-none shadow-sm">
-              {msg.text}
+        {/* Scrollable Messages Area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-zinc-50/50">
+          {error && <div className="text-red-500 text-xs text-center p-2 bg-red-50 rounded">Error: {error}</div>}
+
+          {messages.map((msg, i) => (
+            <div key={i} className="flex flex-col items-start">
+              <span className="text-[9px] font-bold text-zinc-400 ml-1 mb-0.5 uppercase tracking-wider">{msg.username}</span>
+              <div className="bg-white border border-zinc-200 px-3 py-1.5 rounded-2xl rounded-tl-none shadow-sm text-sm text-zinc-800">
+                {msg.text}
+              </div>
             </div>
-          </div>
-        ))}
-        <div ref={scrollRef} />
-      </div>
+          ))}
+          <div ref={scrollRef} />
+        </div>
 
-      <form onSubmit={handleSend} className="p-4 bg-white border-t flex gap-2">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 bg-zinc-100 px-6 py-3 rounded-full outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button type="submit" className="bg-blue-600 text-white px-6 py-3 rounded-full font-bold">Send</button>
-      </form>
+        {/* Integrated Input Form */}
+        <form onSubmit={handleSend} className="p-3 bg-white border-t flex gap-2">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Say something..."
+            className="flex-1 bg-zinc-100 px-4 py-2 rounded-full text-sm outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-700 transition">
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
