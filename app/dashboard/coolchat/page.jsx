@@ -45,17 +45,22 @@ export default function CoolChat() {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
 
+        // PROTECTION: Ensure data is an array before mapping
+        if (!Array.isArray(data)) {
+          console.error("Server error or invalid data format:", data);
+          return;
+        }
+
         const decryptedData = data.map(msg => {
           try {
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
-            // DEBUG: If decryption fails, show a placeholder instead of hiding it
             if (!decryptedText) {
               return {
                 ...msg,
                 username: "SYSTEM",
-                text: "--- ENCRYPTED DATA DETECTED: KEY MISMATCH ---",
+                text: "--- ENCRYPTED PACKET: KEY MISMATCH ---",
                 displayTime: "!!:!!"
               };
             }
@@ -78,7 +83,9 @@ export default function CoolChat() {
         }).filter(Boolean);
 
         setMessages(decryptedData);
-      } catch (err) { console.error(err); }
+      } catch (err) {
+        console.error("Connection failed:", err);
+      }
     };
 
     fetchMessages();
