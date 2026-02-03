@@ -119,30 +119,36 @@ export default function CoolChat() {
     <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* ABSOLUTE POSITIONING FIX */}
+        {/* THE FINAL HEADER FIX: Absolute positioning for true edge-to-edge alignment */}
         <div className="w-full px-6 py-5 border-b bg-white relative flex items-center justify-center min-h-[75px]">
 
-          {/* 1. Left Section: Stays far left */}
+          {/* 1. Left Section: Pins logo to the absolute left */}
           <div className="absolute left-6">
-            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
+            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
+              COOLCHAT
+            </h1>
           </div>
 
-          {/* 2. Center Section: Stays dead center */}
+          {/* 2. Center Section: Stays mathematically centered regardless of button length */}
           <div className="flex flex-col items-center justify-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">🔒 END-TO-END ENCRYPTION ACTIVE</span>
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
+                🔒 END-TO-END ENCRYPTION ACTIVE 🔒
+              </span>
             </div>
-            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">24H SELF-DESTRUCT</span>
+            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">
+              🗑️ 24H SELF-DESTRUCT 🗑️
+            </span>
           </div>
 
-          {/* 3. Right Section: ABSOLUTELY PINNED TO THE RIGHT */}
+          {/* 3. Right Section: PINS BUTTONS TO THE ABSOLUTE RIGHT WALL */}
           <div className="absolute right-6 flex items-center gap-4">
             <button
               onClick={clearChat}
               className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest whitespace-nowrap"
             >
-              CLEAR CHAT
+              CLEAR VAULT
             </button>
             <button
               onClick={() => setIsLocked(true)}
