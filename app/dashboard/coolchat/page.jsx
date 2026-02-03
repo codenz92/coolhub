@@ -37,50 +37,48 @@ export default function CoolChat() {
     });
   };
 
-  // Helper to determine bubble color based on user
   const getBubbleStyle = (username) => {
     const name = username?.toLowerCase();
-    if (name === 'dev') return 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-[0_2px_10px_rgba(79,70,229,0.1)]';
-    if (name === 'rio') return 'bg-emerald-50 border-emerald-100 text-emerald-900 shadow-[0_2px_10px_rgba(16,185,129,0.1)]';
-    return 'bg-white border-zinc-200 text-zinc-700 shadow-sm';
+    if (name === 'dev') return 'bg-indigo-50 border-indigo-100 text-indigo-900';
+    if (name === 'rio') return 'bg-emerald-50 border-emerald-100 text-emerald-900';
+    return 'bg-white border-zinc-200 text-zinc-700';
   };
 
   return (
-    <div className="min-h-screen bg-[#FBFBFD] flex items-center justify-center p-6 font-sans">
-      {/* Large, Clean Container */}
-      <div className="w-full max-w-3xl h-[800px] bg-white rounded-[32px] shadow-[0_40px_100px_rgba(0,0,0,0.04)] overflow-hidden flex flex-col border border-zinc-100">
+    <div className="min-h-screen bg-[#FBFBFD] flex items-center justify-center p-4">
+      {/* Constraints: Max-width 'lg' (approx 512px) and fixed height */}
+      <div className="w-full max-w-lg h-[700px] bg-white rounded-[24px] shadow-[0_20px_60px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col border border-zinc-100">
 
-        {/* Header: Minimal & Bright */}
-        <div className="px-8 py-6 flex justify-between items-center border-b border-zinc-50 bg-white/80 backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <h1 className="font-bold text-xl tracking-tight text-black">COOLCHAT</h1>
-            <span className="animate-pulse text-[9px] font-black tracking-widest text-green-600 bg-green-50 px-2.5 py-1 rounded-full border border-green-100">
+        {/* Header: More compact */}
+        <div className="px-6 py-4 flex justify-between items-center border-b border-zinc-50 bg-white/90 backdrop-blur-md z-10">
+          <div className="flex items-center gap-2">
+            <h1 className="font-bold text-base tracking-tight text-black">COOLCHAT</h1>
+            <span className="animate-pulse text-[8px] font-black tracking-widest text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
               FREE
             </span>
           </div>
-          <Link href="/dashboard" className="text-xs font-bold text-zinc-400 hover:text-black transition-colors px-4 py-2 bg-zinc-50 rounded-full">
+          <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors px-3 py-1.5 bg-zinc-50 rounded-full">
             EXIT
           </Link>
         </div>
 
-        {/* Messages: Slim & Clean */}
-        <div className="flex-1 overflow-y-auto px-8 py-8 space-y-6 bg-white">
+        {/* Messages: Tighter spacing */}
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 bg-white">
           {messages.map((msg, i) => (
-            <div key={i} className="flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div key={i} className="flex flex-col animate-in fade-in slide-in-from-bottom-1 duration-400">
               <div className="flex items-center gap-2 mb-1 ml-1">
-                <span className={`text-[10px] font-black uppercase tracking-wider ${msg.username?.toLowerCase() === 'dev' ? 'text-indigo-600' :
+                <span className={`text-[9px] font-black uppercase tracking-wider ${msg.username?.toLowerCase() === 'dev' ? 'text-indigo-600' :
                   msg.username?.toLowerCase() === 'rio' ? 'text-emerald-600' : 'text-zinc-400'
                   }`}>
                   {msg.username}
                 </span>
                 {(msg.username?.toLowerCase() === 'dev' || msg.username?.toLowerCase() === 'rio') && (
-                  <span className="text-[8px] bg-zinc-100 text-zinc-500 px-1 rounded font-bold uppercase">Admin</span>
+                  <span className="text-[7px] bg-zinc-100 text-zinc-500 px-1 rounded font-bold uppercase">Admin</span>
                 )}
               </div>
 
-              {/* Slimmer Message Box with dynamic colors */}
-              <div className={`inline-block max-w-[65%] border px-4 py-2.5 rounded-2xl rounded-tl-none ${getBubbleStyle(msg.username)}`}>
-                <p className="text-[14px] leading-snug font-medium">
+              <div className={`inline-block max-w-[80%] border px-3.5 py-2 rounded-2xl rounded-tl-none shadow-sm ${getBubbleStyle(msg.username)}`}>
+                <p className="text-[13.5px] leading-snug font-medium">
                   {msg.text}
                 </p>
               </div>
@@ -89,18 +87,18 @@ export default function CoolChat() {
           <div ref={scrollRef} />
         </div>
 
-        {/* Input Bar: High Contrast */}
-        <div className="px-8 pb-8 pt-4">
-          <form onSubmit={handleSend} className="relative flex items-center bg-zinc-50 border border-zinc-200 rounded-2xl overflow-hidden focus-within:border-zinc-400 focus-within:bg-white transition-all shadow-inner">
+        {/* Input: Integrated and slimmer */}
+        <div className="px-6 pb-6 pt-2">
+          <form onSubmit={handleSend} className="relative flex items-center bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden focus-within:border-zinc-300 focus-within:bg-white transition-all">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Start typing..."
-              className="w-full bg-transparent px-6 py-4 text-sm text-black outline-none placeholder:text-zinc-400"
+              placeholder="Message..."
+              className="w-full bg-transparent px-5 py-3.5 text-sm text-black outline-none placeholder:text-zinc-400"
             />
             <button
               type="submit"
-              className="mr-2 bg-black text-white h-10 px-6 rounded-xl font-bold text-[11px] hover:bg-zinc-800 transition-all active:scale-95"
+              className="mr-2 bg-black text-white h-9 px-5 rounded-lg font-bold text-[10px] hover:bg-zinc-800 transition-all active:scale-95"
             >
               SEND
             </button>
