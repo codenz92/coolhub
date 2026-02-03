@@ -73,7 +73,7 @@ export default function CoolChat() {
       body: JSON.stringify({
         username: encryptedUser, // Now sending scrambled username
         text: encryptedText,     // Sending scrambled text
-        timestamp: encryptedTime // Sending scrambled time
+        created_at: encryptedTime // Sending scrambled time
       })
     });
   };
