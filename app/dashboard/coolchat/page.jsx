@@ -156,7 +156,7 @@ export default function CoolChat() {
             <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
             <div className="flex items-center gap-1 mt-0.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest">User-Key Stealth Active • 24H SELF-DESTRUCT</span>
+              <span className="text-[5px] font-bold text-green-600 uppercase tracking-widest">End-to-End Encryption active • 24H SELF-DESTRUCT</span>
             </div>
           </div>
           <div className="flex gap-4">
