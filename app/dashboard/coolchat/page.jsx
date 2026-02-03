@@ -136,7 +136,7 @@ export default function CoolChat() {
           </button>
 
           {/* 1. Added Wrapper Div for extra spacing */}
-          <div className="mt-12">
+          <div className="mt-12 block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors">
             <Link
               href="/dashboard"
             >
