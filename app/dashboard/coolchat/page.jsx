@@ -12,23 +12,20 @@ export default function CoolChat() {
   const inputRef = useRef(null);
 
   const handleUnlock = (enteredValue) => {
-    // 1. Check for presence and minimum length (16 characters)
+    // 1. Force the secret key to be at least 16 characters
     if (!enteredValue || enteredValue.length < 16) {
       alert("SECURITY ERROR: SECRET_KEY MUST BE AT LEAST 16 CHARACTERS.");
       return;
     }
 
-    if (!enteredValue) return;
-
-    // 1. Clear old messages immediately to prevent the "flicker"
+    // 2. Clear old messages immediately to prevent the "flicker"
     setMessages([]);
 
-    // 2. Set the new key and unlock
+    // 3. Set the new key and unlock
     setChatPassword(enteredValue);
     setIsLocked(false);
   };
 
-  // Targeted deletion: only clears messages successfully decrypted by the current key
   const clearChat = async () => {
     const visibleMessageIds = messages.map(msg => msg.id).filter(Boolean);
     if (visibleMessageIds.length === 0) return;
@@ -55,18 +52,14 @@ export default function CoolChat() {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
 
-        // PROTECTION: Ensure data is an array before mapping
-        if (!Array.isArray(data)) {
-          console.error("Server error or invalid data format:", data);
-          return;
-        }
+        if (!Array.isArray(data)) return;
 
         const decryptedData = data.map(msg => {
           try {
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
-            if (!decryptedText) return null
+            if (!decryptedText) return null;
 
             const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
@@ -96,7 +89,7 @@ export default function CoolChat() {
     return () => clearInterval(interval);
   }, [isLocked, chatPassword]);
 
-  useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+  // AUTO-SCROLL REMOVED to prevent the page from jumping down constantly
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -105,7 +98,6 @@ export default function CoolChat() {
     const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // Client-side encryption ensures the server never sees the raw message content
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
     const encryptedTime = CryptoJS.AES.encrypt(now, chatPassword).toString();
@@ -123,14 +115,11 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      /* 1. Page Background Wrapper */
       <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
-
-        {/* 2. Main Container Box */}
+        {/* Unified Boxed Design for Unlock Screen */}
         <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] border border-zinc-400 p-12 text-center">
-
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
-            ENCRYPTED COOLCHAT
+            ENCRYPTED TERMINAL
           </h1>
           <p className="text-[10px] font-bold text-black mb-8 uppercase tracking-widest">
             ENTER CHAT SECRET TO ACCESS
@@ -166,7 +155,7 @@ export default function CoolChat() {
               href="/dashboard"
               className="text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors"
             >
-              🏠 RETURN TO DASHBOARD 🏠
+              ← RETURN TO DASHBOARD
             </Link>
           </div>
         </div>
@@ -175,40 +164,68 @@ export default function CoolChat() {
   }
 
   return (
-    <div className="fixed inset-0 bg-zinc-300 flex items-center justify-center p-4 z-[999]">
+    <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
+      {/* Boxed Terminal Layout matching the Unlock screen */}
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
-        <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
+
+        {/* Header with Centered Encryption Status and Grid Layout */}
+        <div className="px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
           <div>
-            <h1 className="text-[5px] font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
-            <div className="flex items-center gap-1 mt-0.5">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-[5px] font-bold text-green-600 uppercase tracking-widest">🔒 End-to-End Encryption active 🔒</span>
-            </div>
+            <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
           </div>
-          <div className="flex gap-4">
-            <button onClick={clearChat} className="text-[10px] font-bold text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest">Clear Vault</button>
-            <button onClick={() => setIsLocked(true)} className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors uppercase">LOCK</button>
+
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-[0.15em] whitespace-nowrap">
+                🔒 END-TO-END ENCRYPTION ACTIVE
+              </span>
+            </div>
+            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">
+              24H SELF-DESTRUCT
+            </span>
+          </div>
+
+          <div className="flex justify-end gap-4">
+            <button onClick={clearChat} className="text-[10px] font-bold text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest">
+              Clear Vault
+            </button>
+            <button onClick={() => setIsLocked(true)} className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors uppercase">
+              LOCK
+            </button>
           </div>
         </div>
+
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
             return (
               <div key={i} className="flex flex-col items-start">
                 <div className="flex items-center gap-2 mb-1 ml-1">
-                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>{msg.username} {isAdmin && '• ADMIN'}</span>
+                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
+                    {msg.username} {isAdmin && '• ADMIN'}
+                  </span>
                   <span className="text-[8px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
-                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>{msg.text}</div>
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
+                  {msg.text}
+                </div>
               </div>
             );
           })}
-          <div ref={scrollRef} />
         </div>
+
         <div className="p-5 bg-zinc-50 border-t border-zinc-200">
           <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[3px_3px_0px_black]">
-            <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Secure transmission..." className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono" />
-            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest">SEND</button>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Secure transmission..."
+              className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono"
+            />
+            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest">
+              SEND
+            </button>
           </form>
         </div>
       </div>
