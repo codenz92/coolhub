@@ -45,14 +45,20 @@ export default function CoolChat() {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
 
-        // Attempts to decrypt each record; fails silently if the key is incorrect
         const decryptedData = data.map(msg => {
           try {
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
-            // Filter out any messages that don't match the current key
-            if (!decryptedText) return null;
+            // DEBUG: If decryption fails, show a placeholder instead of hiding it
+            if (!decryptedText) {
+              return {
+                ...msg,
+                username: "SYSTEM",
+                text: "--- ENCRYPTED DATA DETECTED: KEY MISMATCH ---",
+                displayTime: "!!:!!"
+              };
+            }
 
             const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
