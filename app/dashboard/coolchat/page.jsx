@@ -11,16 +11,19 @@ export default function CoolChat() {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Unlocks the UI and sets the session's decryption key
   const handleUnlock = (enteredValue) => {
     if (!enteredValue) return;
     setChatPassword(enteredValue);
     setIsLocked(false);
   };
 
+  // Targeted deletion: only clears messages successfully decrypted by the current key
   const clearChat = async () => {
     const visibleMessageIds = messages.map(msg => msg.id).filter(Boolean);
     if (visibleMessageIds.length === 0) return;
-    if (!confirm(`DELETE ${visibleMessageIds.length} DECRYPTED MESSAGES?`)) return;
+
+    if (!confirm(`PERMANENTLY DELETE ${visibleMessageIds.length} DECRYPTED MESSAGES?`)) return;
 
     try {
       const response = await fetch('/api/messages', {
@@ -42,10 +45,13 @@ export default function CoolChat() {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
 
+        // Attempts to decrypt each record; fails silently if the key is incorrect
         const decryptedData = data.map(msg => {
           try {
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
+
+            // Filter out any messages that don't match the current key
             if (!decryptedText) return null;
 
             const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
@@ -83,6 +89,7 @@ export default function CoolChat() {
     const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+    // Client-side encryption ensures the server never sees the raw message content
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
     const encryptedTime = CryptoJS.AES.encrypt(now, chatPassword).toString();
@@ -109,10 +116,10 @@ export default function CoolChat() {
             type="password"
             placeholder="SECRET_KEY"
             className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
-            onKeyDown={(e) => { if (e.key === 'Enter') handleUnlock(e.target.value); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { handleUnlock(e.target.value); e.target.value = ''; } }}
           />
           <button
-            onClick={() => { if (inputRef.current) handleUnlock(inputRef.current.value); }}
+            onClick={() => { if (inputRef.current) { handleUnlock(inputRef.current.value); inputRef.current.value = ''; } }}
             className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6 active:scale-95"
           >
             UNLOCK STEALTH MODE
