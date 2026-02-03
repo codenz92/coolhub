@@ -77,17 +77,13 @@ export default function CoolChat() {
     });
   };
 
-  JavaScript
+  const inputRef = useRef(null);
+
   if (isLocked) {
     return (
-      /* 1. We removed 'bg-black' so the bars are gone.
-         2. 'min-h-screen' ensures the white background fills the page.
-         3. 'flex items-center justify-center' keeps the box centered.
-      */
-      <div className="min-h-screen bg-white flex items-center justify-center p-4">
-
-        {/* The Terminal Box exactly as you want it */}
-        <div className="w-full max-w-md text-center">
+      /* Removes the black bars and centers the terminal on a clean white page */
+      <div className="fixed inset-0 bg-white flex items-center justify-center z-[9999]">
+        <div className="w-full max-w-md text-center px-6">
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
             ENCRYPTED TERMINAL
           </h1>
@@ -96,7 +92,7 @@ export default function CoolChat() {
           </p>
 
           <input
-            id="terminal-input" // Added ID to help the button find the value
+            ref={inputRef}
             type="password"
             placeholder="SECRET_KEY"
             className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
@@ -110,10 +106,11 @@ export default function CoolChat() {
 
           <button
             onClick={() => {
-              // This fix ensures the button actually triggers the unlock
-              const input = document.getElementById('terminal-input');
-              handleUnlock(input.value);
-              input.value = '';
+              /* This safely grabs the value without causing a client-side error */
+              if (inputRef.current) {
+                handleUnlock(inputRef.current.value);
+                inputRef.current.value = '';
+              }
             }}
             className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6"
           >
