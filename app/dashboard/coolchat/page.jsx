@@ -55,12 +55,7 @@ export default function CoolChat() {
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
             const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', chatPassword);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
-            return {
-              ...msg,
-              username: decryptedUser || 'Anonymous',
-              text: decryptedText,
-              displayTime: decryptedTime || ''
-            };
+            return { ...msg, username: decryptedUser || 'Anonymous', text: decryptedText, displayTime: decryptedTime || '' };
           } catch (e) { return null; }
         }).filter(Boolean);
         setMessages(decryptedData);
@@ -86,7 +81,7 @@ export default function CoolChat() {
     });
   };
 
-  // --- LOGIN SCREEN (Unchanged) ---
+  // --- 1. LOGIN TERMINAL (UNCHANGED) ---
   if (isLocked) {
     return (
       <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
@@ -116,49 +111,33 @@ export default function CoolChat() {
     );
   }
 
-  // --- CHAT INTERFACE (Grid Layout + Centered Box) ---
+  // --- 2. CHAT INTERFACE (CENTERED BOX + ALIGNED BUTTONS) ---
   return (
     <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
-      {/* THE APP CONTAINER: Fixed size box (450px x 650px) */}
-      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
+      {/* THE CONTAINER BOX */}
+      <div className="w-full max-w-[450px] h-[750px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden relative">
 
-        {/* HEADER: GRID LAYOUT (3 Columns: Left, Center, Right) */}
-        <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[75px]">
+        {/* HEADER: GRID ENSURES BUTTONS PIN TO THE RIGHT EDGE */}
+        <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[80px]">
 
-          {/* Col 1: Logo (Aligned Start) */}
+          {/* Logo Column */}
           <div className="justify-self-start">
-            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
-              COOLCHAT
-            </h1>
+            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
           </div>
 
-          {/* Col 2: Status (Aligned Center) */}
+          {/* Status Column */}
           <div className="justify-self-center flex flex-col items-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
-                SECURE
-              </span>
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">SECURE</span>
             </div>
-            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">
-              24H DELETE
-            </span>
+            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5 whitespace-nowrap">24H AUTO-ERASE</span>
           </div>
 
-          {/* Col 3: Buttons (Aligned End - Forced Right) */}
+          {/* Buttons Column: FORCED TO THE RIGHT SIDE */}
           <div className="justify-self-end flex items-center gap-4">
-            <button
-              onClick={clearChat}
-              className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest whitespace-nowrap"
-            >
-              CLEAR
-            </button>
-            <button
-              onClick={() => setIsLocked(true)}
-              className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-widest whitespace-nowrap"
-            >
-              LOCK
-            </button>
+            <button onClick={clearChat} className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest whitespace-nowrap">CLEAR</button>
+            <button onClick={() => setIsLocked(true)} className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-widest whitespace-nowrap">LOCK</button>
           </div>
         </div>
 
@@ -169,20 +148,31 @@ export default function CoolChat() {
             return (
               <div key={i} className="flex flex-col items-start">
                 <div className="flex items-center gap-2 mb-1 ml-1">
-                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>{msg.username} {isAdmin && '• ADMIN'}</span>
+                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
+                    {msg.username} {isAdmin && '• ADMIN'}
+                  </span>
                   <span className="text-[8px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
-                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>{msg.text}</div>
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
+                  {msg.text}
+                </div>
               </div>
             );
           })}
         </div>
 
-        {/* Input Footer */}
+        {/* Footer Input Area */}
         <div className="p-5 bg-zinc-50 border-t border-zinc-200">
           <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[3px_3px_0px_black]">
-            <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Secure transmission..." className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono" />
-            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest">SEND</button>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Secure transmission..."
+              className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono"
+            />
+            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest active:scale-95 transition-transform">
+              SEND
+            </button>
           </form>
         </div>
       </div>
