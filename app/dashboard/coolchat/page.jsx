@@ -134,6 +134,15 @@ export default function CoolChat() {
           >
             UNLOCK STEALTH MODE
           </button>
+          {/* Add the Wrapper Div here */}
+          <div className="mt-12">
+            <Link
+              href="/dashboard"
+              className="block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors"
+            >
+              ← RETURN TO DASHBOARD
+            </Link>
+          </div>
           <Link href="/dashboard" className="block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors">← RETURN TO DASHBOARD</Link>
         </div>
       </div>
