@@ -77,14 +77,17 @@ export default function CoolChat() {
     });
   };
 
+  JavaScript
   if (isLocked) {
     return (
-      /* This container MUST use 'fixed inset-0' and a high 'z-index' 
-         to hide the "COOLHUB" header and the white bottom area */
-      <div className="fixed inset-0 bg-black flex items-center justify-center z-[9999] overflow-hidden">
+      /* 1. We removed 'bg-black' so the bars are gone.
+         2. 'min-h-screen' ensures the white background fills the page.
+         3. 'flex items-center justify-center' keeps the box centered.
+      */
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
 
-        {/* The white terminal box from your edit */}
-        <div className="bg-white p-12 w-full max-w-md text-center shadow-2xl relative">
+        {/* The Terminal Box exactly as you want it */}
+        <div className="w-full max-w-md text-center">
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
             ENCRYPTED TERMINAL
           </h1>
@@ -93,6 +96,7 @@ export default function CoolChat() {
           </p>
 
           <input
+            id="terminal-input" // Added ID to help the button find the value
             type="password"
             placeholder="SECRET_KEY"
             className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
@@ -106,8 +110,10 @@ export default function CoolChat() {
 
           <button
             onClick={() => {
-              const val = document.querySelector('input[type="password"]').value;
-              handleUnlock(val);
+              // This fix ensures the button actually triggers the unlock
+              const input = document.getElementById('terminal-input');
+              handleUnlock(input.value);
+              input.value = '';
             }}
             className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6"
           >
