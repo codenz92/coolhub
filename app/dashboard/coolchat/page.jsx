@@ -79,12 +79,13 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      /* This container covers the entire screen and centers the content */
+      /* 1. fixed inset-0 makes the black cover the ENTIRE screen 
+         2. flex items-center justify-center snaps the box to the DEAD CENTER 
+         3. z-[9999] ensures it stays on top of the 'COOLHUB' header
+      */
       <div className="fixed inset-0 bg-black flex items-center justify-center z-[9999]">
 
-        {/* This is your exact terminal box from Image 654d62.
-          I've ensured the internal spacing and text-centering match your preference.
-      */}
+        {/* Your exact white box styling */}
         <div className="bg-white p-12 w-full max-w-md text-center">
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
             ENCRYPTED TERMINAL
@@ -107,7 +108,6 @@ export default function CoolChat() {
 
           <button
             onClick={() => {
-              // Logic to grab value if they click instead of pressing Enter
               const val = document.querySelector('input[type="password"]').value;
               handleUnlock(val);
             }}
