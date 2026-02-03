@@ -6,10 +6,10 @@ import Link from "next/link";
 const MY_APPS = [
   {
     name: "COOLCHAT",
-    description: "Launch the coolest chat ever.",
+    description: "Launch the coolest end-to-end encrypted chat ever.",
     url: "/dashboard/coolchat", // Ensure this matches your folder name in /app
     icon: "💬",
-    color: "bg-orange-500",
+    color: "bg-black-500",
   },
   {
     name: "Hangman Game",
