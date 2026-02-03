@@ -130,7 +130,7 @@ export default function CoolChat() {
         <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] border border-zinc-400 p-12 text-center">
 
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
-            ENCRYPTED TERMINAL
+            ENCRYPTED COOLCHAT
           </h1>
           <p className="text-[10px] font-bold text-black mb-8 uppercase tracking-widest">
             ENTER CHAT SECRET TO ACCESS
