@@ -55,12 +55,7 @@ export default function CoolChat() {
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
             const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', chatPassword);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
-            return {
-              ...msg,
-              username: decryptedUser || 'Anonymous',
-              text: decryptedText,
-              displayTime: decryptedTime || ''
-            };
+            return { ...msg, username: decryptedUser || 'Anonymous', text: decryptedText, displayTime: decryptedTime || '' };
           } catch (e) { return null; }
         }).filter(Boolean);
         setMessages(decryptedData);
@@ -88,14 +83,15 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] border border-zinc-400 p-12 text-center">
+      <div className="min-h-screen bg-zinc-200 flex items-center justify-center p-4">
+        {/* Container Box for Login */}
+        <div className="w-full max-w-[450px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.15)] border border-zinc-300 p-10 text-center">
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">ENCRYPTED TERMINAL</h1>
-          <p className="text-[10px] font-bold text-black mb-8 uppercase tracking-widest">ENTER CHAT SECRET TO ACCESS</p>
+          <p className="text-[10px] font-bold text-zinc-400 mb-8 uppercase tracking-widest">ENTER CHAT SECRET TO ACCESS</p>
           <input
             ref={inputRef}
             type="password"
-            placeholder="SECRET_KEY (MIN. 16 CHARS)"
+            placeholder="SECRET_KEY"
             className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
             onKeyDown={(e) => { if (e.key === 'Enter') { handleUnlock(e.target.value); e.target.value = ''; } }}
           />
@@ -105,7 +101,7 @@ export default function CoolChat() {
           >
             UNLOCK CHAT
           </button>
-          <div className="mt-8">
+          <div className="mt-4">
             <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors">
               ← RETURN TO DASHBOARD
             </Link>
@@ -116,68 +112,60 @@ export default function CoolChat() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
-      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
+    <div className="min-h-screen bg-zinc-200 flex items-center justify-center p-4">
+      {/* THE APP BOX: Fixed width and height, centered on screen */}
+      <div className="w-full max-w-[450px] h-[700px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-300 overflow-hidden relative">
 
-        {/* THE FINAL HEADER FIX: Absolute positioning for true edge-to-edge alignment */}
+        {/* Header Section */}
         <div className="w-full px-6 py-5 border-b bg-white relative flex items-center justify-center min-h-[75px]">
-
-          {/* 1. Left Section: Pins logo to the absolute left */}
           <div className="absolute left-6">
-            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
-              COOLCHAT
-            </h1>
+            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
           </div>
 
-          {/* 2. Center Section: Stays mathematically centered regardless of button length */}
           <div className="flex flex-col items-center justify-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
-                🔒 END-TO-END ENCRYPTION ACTIVE 🔒
-              </span>
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest">🔒 ENCRYPTION ACTIVE</span>
             </div>
-            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">
-              🗑️ 24H SELF-DESTRUCT 🗑️
-            </span>
+            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">24H SELF-DESTRUCT</span>
           </div>
 
-          {/* 3. Right Section: PINS BUTTONS TO THE ABSOLUTE RIGHT WALL */}
           <div className="absolute right-6 flex items-center gap-4">
-            <button
-              onClick={clearChat}
-              className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest whitespace-nowrap"
-            >
-              CLEAR VAULT
-            </button>
-            <button
-              onClick={() => setIsLocked(true)}
-              className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-widest whitespace-nowrap"
-            >
-              LOCK
-            </button>
+            <button onClick={clearChat} className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest">CLEAR</button>
+            <button onClick={() => setIsLocked(true)} className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-widest">LOCK</button>
           </div>
         </div>
 
+        {/* Message Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
             return (
               <div key={i} className="flex flex-col items-start">
                 <div className="flex items-center gap-2 mb-1 ml-1">
-                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>{msg.username} {isAdmin && '• ADMIN'}</span>
-                  <span className="text-[8px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
+                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>{msg.username}</span>
+                  <span className="text-[8px] font-bold text-zinc-300 uppercase">{msg.displayTime}</span>
                 </div>
-                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>{msg.text}</div>
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
+                  {msg.text}
+                </div>
               </div>
             );
           })}
         </div>
 
+        {/* Input Footer */}
         <div className="p-5 bg-zinc-50 border-t border-zinc-200">
           <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[3px_3px_0px_black]">
-            <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Secure transmission..." className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono" />
-            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest">SEND</button>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Secure transmission..."
+              className="flex-1 px-4 py-3 text-sm outline-none font-mono"
+            />
+            <button type="submit" className="bg-black text-white px-6 text-[10px] font-black uppercase tracking-widest active:bg-zinc-800 transition-colors">
+              SEND
+            </button>
           </form>
         </div>
       </div>
