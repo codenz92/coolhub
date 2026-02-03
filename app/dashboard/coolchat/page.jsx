@@ -26,7 +26,7 @@ export default function CoolChat() {
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', SECRET_KEY);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
-            // 3. Decrypt Timestamp (Using 'created_at' to match your DB)
+            // 3. Decrypt Time (Changed 'timestamp' to 'created_at' to match your DB)
             const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', SECRET_KEY);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
 
@@ -37,7 +37,7 @@ export default function CoolChat() {
               displayTime: decryptedTime || ''
             };
           } catch (e) {
-            // This catches the plain-text 'dev' messages currently in your DB
+            // Handle any remaining unencrypted or corrupted rows
             return { ...msg, username: 'LOCKED', text: '[Encrypted]', displayTime: '' };
           }
         });
@@ -59,7 +59,7 @@ export default function CoolChat() {
     const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // ENCRYPTION: We must scramble these BEFORE sending
+    // ENCRYPTION LAYER
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, SECRET_KEY).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, SECRET_KEY).toString();
     const encryptedTime = CryptoJS.AES.encrypt(now, SECRET_KEY).toString();
@@ -68,9 +68,9 @@ export default function CoolChat() {
     await fetch('/api/messages', {
       method: 'POST',
       body: JSON.stringify({
-        username: encryptedUser,   // Encrypted Identity
-        text: encryptedText,       // Encrypted Content
-        created_at: encryptedTime  // Encrypted Time (Matched to your DB column)
+        username: encryptedUser,
+        text: encryptedText,
+        created_at: encryptedTime // Match this to your DB column name
       })
     });
   };
@@ -90,7 +90,7 @@ export default function CoolChat() {
           <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors">EXIT</Link>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white font-sans">
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev' || msg.username?.toLowerCase() === 'rio';
             return (
