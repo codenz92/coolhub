@@ -79,12 +79,12 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      /* 'fixed inset-0' and 'z-[9999]' forces the black to cover the COOLHUB header 
-         and the bottom white gap, matching your edited image. */
-      <div className="fixed inset-0 bg-black flex items-center justify-center z-[9999]">
+      /* This container MUST use 'fixed inset-0' and a high 'z-index' 
+         to hide the "COOLHUB" header and the white bottom area */
+      <div className="fixed inset-0 bg-black flex items-center justify-center z-[9999] overflow-hidden">
 
-        {/* The white terminal box, perfectly centered on the black void */}
-        <div className="bg-white p-12 w-full max-w-md text-center shadow-2xl">
+        {/* The white terminal box from your edit */}
+        <div className="bg-white p-12 w-full max-w-md text-center shadow-2xl relative">
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
             ENCRYPTED TERMINAL
           </h1>
