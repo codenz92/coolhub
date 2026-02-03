@@ -13,15 +13,20 @@ export default function CoolChat() {
 
   const handleUnlock = (enteredValue) => {
     if (!enteredValue) return;
-    // Clear old messages immediately to prevent the "flicker"
+
+    // 1. Clear old messages immediately to prevent the "flicker"
     setMessages([]);
+
+    // 2. Set the new key and unlock
     setChatPassword(enteredValue);
     setIsLocked(false);
   };
 
+  // Targeted deletion: only clears messages successfully decrypted by the current key
   const clearChat = async () => {
     const visibleMessageIds = messages.map(msg => msg.id).filter(Boolean);
     if (visibleMessageIds.length === 0) return;
+
     if (!confirm(`PERMANENTLY DELETE ${visibleMessageIds.length} DECRYPTED MESSAGES?`)) return;
 
     try {
@@ -44,16 +49,22 @@ export default function CoolChat() {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
 
-        if (!Array.isArray(data)) return;
+        // PROTECTION: Ensure data is an array before mapping
+        if (!Array.isArray(data)) {
+          console.error("Server error or invalid data format:", data);
+          return;
+        }
 
         const decryptedData = data.map(msg => {
           try {
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
-            if (!decryptedText) return null;
+
+            if (!decryptedText) return null
 
             const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
+
             const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', chatPassword);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
 
@@ -88,6 +99,7 @@ export default function CoolChat() {
     const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+    // Client-side encryption ensures the server never sees the raw message content
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
     const encryptedTime = CryptoJS.AES.encrypt(now, chatPassword).toString();
@@ -123,11 +135,10 @@ export default function CoolChat() {
             UNLOCK CHAT
           </button>
 
-          {/* Wrapper Div for separation between Unlock and Dashboard link */}
-          <div className="mt-12">
+          {/* 1. Added Wrapper Div for extra spacing */}
+          <div className="mt-12 block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors">
             <Link
               href="/dashboard"
-              className="block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors"
             >
               ← RETURN TO DASHBOARD
             </Link>
@@ -138,18 +149,14 @@ export default function CoolChat() {
   }
 
   return (
-    /* Moved terminal down the page with a parent wrapper */
-    <div className="min-h-screen bg-zinc-300 pt-32 pb-12 overflow-y-auto">
-      <div className="mx-auto w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
+    <div className="fixed inset-0 bg-zinc-300 flex items-center justify-center p-4 z-[999]">
+      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
         <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
           <div>
             <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
-            <div className="flex items-center gap-2 mt-0.5">
-              {/* AES-256 Tunnel Pulse indicator */}
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest">
-                AES-256 TUNNEL ACTIVE • SECURED BY END-TO-END USER KEY
-              </span>
+            <div className="flex items-center gap-1 mt-0.5">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest">User-Key Stealth Active • 24H SELF-DESTRUCT</span>
             </div>
           </div>
           <div className="flex gap-4">
