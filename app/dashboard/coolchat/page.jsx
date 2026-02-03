@@ -168,29 +168,38 @@ export default function CoolChat() {
       {/* Boxed Terminal Layout matching the Unlock screen */}
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* Header with Centered Encryption Status and Grid Layout */}
+        {/* Updated Header Section */}
         <div className="px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
+          {/* Left Section: Logo */}
           <div>
             <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
           </div>
 
+          {/* Center Section: Encryption Status */}
           <div className="flex flex-col items-center justify-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
               <span className="text-[7px] font-bold text-green-600 uppercase tracking-[0.15em] whitespace-nowrap">
-                🔒 END-TO-END ENCRYPTION ACTIVE
+                🔒 END-TO-END ENCRYPTION ACTIVE 🔒
               </span>
             </div>
             <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">
-              24H SELF-DESTRUCT
+              🗑️ 24H SELF-DESTRUCT 🗑️
             </span>
           </div>
 
+          {/* Right Section: Actions (Clear Vault & Lock moved here) */}
           <div className="flex justify-end gap-4">
-            <button onClick={clearChat} className="text-[10px] font-bold text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest">
+            <button
+              onClick={clearChat}
+              className="text-[10px] font-bold text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest"
+            >
               Clear Vault
             </button>
-            <button onClick={() => setIsLocked(true)} className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors uppercase">
+            <button
+              onClick={() => setIsLocked(true)}
+              className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors uppercase"
+            >
               LOCK
             </button>
           </div>
