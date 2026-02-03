@@ -12,6 +12,12 @@ export default function CoolChat() {
   const inputRef = useRef(null);
 
   const handleUnlock = (enteredValue) => {
+    // 1. Check for presence and minimum length (16 characters)
+    if (!enteredValue || enteredValue.length < 16) {
+      alert("SECURITY ERROR: SECRET_KEY MUST BE AT LEAST 16 CHARACTERS.");
+      return;
+    }
+
     if (!enteredValue) return;
 
     // 1. Clear old messages immediately to prevent the "flicker"
@@ -124,12 +130,27 @@ export default function CoolChat() {
           <input
             ref={inputRef}
             type="password"
-            placeholder="SECRET_KEY"
+            placeholder="SECRET_KEY (MIN. 16 CHARS)"
             className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
-            onKeyDown={(e) => { if (e.key === 'Enter') { handleUnlock(e.target.value); e.target.value = ''; } }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                if (e.target.value.length >= 16) {
+                  handleUnlock(e.target.value);
+                  e.target.value = '';
+                } else {
+                  alert("KEY TOO SHORT");
+                }
+              }
+            }}
           />
           <button
-            onClick={() => { if (inputRef.current) { handleUnlock(inputRef.current.value); inputRef.current.value = ''; } }}
+            onClick={() => {
+              if (inputRef.current) {
+                handleUnlock(inputRef.current.value);
+                // Only clear if successful
+                if (inputRef.current.value.length >= 16) inputRef.current.value = '';
+              }
+            }}
             className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6 active:scale-95"
           >
             UNLOCK CHAT
