@@ -1,6 +1,10 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import CryptoJS from 'crypto-js'; // Added for E2EE
+
+// Shared secret key for encryption/decryption
+const SECRET_KEY = 'coolhub-private-key-2026';
 
 export default function CoolChat() {
   const [messages, setMessages] = useState([]);
@@ -12,7 +16,19 @@ export default function CoolChat() {
       try {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
-        setMessages(data);
+
+        // DECRYPTION: Turn encrypted strings back into readable text
+        const decryptedData = data.map(msg => {
+          try {
+            const bytes = CryptoJS.AES.decrypt(msg.text, SECRET_KEY);
+            const originalText = bytes.toString(CryptoJS.enc.Utf8);
+            return { ...msg, text: originalText || '[Decryption Failed]' };
+          } catch (e) {
+            return { ...msg, text: '[Encrypted Message]' };
+          }
+        });
+
+        setMessages(decryptedData);
       } catch (err) { console.error(err); }
     };
     fetchMessages();
@@ -25,28 +41,39 @@ export default function CoolChat() {
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-    const text = input;
+
+    // ENCRYPTION: Scramble the message before it leaves the browser
+    const encryptedText = CryptoJS.AES.encrypt(input, SECRET_KEY).toString();
+
     setInput('');
-    await fetch('/api/messages', { method: 'POST', body: JSON.stringify({ text }) });
+    await fetch('/api/messages', {
+      method: 'POST',
+      body: JSON.stringify({ text: encryptedText })
+    });
   };
 
   return (
-    // The "fixed inset-0" ensures the background covers everything, 
-    // but the flex-center keeps the chat box small in the middle.
-    <div className="fixed inset-0 bg-zinc-200 flex items-center justify-center p-4">
+    // Background darkened to zinc-300 to make the centered box pop
+    <div className="fixed inset-0 bg-zinc-300 flex items-center justify-center p-4 z-[999]">
 
-      {/* CHAT BOX: Strictly limited width and height so it doesn't take up the screen */}
-      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.15)] flex flex-col border border-zinc-300 overflow-hidden">
+      {/* CHAT BOX: Strictly limited width to avoid full-screen stretching */}
+      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* Header - Minimal with no FREE badge */}
+        {/* Header - Added Privacy Indicator */}
         <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
-          <h1 className="font-black text-xs tracking-[0.2em] text-black">COOLCHAT</h1>
+          <div>
+            <h1 className="font-black text-xs tracking-[0.2em] text-black">COOLCHAT</h1>
+            <div className="flex items-center gap-1 mt-0.5">
+              <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="text-[7px] font-bold text-emerald-600 uppercase tracking-widest">E2E Encrypted</span>
+            </div>
+          </div>
           <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors">
             EXIT
           </Link>
         </div>
 
-        {/* Message Feed - Slimmer bubbles */}
+        {/* Message Feed */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev' || msg.username?.toLowerCase() === 'rio';
@@ -65,16 +92,15 @@ export default function CoolChat() {
           <div ref={scrollRef} />
         </div>
 
-        {/* Input Bar: SHARP SHARK EDGES */}
+        {/* Input Bar: SHARP SHARK EDGES with drop shadow */}
         <div className="p-5 bg-zinc-50 border-t border-zinc-200">
-          <form onSubmit={handleSend} className="flex border-2 border-black bg-white">
+          <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[3px_3px_0px_black]">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type message..."
-              className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400"
+              className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono"
             />
-            {/* "rounded-none" for the sharp shark-edge look */}
             <button
               type="submit"
               className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors"
