@@ -3,14 +3,16 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
 
-const SECRET_KEY = 'coolhub-private-key-2026';
-
 export default function CoolChat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [chatPassword, setChatPassword] = useState(''); // The new Secret Key
+  const [isLocked, setIsLocked] = useState(true);
   const scrollRef = useRef(null);
 
   useEffect(() => {
+    if (isLocked) return;
+
     const fetchMessages = async () => {
       try {
         const res = await fetch('/api/messages', { cache: 'no-store' });
@@ -18,51 +20,51 @@ export default function CoolChat() {
 
         const decryptedData = data.map(msg => {
           try {
-            // 1. Decrypt Username
-            const userBytes = CryptoJS.AES.decrypt(msg.username || '', SECRET_KEY);
+            // Decrypting using the password you provided manually
+            const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
 
-            // 2. Decrypt Message Text
-            const textBytes = CryptoJS.AES.decrypt(msg.text || '', SECRET_KEY);
+            const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
-            // 3. Decrypt Time (Changed 'timestamp' to 'created_at' to match your DB)
-            const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', SECRET_KEY);
+            const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', chatPassword);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
+
+            if (!decryptedText) throw new Error("Wrong Key");
 
             return {
               ...msg,
               username: decryptedUser || 'Anonymous',
-              text: decryptedText || '[Decryption Failed]',
+              text: decryptedText,
               displayTime: decryptedTime || ''
             };
           } catch (e) {
-            // Handle any remaining unencrypted or corrupted rows
-            return { ...msg, username: 'LOCKED', text: '[Encrypted]', displayTime: '' };
+            return { ...msg, username: 'LOCKED', text: '[Incorrect Password / Encrypted]', displayTime: '' };
           }
         });
 
         setMessages(decryptedData);
       } catch (err) { console.error(err); }
     };
+
     fetchMessages();
     const interval = setInterval(fetchMessages, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isLocked, chatPassword]);
 
   useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || !chatPassword) return;
 
     const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // ENCRYPTION LAYER
-    const encryptedUser = CryptoJS.AES.encrypt(myUsername, SECRET_KEY).toString();
-    const encryptedText = CryptoJS.AES.encrypt(input, SECRET_KEY).toString();
-    const encryptedTime = CryptoJS.AES.encrypt(now, SECRET_KEY).toString();
+    // Encrypt using the local Chat Password
+    const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
+    const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
+    const encryptedTime = CryptoJS.AES.encrypt(now, chatPassword).toString();
 
     setInput('');
     await fetch('/api/messages', {
@@ -70,10 +72,38 @@ export default function CoolChat() {
       body: JSON.stringify({
         username: encryptedUser,
         text: encryptedText,
-        created_at: encryptedTime // Match this to your DB column name
+        created_at: encryptedTime
       })
     });
   };
+
+  if (isLocked) {
+    return (
+      <div className="fixed inset-0 bg-zinc-900 flex items-center justify-center z-[999]">
+        <div className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border-4 border-black">
+          <h1 className="font-black text-2xl mb-2 tracking-tighter">ENCRYPTED TERMINAL</h1>
+          <p className="text-xs font-bold text-zinc-400 mb-6 uppercase tracking-widest">Enter Chat Secret to Access</p>
+          <input
+            type="password"
+            placeholder="SECRET_KEY"
+            className="w-full p-4 border-2 border-black mb-4 font-mono outline-none focus:bg-zinc-50"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setChatPassword(e.target.value);
+                setIsLocked(false);
+              }
+            }}
+          />
+          <button
+            onClick={() => setIsLocked(false)}
+            className="w-full bg-black text-white p-4 font-black uppercase tracking-widest hover:bg-zinc-800"
+          >
+            UNLOCK STEALTH MODE
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-zinc-300 flex items-center justify-center p-4 z-[999]">
@@ -83,11 +113,11 @@ export default function CoolChat() {
           <div>
             <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
             <div className="flex items-center gap-1 mt-0.5">
-              <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse shadow-[0_0_5px_rgba(99,102,241,0.8)]" />
-              <span className="text-[7px] font-bold text-indigo-600 uppercase tracking-widest">Metadata Stealth Active</span>
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.8)]" />
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest">User-Key Stealth Active</span>
             </div>
           </div>
-          <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors">EXIT</Link>
+          <button onClick={() => setIsLocked(true)} className="text-[10px] font-bold text-zinc-400 hover:text-red-500 transition-colors uppercase">LOCK</button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
