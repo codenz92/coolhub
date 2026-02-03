@@ -13,14 +13,20 @@ export default function CoolChat() {
 
   const handleUnlock = (enteredValue) => {
     if (!enteredValue) return;
+
+    // 1. Clear old messages immediately to prevent the "flicker"
     setMessages([]);
+
+    // 2. Set the new key and unlock
     setChatPassword(enteredValue);
     setIsLocked(false);
   };
 
+  // Targeted deletion: only clears messages successfully decrypted by the current key
   const clearChat = async () => {
     const visibleMessageIds = messages.map(msg => msg.id).filter(Boolean);
     if (visibleMessageIds.length === 0) return;
+
     if (!confirm(`PERMANENTLY DELETE ${visibleMessageIds.length} DECRYPTED MESSAGES?`)) return;
 
     try {
@@ -37,29 +43,48 @@ export default function CoolChat() {
 
   useEffect(() => {
     if (isLocked) return;
+
     const fetchMessages = async () => {
       try {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
-        if (!Array.isArray(data)) return;
+
+        // PROTECTION: Ensure data is an array before mapping
+        if (!Array.isArray(data)) {
+          console.error("Server error or invalid data format:", data);
+          return;
+        }
 
         const decryptedData = data.map(msg => {
           try {
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
-            if (!decryptedText) return null;
+
+            if (!decryptedText) return null
 
             const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
+
             const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', chatPassword);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
 
-            return { ...msg, username: decryptedUser || 'Anonymous', text: decryptedText, displayTime: decryptedTime || '' };
-          } catch (e) { return null; }
+            return {
+              ...msg,
+              username: decryptedUser || 'Anonymous',
+              text: decryptedText,
+              displayTime: decryptedTime || ''
+            };
+          } catch (e) {
+            return null;
+          }
         }).filter(Boolean);
+
         setMessages(decryptedData);
-      } catch (err) { console.error("Connection failed:", err); }
+      } catch (err) {
+        console.error("Connection failed:", err);
+      }
     };
+
     fetchMessages();
     const interval = setInterval(fetchMessages, 2000);
     return () => clearInterval(interval);
@@ -70,15 +95,23 @@ export default function CoolChat() {
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || !chatPassword) return;
+
     const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Client-side encryption ensures the server never sees the raw message content
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
     const encryptedTime = CryptoJS.AES.encrypt(now, chatPassword).toString();
+
     setInput('');
     await fetch('/api/messages', {
       method: 'POST',
-      body: JSON.stringify({ username: encryptedUser, text: encryptedText, created_at: encryptedTime })
+      body: JSON.stringify({
+        username: encryptedUser,
+        text: encryptedText,
+        created_at: encryptedTime
+      })
     });
   };
 
@@ -101,7 +134,7 @@ export default function CoolChat() {
           >
             UNLOCK STEALTH MODE
           </button>
-          {/* The Wrapper Div for extra spacing */}
+          {/* Add the Wrapper Div here */}
           <div className="mt-12">
             <Link
               href="/dashboard"
@@ -116,9 +149,8 @@ export default function CoolChat() {
   }
 
   return (
-    /* New Parent Wrapper: moves terminal down and adds scroll context */
-    <div className="min-h-screen bg-zinc-300 pt-48 pb-12 overflow-y-auto">
-      <div className="mx-auto w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
+    <div className="fixed inset-0 bg-zinc-300 flex items-center justify-center p-4 z-[999]">
+      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
         <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
           <div>
             <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
