@@ -166,17 +166,17 @@ export default function CoolChat() {
       {/* Boxed Terminal Layout */}
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* FIXED HEADER: Ensuring explicit side-to-side alignment */}
-        <div className="px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
+        {/* THE FINAL HEADER FIX: Explicitly stretching the grid and justification */}
+        <div className="w-full px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
 
-          {/* 1. Left Section: Justify Start */}
-          <div className="flex justify-start">
+          {/* 1. Left Section: Stays on the far left */}
+          <div className="flex justify-start items-center">
             <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
               COOLCHAT
             </h1>
           </div>
 
-          {/* 2. Center Section: Justify Center */}
+          {/* 2. Center Section: Stays in the dead center */}
           <div className="flex flex-col items-center justify-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
@@ -189,17 +189,17 @@ export default function CoolChat() {
             </span>
           </div>
 
-          {/* 3. Right Section: Justify End (This forces them to the right wall) */}
-          <div className="flex justify-end gap-4">
+          {/* 3. Right Section: FORCED TO THE RIGHT WALL */}
+          <div className="flex justify-end items-center gap-4 text-right">
             <button
               onClick={clearChat}
-              className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-tighter"
+              className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-tighter whitespace-nowrap"
             >
               CLEAR VAULT
             </button>
             <button
               onClick={() => setIsLocked(true)}
-              className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-tighter"
+              className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-tighter whitespace-nowrap"
             >
               LOCK
             </button>
