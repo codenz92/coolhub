@@ -166,37 +166,38 @@ export default function CoolChat() {
       {/* Boxed Terminal Layout */}
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* REFIXED HEADER: 3-column grid with explicit justification */}
+        {/* FIXED HEADER: Explicitly justifying each grid column */}
         <div className="px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
-          {/* Column 1: Left (Title) */}
+
+          {/* Left Column: Title pinned to left edge */}
           <div className="flex justify-start">
-            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
+            <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
           </div>
 
-          {/* Column 2: Center (Encryption Status) */}
-          <div className="flex flex-col items-center text-center">
+          {/* Center Column: Status pinned to middle */}
+          <div className="flex flex-col items-center justify-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
-                🔒 END-TO-END ENCRYPTION ACTIVE
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-[0.15em] whitespace-nowrap">
+                🔒 END-TO-END ENCRYPTION ACTIVE 🔒
               </span>
             </div>
             <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">
-              24H SELF-DESTRUCT
+              🗑️ 24H SELF-DESTRUCT 🗑️
             </span>
           </div>
 
-          {/* Column 3: Right (Buttons pushed to the edge) */}
-          <div className="flex justify-end gap-3">
+          {/* Right Column: Buttons pinned to far right edge */}
+          <div className="flex justify-end gap-4">
             <button
               onClick={clearChat}
-              className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-tighter"
+              className="text-[10px] font-bold text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest"
             >
-              CLEAR
+              Clear Vault
             </button>
             <button
               onClick={() => setIsLocked(true)}
-              className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-tighter"
+              className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors uppercase"
             >
               LOCK
             </button>
