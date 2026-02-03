@@ -29,7 +29,7 @@ export default function CoolChat() {
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
             // Decrypt Timestamp (if present in payload)
-            const timeBytes = CryptoJS.AES.decrypt(msg.timestamp || '', SECRET_KEY);
+            const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', SECRET_KEY);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
 
             return {
