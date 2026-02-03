@@ -79,31 +79,37 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center z-[999]">
-        <div className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md border-4 border-black">
+      /* 1. Change inset-0 to fixed w-screen h-screen to force full coverage.
+         2. Use bg-black to match your COOLCHAT app color.
+         3. flex items-center justify-center ensures it is perfectly centered.
+      */
+      <div className="fixed top-0 left-0 w-screen h-screen bg-black flex items-center justify-center z-[9999]">
+        <div className="bg-white p-10 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] w-full max-w-md border-4 border-zinc-800 mx-4">
           <h1 className="font-black text-2xl mb-2 tracking-tighter text-black">ENCRYPTED TERMINAL</h1>
-          <p className="text-xs font-bold text-zinc-400 mb-6 uppercase tracking-widest">Enter Chat Secret to Access</p>
+          <p className="text-xs font-bold text-zinc-400 mb-8 uppercase tracking-widest">Enter Chat Secret to Access</p>
 
           <input
             type="password"
             placeholder="SECRET_KEY"
-            className="w-full p-4 border-2 border-black mb-4 font-mono outline-none focus:bg-zinc-50 text-black"
+            className="w-full p-4 border-2 border-black mb-4 font-mono outline-none focus:ring-2 focus:ring-zinc-400 transition-all text-black"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                setChatPassword(e.target.value);
-                setIsLocked(false);
+                handleUnlock(e.target.value);
+                e.target.value = '';
               }
             }}
           />
 
           <button
-            onClick={() => setIsLocked(false)}
-            className="w-full bg-black text-white p-4 font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors mb-4"
+            onClick={() => {
+              const val = document.querySelector('input[type="password"]').value;
+              handleUnlock(val);
+            }}
+            className="w-full bg-black text-white p-4 font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors mb-6 shadow-lg"
           >
             UNLOCK STEALTH MODE
           </button>
 
-          {/* New Dashboard Return Link */}
           <Link
             href="/dashboard"
             className="block text-center text-[10px] font-black text-zinc-400 hover:text-black uppercase tracking-[0.2em] transition-colors"
