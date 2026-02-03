@@ -56,14 +56,7 @@ export default function CoolChat() {
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
-            if (!decryptedText) {
-              return {
-                ...msg,
-                username: "SYSTEM",
-                text: "--- ENCRYPTED PACKET: KEY MISMATCH ---",
-                displayTime: "!!:!!"
-              };
-            }
+            if (!decryptedText) return null
 
             const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
