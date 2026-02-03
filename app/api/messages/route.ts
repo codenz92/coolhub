@@ -10,7 +10,7 @@ export async function GET() {
             WHERE server_timestamp < NOW() - INTERVAL '24 hours'
         `;
 
-        const messages = await postgres`SELECT * FROM "ChatMessage" ORDER BY id ASC LIMIT 50`;
+        const messages = await postgres`SELECT id, username, text, created_at FROM "ChatMessage" ORDER BY id ASC LIMIT 50`;
         return NextResponse.json(messages);
     } catch (error) {
         console.error("DB Error:", error);
