@@ -55,7 +55,12 @@ export default function CoolChat() {
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
             const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', chatPassword);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
-            return { ...msg, username: decryptedUser || 'Anonymous', text: decryptedText, displayTime: decryptedTime || '' };
+            return {
+              ...msg,
+              username: decryptedUser || 'Anonymous',
+              text: decryptedText,
+              displayTime: decryptedTime || ''
+            };
           } catch (e) { return null; }
         }).filter(Boolean);
         setMessages(decryptedData);
@@ -114,30 +119,24 @@ export default function CoolChat() {
     <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* ABSOLUTE HEADER FIX: Pins side elements to their respective edges */}
+        {/* ABSOLUTE POSITIONING FIX */}
         <div className="w-full px-6 py-5 border-b bg-white relative flex items-center justify-center min-h-[75px]">
 
-          {/* 1. Left Section: Pins logo to the far left wall */}
+          {/* 1. Left Section: Stays far left */}
           <div className="absolute left-6">
-            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
-              COOLCHAT
-            </h1>
+            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
           </div>
 
-          {/* 2. Center Section: Stays mathematically centered */}
+          {/* 2. Center Section: Stays dead center */}
           <div className="flex flex-col items-center justify-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
-                🔒 END-TO-END ENCRYPTION ACTIVE 🔒
-              </span>
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">🔒 END-TO-END ENCRYPTION ACTIVE</span>
             </div>
-            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5 whitespace-nowrap">
-              🗑️ 24H SELF-DESTRUCT 🗑️
-            </span>
+            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">24H SELF-DESTRUCT</span>
           </div>
 
-          {/* 3. Right Section: PINS BUTTONS TO THE ABSOLUTE RIGHT WALL */}
+          {/* 3. Right Section: ABSOLUTELY PINNED TO THE RIGHT */}
           <div className="absolute right-6 flex items-center gap-4">
             <button
               onClick={clearChat}
@@ -160,14 +159,10 @@ export default function CoolChat() {
             return (
               <div key={i} className="flex flex-col items-start">
                 <div className="flex items-center gap-2 mb-1 ml-1">
-                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
-                    {msg.username} {isAdmin && '• ADMIN'}
-                  </span>
+                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>{msg.username} {isAdmin && '• ADMIN'}</span>
                   <span className="text-[8px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
-                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
-                  {msg.text}
-                </div>
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>{msg.text}</div>
               </div>
             );
           })}
