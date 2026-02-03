@@ -153,10 +153,10 @@ export default function CoolChat() {
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
         <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
           <div>
-            <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
+            <h1 className="text-[5px] font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
             <div className="flex items-center gap-1 mt-0.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-[5px] font-bold text-green-600 uppercase tracking-widest">End-to-End Encryption active • 24H SELF-DESTRUCT</span>
+              <span className="text-[5px] font-bold text-green-600 uppercase tracking-widest">• End-to-End Encryption active • 24H SELF-DESTRUCT</span>
             </div>
           </div>
           <div className="flex gap-4">
