@@ -161,7 +161,7 @@ export default function CoolChat() {
             <Link
               href="/dashboard"
             >
-              🔙 RETURN TO DASHBOARD 🔙
+              🏠 RETURN TO DASHBOARD 🏠
             </Link>
           </div>
         </div>
