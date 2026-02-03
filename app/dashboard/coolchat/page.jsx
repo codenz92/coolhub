@@ -13,7 +13,6 @@ export default function CoolChat() {
 
   const handleUnlock = (enteredValue) => {
     if (!enteredValue) return;
-    // Clear old messages immediately to prevent the "flicker"
     setMessages([]);
     setChatPassword(enteredValue);
     setIsLocked(false);
@@ -82,7 +81,7 @@ export default function CoolChat() {
     return () => clearInterval(interval);
   }, [isLocked, chatPassword]);
 
-  useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+  // AUTO-SCROLL REMOVED: The useEffect that used scrollIntoView has been deleted
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -142,7 +141,6 @@ export default function CoolChat() {
   return (
     <div className="min-h-screen bg-zinc-300 pt-32 pb-12 overflow-y-auto">
       <div className="mx-auto w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
-        {/* Header with Centered Status and Grid Layout */}
         <div className="px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
           <div>
             <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
@@ -183,6 +181,7 @@ export default function CoolChat() {
               </div>
             );
           })}
+          {/* Scroll target is still here if you want to manually link to it later */}
           <div ref={scrollRef} />
         </div>
 
