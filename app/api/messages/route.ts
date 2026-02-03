@@ -22,13 +22,13 @@ export async function POST(req: Request) {
     const session = await auth();
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { username, text, created_at } = await req.json();
+    const { username, text, server_timestamp } = await req.json();
 
     try {
         // server_timestamp is filled automatically by your Vercel database
         await postgres`
-            INSERT INTO "ChatMessage" (username, text, created_at) 
-            VALUES (${username}, ${text}, ${created_at})
+            INSERT INTO "ChatMessage" (username, text, server_timestamp) 
+            VALUES (${username}, ${text}, ${server_timestamp})
         `;
         return NextResponse.json({ success: true });
     } catch (error) {
