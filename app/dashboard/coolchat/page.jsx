@@ -31,21 +31,22 @@ export default function CoolChat() {
   };
 
   return (
-    // "bg-zinc-200" and "p-10" make the white chat box pop/stand out more
-    <div className="min-h-screen bg-zinc-200 flex items-center justify-center p-10">
+    // The "fixed inset-0" ensures the background covers everything, 
+    // but the flex-center keeps the chat box small in the middle.
+    <div className="fixed inset-0 bg-zinc-200 flex items-center justify-center p-4">
 
-      {/* The Chat Window - High contrast shadow to make it stand out */}
-      <div className="w-full max-w-[420px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-300 overflow-hidden">
+      {/* CHAT BOX: Strictly limited width and height so it doesn't take up the screen */}
+      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.15)] flex flex-col border border-zinc-300 overflow-hidden">
 
-        {/* Header - Removed FREE badge */}
-        <div className="p-5 border-b flex justify-between items-center bg-white">
-          <h1 className="font-black text-sm tracking-widest text-black">COOLCHAT</h1>
+        {/* Header - Minimal with no FREE badge */}
+        <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
+          <h1 className="font-black text-xs tracking-[0.2em] text-black">COOLCHAT</h1>
           <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors">
             EXIT
           </Link>
         </div>
 
-        {/* Message Feed */}
+        {/* Message Feed - Slimmer bubbles */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev' || msg.username?.toLowerCase() === 'rio';
@@ -54,7 +55,7 @@ export default function CoolChat() {
                 <span className={`text-[9px] font-black mb-1 ml-1 uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
                   {msg.username} {isAdmin && '• ADMIN'}
                 </span>
-                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[85%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900' : 'bg-zinc-50 border-zinc-200 text-zinc-700'
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'
                   }`}>
                   {msg.text}
                 </div>
@@ -64,19 +65,19 @@ export default function CoolChat() {
           <div ref={scrollRef} />
         </div>
 
-        {/* Input area */}
-        <div className="p-4 bg-zinc-50 border-t border-zinc-200">
-          <form onSubmit={handleSend} className="flex gap-0 border border-black overflow-hidden bg-white">
+        {/* Input Bar: SHARP SHARK EDGES */}
+        <div className="p-5 bg-zinc-50 border-t border-zinc-200">
+          <form onSubmit={handleSend} className="flex border-2 border-black bg-white">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type message..."
               className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400"
             />
-            {/* "rounded-none" creates the sharp shark-edges for the button */}
+            {/* "rounded-none" for the sharp shark-edge look */}
             <button
               type="submit"
-              className="bg-black text-white px-8 py-3 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors active:invert"
+              className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors"
             >
               SEND
             </button>
