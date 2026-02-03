@@ -113,7 +113,7 @@ export default function CoolChat() {
 
   return (
     /* New Parent Wrapper: moves terminal down and adds scroll context */
-    <div className="min-h-screen bg-zinc-300 pt-32 pb-12 overflow-y-auto">
+    <div className="min-h-screen bg-zinc-300 pt-48 pb-12 overflow-y-auto">
       <div className="mx-auto w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
         <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
           <div>
