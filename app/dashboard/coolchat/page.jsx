@@ -79,14 +79,14 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      /* 1. fixed inset-0 makes the black cover the ENTIRE screen 
-         2. flex items-center justify-center snaps the box to the DEAD CENTER 
-         3. z-[9999] ensures it stays on top of the 'COOLHUB' header
+      /* 'fixed' + 'inset-0' forces the black to cover every pixel of the browser.
+         'flex' + 'items-center' + 'justify-center' forces the box to the DEAD CENTER.
+         'z-[9999]' ensures it stays above the "COOLHUB" header.
       */
       <div className="fixed inset-0 bg-black flex items-center justify-center z-[9999]">
 
-        {/* Your exact white box styling */}
-        <div className="bg-white p-12 w-full max-w-md text-center">
+        {/* Your exact white terminal box styling from your images */}
+        <div className="bg-white p-12 w-full max-w-md text-center shadow-2xl relative">
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
             ENCRYPTED TERMINAL
           </h1>
