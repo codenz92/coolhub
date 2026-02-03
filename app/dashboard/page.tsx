@@ -81,10 +81,13 @@ export default async function Dashboard() {
               <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">
                 {app.name}
               </h3>
-              {/* Only show the FREE badge for the COOLCHAT card */}
+              {/* The Pulsing Glow Badge */}
               {app.name === "COOLCHAT" && (
-                <span className="text-[10px] font-black text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
-                  FREE
+                <span className="relative flex h-5 w-fit items-center justify-center">
+                  <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-20"></span>
+                  <span className="relative inline-flex items-center text-[10px] font-black text-green-700 bg-green-100 px-2 py-0.5 rounded-full border border-green-300 shadow-[0_0_10px_rgba(34,197,94,0.3)]">
+                    FREE
+                  </span>
                 </span>
               )}
             </div>
