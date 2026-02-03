@@ -89,8 +89,6 @@ export default function CoolChat() {
     return () => clearInterval(interval);
   }, [isLocked, chatPassword]);
 
-  // AUTO-SCROLL REMOVED to prevent the page from jumping down constantly
-
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || !chatPassword) return;
@@ -168,10 +166,10 @@ export default function CoolChat() {
       {/* Boxed Terminal Layout matching the Unlock screen */}
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* Updated Header Section */}
+        {/* Header Section: Corrected 3-Column Grid for Side-to-Side Alignment */}
         <div className="px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
           {/* Left Section: Logo */}
-          <div>
+          <div className="flex justify-start">
             <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
           </div>
 
@@ -180,11 +178,11 @@ export default function CoolChat() {
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
               <span className="text-[7px] font-bold text-green-600 uppercase tracking-[0.15em] whitespace-nowrap">
-                🔒 END-TO-END ENCRYPTION ACTIVE 🔒
+                🔒 END-TO-END ENCRYPTION ACTIVE
               </span>
             </div>
             <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">
-              🗑️ 24H SELF-DESTRUCT 🗑️
+              24H SELF-DESTRUCT
             </span>
           </div>
 
