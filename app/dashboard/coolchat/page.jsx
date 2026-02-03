@@ -37,48 +37,50 @@ export default function CoolChat() {
     });
   };
 
+  // Helper to determine bubble color based on user
+  const getBubbleStyle = (username) => {
+    const name = username?.toLowerCase();
+    if (name === 'dev') return 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-[0_2px_10px_rgba(79,70,229,0.1)]';
+    if (name === 'rio') return 'bg-emerald-50 border-emerald-100 text-emerald-900 shadow-[0_2px_10px_rgba(16,185,129,0.1)]';
+    return 'bg-white border-zinc-200 text-zinc-700 shadow-sm';
+  };
+
   return (
-    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4 lg:p-8 selection:bg-indigo-500/30">
-      {/* Ultra-Modern Dark Glass Container */}
-      <div className="w-full max-w-4xl h-[850px] bg-white/5 backdrop-blur-2xl rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/10 relative">
+    <div className="min-h-screen bg-[#FBFBFD] flex items-center justify-center p-6 font-sans">
+      {/* Large, Clean Container */}
+      <div className="w-full max-w-3xl h-[800px] bg-white rounded-[32px] shadow-[0_40px_100px_rgba(0,0,0,0.04)] overflow-hidden flex flex-col border border-zinc-100">
 
-        {/* Decorative Background Glows */}
-        <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bg-indigo-600/20 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-72 h-72 bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none" />
-
-        {/* Header: Refined & Minimal */}
-        <div className="px-10 py-8 flex justify-between items-center z-10 border-b border-white/5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-500/20">
-              <span className="text-2xl">✨</span>
-            </div>
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="font-black text-2xl tracking-tight text-white uppercase">CoolChat</h1>
-                <span className="animate-pulse text-[9px] font-black tracking-widest text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-full border border-emerald-400/20">
-                  FREE
-                </span>
-              </div>
-              <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.3em] mt-1">Encrypted Node</p>
-            </div>
+        {/* Header: Minimal & Bright */}
+        <div className="px-8 py-6 flex justify-between items-center border-b border-zinc-50 bg-white/80 backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <h1 className="font-bold text-xl tracking-tight text-black">COOLCHAT</h1>
+            <span className="animate-pulse text-[9px] font-black tracking-widest text-green-600 bg-green-50 px-2.5 py-1 rounded-full border border-green-100">
+              FREE
+            </span>
           </div>
-          <Link href="/dashboard" className="h-12 px-6 flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all active:scale-95 text-zinc-400 hover:text-white text-xs font-bold tracking-widest">
-            DISCONNECT
+          <Link href="/dashboard" className="text-xs font-bold text-zinc-400 hover:text-black transition-colors px-4 py-2 bg-zinc-50 rounded-full">
+            EXIT
           </Link>
         </div>
 
-        {/* Messages Area: Fixed "Fatness" with Slimmer Bubbles */}
-        <div className="flex-1 overflow-y-auto px-10 py-8 space-y-8 scrollbar-hide bg-black/10">
+        {/* Messages: Slim & Clean */}
+        <div className="flex-1 overflow-y-auto px-8 py-8 space-y-6 bg-white">
           {messages.map((msg, i) => (
-            <div key={i} className="flex flex-col animate-in fade-in slide-in-from-bottom-8 duration-700">
-              <div className="flex items-center gap-3 mb-2 opacity-50">
-                <span className="text-[10px] font-black text-white uppercase tracking-widest">{msg.username}</span>
-                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+            <div key={i} className="flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <div className="flex items-center gap-2 mb-1 ml-1">
+                <span className={`text-[10px] font-black uppercase tracking-wider ${msg.username?.toLowerCase() === 'dev' ? 'text-indigo-600' :
+                  msg.username?.toLowerCase() === 'rio' ? 'text-emerald-600' : 'text-zinc-400'
+                  }`}>
+                  {msg.username}
+                </span>
+                {(msg.username?.toLowerCase() === 'dev' || msg.username?.toLowerCase() === 'rio') && (
+                  <span className="text-[8px] bg-zinc-100 text-zinc-500 px-1 rounded font-bold uppercase">Admin</span>
+                )}
               </div>
 
-              {/* Slimmer Message Box */}
-              <div className="inline-block max-w-[70%] bg-white/5 border border-white/10 px-5 py-3 rounded-2xl rounded-tl-none shadow-sm backdrop-blur-md">
-                <p className="text-[14px] leading-relaxed text-zinc-200 font-medium">
+              {/* Slimmer Message Box with dynamic colors */}
+              <div className={`inline-block max-w-[65%] border px-4 py-2.5 rounded-2xl rounded-tl-none ${getBubbleStyle(msg.username)}`}>
+                <p className="text-[14px] leading-snug font-medium">
                   {msg.text}
                 </p>
               </div>
@@ -87,24 +89,21 @@ export default function CoolChat() {
           <div ref={scrollRef} />
         </div>
 
-        {/* Input Bar: Floating Style */}
-        <div className="p-8 z-10">
-          <form onSubmit={handleSend} className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-[2rem] blur opacity-20 group-focus-within:opacity-40 transition duration-1000"></div>
-            <div className="relative flex items-center bg-[#1a1a1a] border border-white/10 rounded-[1.8rem] overflow-hidden">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type a secure message..."
-                className="w-full bg-transparent px-8 py-6 text-sm text-white outline-none placeholder:text-zinc-600"
-              />
-              <button
-                type="submit"
-                className="mr-3 bg-white text-black h-12 px-8 rounded-2xl font-black text-[10px] tracking-widest hover:bg-zinc-200 transition-all active:scale-95 shadow-2xl"
-              >
-                SEND
-              </button>
-            </div>
+        {/* Input Bar: High Contrast */}
+        <div className="px-8 pb-8 pt-4">
+          <form onSubmit={handleSend} className="relative flex items-center bg-zinc-50 border border-zinc-200 rounded-2xl overflow-hidden focus-within:border-zinc-400 focus-within:bg-white transition-all shadow-inner">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Start typing..."
+              className="w-full bg-transparent px-6 py-4 text-sm text-black outline-none placeholder:text-zinc-400"
+            />
+            <button
+              type="submit"
+              className="mr-2 bg-black text-white h-10 px-6 rounded-xl font-bold text-[11px] hover:bg-zinc-800 transition-all active:scale-95"
+            >
+              SEND
+            </button>
           </form>
         </div>
       </div>
