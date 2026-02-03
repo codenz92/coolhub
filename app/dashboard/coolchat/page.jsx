@@ -116,42 +116,42 @@ export default function CoolChat() {
     );
   }
 
-  // --- CHAT INTERFACE (Correctly Boxed) ---
+  // --- CHAT INTERFACE (Grid Layout + Centered Box) ---
   return (
     <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
-      {/* THE BOX: Fixed width (450px) and height (650px) */}
-      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden relative">
+      {/* THE APP CONTAINER: Fixed size box (450px x 650px) */}
+      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* HEADER: Absolute positioning for buttons */}
-        <div className="w-full px-6 py-5 border-b bg-white relative flex items-center justify-center min-h-[75px]">
+        {/* HEADER: GRID LAYOUT (3 Columns: Left, Center, Right) */}
+        <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[75px]">
 
-          {/* Left: Logo */}
-          <div className="absolute left-6">
+          {/* Col 1: Logo (Aligned Start) */}
+          <div className="justify-self-start">
             <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
               COOLCHAT
             </h1>
           </div>
 
-          {/* Center: Status */}
-          <div className="flex flex-col items-center justify-center text-center">
+          {/* Col 2: Status (Aligned Center) */}
+          <div className="justify-self-center flex flex-col items-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
               <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
-                🔒 END-TO-END ENCRYPTION ACTIVE 🔒
+                SECURE
               </span>
             </div>
             <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">
-              🗑️ 24H SELF-DESTRUCT 🗑️
+              24H DELETE
             </span>
           </div>
 
-          {/* Right: Buttons (Pinned to the right edge of the box) */}
-          <div className="absolute right-6 flex items-center gap-4">
+          {/* Col 3: Buttons (Aligned End - Forced Right) */}
+          <div className="justify-self-end flex items-center gap-4">
             <button
               onClick={clearChat}
               className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest whitespace-nowrap"
             >
-              CLEAR VAULT
+              CLEAR
             </button>
             <button
               onClick={() => setIsLocked(true)}
@@ -162,7 +162,7 @@ export default function CoolChat() {
           </div>
         </div>
 
-        {/* Messages */}
+        {/* Message Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
@@ -178,7 +178,7 @@ export default function CoolChat() {
           })}
         </div>
 
-        {/* Input */}
+        {/* Input Footer */}
         <div className="p-5 bg-zinc-50 border-t border-zinc-200">
           <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[3px_3px_0px_black]">
             <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Secure transmission..." className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono" />
