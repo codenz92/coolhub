@@ -166,18 +166,18 @@ export default function CoolChat() {
       {/* Boxed Terminal Layout */}
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* THE FINAL HEADER FIX: Explicitly stretching the grid and justification */}
-        <div className="w-full px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
+        {/* FIXED HEADER: Using Flexbox for absolute edge-to-edge alignment */}
+        <div className="w-full px-6 py-5 border-b flex justify-between items-center bg-white">
 
-          {/* 1. Left Section: Stays on the far left */}
-          <div className="flex justify-start items-center">
+          {/* 1. Left Group */}
+          <div className="flex-1 flex justify-start">
             <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
               COOLCHAT
             </h1>
           </div>
 
-          {/* 2. Center Section: Stays in the dead center */}
-          <div className="flex flex-col items-center justify-center text-center">
+          {/* 2. Center Group */}
+          <div className="flex-1 flex flex-col items-center justify-center text-center">
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
               <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
@@ -189,8 +189,8 @@ export default function CoolChat() {
             </span>
           </div>
 
-          {/* 3. Right Section: FORCED TO THE RIGHT WALL */}
-          <div className="flex justify-end items-center gap-4 text-right">
+          {/* 3. Right Group: FORCED TO THE ABSOLUTE RIGHT EDGE */}
+          <div className="flex-1 flex justify-end items-center gap-4">
             <button
               onClick={clearChat}
               className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-tighter whitespace-nowrap"
