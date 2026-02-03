@@ -4,6 +4,13 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
     try {
+        // 1. AUTO-DELETE: Purge messages where the server_timestamp is older than 24 hours
+        await postgres`
+            DELETE FROM "ChatMessage" 
+            WHERE server_timestamp < NOW() - INTERVAL '24 hours'
+        `;
+
+        // 2. Fetch the remaining fresh messages
         const messages = await postgres`SELECT * FROM "ChatMessage" ORDER BY id ASC LIMIT 50`;
         return NextResponse.json(messages);
     } catch (error) {
@@ -16,11 +23,10 @@ export async function POST(req: Request) {
     const session = await auth();
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    // Capture the new encrypted payload from the Option 3 frontend
     const { username, text, created_at } = await req.json();
 
     try {
-        // Save the encrypted blobs directly into the DB
+        // 3. The server_timestamp is filled automatically by the database
         await postgres`
             INSERT INTO "ChatMessage" (username, text, created_at) 
             VALUES (${username}, ${text}, ${created_at})
