@@ -125,7 +125,7 @@ export default function CoolChat() {
     return (
       <div className="fixed inset-0 bg-white flex items-center justify-center z-[9999]">
         <div className="w-full max-w-md text-center px-6">
-          <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">ENCRYPTED TERMINAL</h1>
+          <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">ENCRYPTED COOLCHAT</h1>
           <p className="text-[10px] font-bold text-black mb-8 uppercase tracking-widest">ENTER CHAT SECRET TO ACCESS</p>
           <input
             ref={inputRef}
