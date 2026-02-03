@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
 
+// Shared secret key for encryption/decryption
 const SECRET_KEY = 'coolhub-private-key-2026';
 
 export default function CoolChat() {
@@ -16,7 +17,7 @@ export default function CoolChat() {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
 
-        // DECRYPTION: Now unlocking Username, Text, and Timestamp
+        // DECRYPTION: Unlocking Username, Text, and Timestamp
         const decryptedData = data.map(msg => {
           try {
             const userBytes = CryptoJS.AES.decrypt(msg.username, SECRET_KEY);
@@ -25,18 +26,18 @@ export default function CoolChat() {
             const textBytes = CryptoJS.AES.decrypt(msg.text, SECRET_KEY);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
-            // Decrypting the timestamp
-            const timeBytes = CryptoJS.AES.decrypt(msg.timestamp, SECRET_KEY);
+            const timeBytes = CryptoJS.AES.decrypt(msg.timestamp || '', SECRET_KEY);
             const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
 
             return {
               ...msg,
               username: decryptedUser || 'Anonymous',
               text: decryptedText || '[Decryption Failed]',
-              displayTime: decryptedTime || '' // Decrypted time for UI
+              displayTime: decryptedTime || ''
             };
           } catch (e) {
-            return { ...msg, username: 'Locked', text: '[Encrypted]', displayTime: '' };
+            // This is what you see in the screenshot if the key doesn't match the data
+            return { ...msg, username: 'LOCKED', text: '[Encrypted]', displayTime: '' };
           }
         });
 
@@ -54,11 +55,10 @@ export default function CoolChat() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const myUsername = 'dev';
-    // Creating a localized timestamp on the client before encryption
+    const myUsername = 'dev'; // Placeholder for session user
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // ENCRYPTION: Scramble identity, content, and the timestamp
+    // ENCRYPTION: Scramble everything before it hits the database
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, SECRET_KEY).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, SECRET_KEY).toString();
     const encryptedTime = CryptoJS.AES.encrypt(now, SECRET_KEY).toString();
@@ -69,13 +69,16 @@ export default function CoolChat() {
       body: JSON.stringify({
         username: encryptedUser,
         text: encryptedText,
-        timestamp: encryptedTime // Sending the encrypted time string
+        timestamp: encryptedTime
       })
     });
   };
 
   return (
+    // "fixed inset-0" + "justify-center" fixes the stretching seen in your screenshot
     <div className="fixed inset-0 bg-zinc-300 flex items-center justify-center p-4 z-[999]">
+
+      {/* CHAT BOX: Strictly limited width of 450px */}
       <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
         <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
@@ -86,7 +89,9 @@ export default function CoolChat() {
               <span className="text-[7px] font-bold text-indigo-600 uppercase tracking-widest">Full Metadata Stealth</span>
             </div>
           </div>
-          <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors">EXIT</Link>
+          <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors">
+            EXIT
+          </Link>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
@@ -98,7 +103,6 @@ export default function CoolChat() {
                   <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
                     {msg.username} {isAdmin && '• ADMIN'}
                   </span>
-                  {/* Displaying the decrypted timestamp */}
                   <span className="text-[8px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
                 <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'
@@ -119,7 +123,10 @@ export default function CoolChat() {
               placeholder="Secure transmission..."
               className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono"
             />
-            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors">
+            <button
+              type="submit"
+              className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors"
+            >
               SEND
             </button>
           </form>
