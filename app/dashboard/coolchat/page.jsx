@@ -13,16 +13,12 @@ export default function CoolChat() {
 
   const handleUnlock = (enteredValue) => {
     if (!enteredValue) return;
-
-    // 1. Clear old messages immediately to prevent the "flicker"
+    // Clear old messages immediately to prevent the "flicker"
     setMessages([]);
-
-    // 2. Set the new key and unlock
     setChatPassword(enteredValue);
     setIsLocked(false);
   };
 
-  // Targeted deletion: only clears messages successfully decrypted by the current key
   const clearChat = async () => {
     const visibleMessageIds = messages.map(msg => msg.id).filter(Boolean);
     if (visibleMessageIds.length === 0) return;
@@ -49,18 +45,14 @@ export default function CoolChat() {
         const res = await fetch('/api/messages', { cache: 'no-store' });
         const data = await res.json();
 
-        // PROTECTION: Ensure data is an array before mapping
-        if (!Array.isArray(data)) {
-          console.error("Server error or invalid data format:", data);
-          return;
-        }
+        if (!Array.isArray(data)) return;
 
         const decryptedData = data.map(msg => {
           try {
             const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
             const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
 
-            if (!decryptedText) return null
+            if (!decryptedText) return null;
 
             const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
             const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
@@ -99,7 +91,6 @@ export default function CoolChat() {
     const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // Client-side encryption ensures the server never sees the raw message content
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
     const encryptedTime = CryptoJS.AES.encrypt(now, chatPassword).toString();
@@ -135,10 +126,10 @@ export default function CoolChat() {
             UNLOCK CHAT
           </button>
 
-          {/* 1. Added Wrapper Div for extra spacing */}
-          <div className="mt-12 block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors">
+          <div className="mt-12">
             <Link
               href="/dashboard"
+              className="block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors"
             >
               ← RETURN TO DASHBOARD
             </Link>
@@ -149,21 +140,36 @@ export default function CoolChat() {
   }
 
   return (
-    <div className="fixed inset-0 bg-zinc-300 flex items-center justify-center p-4 z-[999]">
-      <div className="w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
-        <div className="px-6 py-5 border-b flex justify-between items-center bg-white">
+    <div className="min-h-screen bg-zinc-300 pt-32 pb-12 overflow-y-auto">
+      <div className="mx-auto w-full max-w-[450px] h-[650px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
+        {/* Header with Centered Status and Grid Layout */}
+        <div className="px-6 py-5 border-b grid grid-cols-3 items-center bg-white">
           <div>
-            <span className="text-[5px] font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</span>
-            <div className="flex items-center gap-1 mt-0.5">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-[5px] font-bold text-green-600 uppercase tracking-widest">• End-to-End Encryption active • 24H SELF-DESTRUCT</span>
-            </div>
+            <h1 className="font-black text-xs tracking-[0.2em] text-black uppercase">COOLCHAT</h1>
           </div>
-          <div className="flex gap-4">
-            <button onClick={clearChat} className="text-[10px] font-bold text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest">Clear Vault</button>
-            <button onClick={() => setIsLocked(true)} className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors uppercase">LOCK</button>
+
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
+              <span className="text-[7px] font-bold text-green-600 uppercase tracking-[0.15em] whitespace-nowrap">
+                🔒 END-TO-END ENCRYPTION ACTIVE
+              </span>
+            </div>
+            <span className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-0.5">
+              24H SELF-DESTRUCT
+            </span>
+          </div>
+
+          <div className="flex justify-end gap-4">
+            <button onClick={clearChat} className="text-[10px] font-bold text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest">
+              Clear Vault
+            </button>
+            <button onClick={() => setIsLocked(true)} className="text-[10px] font-bold text-zinc-400 hover:text-black transition-colors uppercase">
+              LOCK
+            </button>
           </div>
         </div>
+
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
@@ -179,6 +185,7 @@ export default function CoolChat() {
           })}
           <div ref={scrollRef} />
         </div>
+
         <div className="p-5 bg-zinc-50 border-t border-zinc-200">
           <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[3px_3px_0px_black]">
             <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Secure transmission..." className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono" />
