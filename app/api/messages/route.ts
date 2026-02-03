@@ -4,8 +4,8 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
     try {
-        // Fetch messages ordered by the encrypted time string
-        const messages = await postgres`SELECT * FROM "ChatMessage" ORDER BY created_at ASC LIMIT 50`;
+        // Fetch the encrypted messages
+        const messages = await postgres`SELECT * FROM "ChatMessage" ORDER BY id ASC LIMIT 50`;
         return NextResponse.json(messages);
     } catch (error) {
         console.error("DB Error:", error);
@@ -17,17 +17,19 @@ export async function POST(req: Request) {
     const session = await auth();
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    // Accept all encrypted metadata from the frontend
+    // 1. EXTRACT all encrypted fields from the frontend
     const { username, text, created_at } = await req.json();
 
     try {
+        // 2. INSERT the encrypted strings directly into your columns
         await postgres`
             INSERT INTO "ChatMessage" (username, text, created_at) 
             VALUES (${username}, ${text}, ${created_at})
         `;
+
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error("Post Error:", error);
-        return NextResponse.json({ error: "Failed to save" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to save encrypted data" }, { status: 500 });
     }
 }
