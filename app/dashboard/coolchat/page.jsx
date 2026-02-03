@@ -123,10 +123,19 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      <div className="fixed inset-0 bg-white flex items-center justify-center z-[9999]">
-        <div className="w-full max-w-md text-center px-6">
-          <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">ENCRYPTED COOLCHAT</h1>
-          <p className="text-[10px] font-bold text-black mb-8 uppercase tracking-widest">ENTER CHAT SECRET TO ACCESS</p>
+      /* 1. Page Background Wrapper */
+      <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
+
+        {/* 2. Main Container Box */}
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] border border-zinc-400 p-12 text-center">
+
+          <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">
+            ENCRYPTED TERMINAL
+          </h1>
+          <p className="text-[10px] font-bold text-black mb-8 uppercase tracking-widest">
+            ENTER CHAT SECRET TO ACCESS
+          </p>
+
           <input
             ref={inputRef}
             type="password"
@@ -134,21 +143,17 @@ export default function CoolChat() {
             className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                if (e.target.value.length >= 16) {
-                  handleUnlock(e.target.value);
-                  e.target.value = '';
-                } else {
-                  alert("KEY TOO SHORT");
-                }
+                handleUnlock(e.target.value);
+                e.target.value = '';
               }
             }}
           />
+
           <button
             onClick={() => {
               if (inputRef.current) {
                 handleUnlock(inputRef.current.value);
-                // Only clear if successful
-                if (inputRef.current.value.length >= 16) inputRef.current.value = '';
+                inputRef.current.value = '';
               }
             }}
             className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6 active:scale-95"
@@ -156,10 +161,10 @@ export default function CoolChat() {
             UNLOCK CHAT
           </button>
 
-          {/* 1. Added Wrapper Div for extra spacing */}
-          <div className="mt-12 block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors">
+          <div className="mt-8">
             <Link
               href="/dashboard"
+              className="text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors"
             >
               🏠 RETURN TO DASHBOARD 🏠
             </Link>
