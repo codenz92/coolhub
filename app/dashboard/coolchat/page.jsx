@@ -130,11 +130,13 @@ export default function CoolChat() {
           />
           <button
             onClick={() => { if (inputRef.current) { handleUnlock(inputRef.current.value); inputRef.current.value = ''; } }}
-            className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-12 active:scale-95"
+            className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6 active:scale-95"
           >
             UNLOCK STEALTH MODE
           </button>
-          <div className="mt-10">
+
+          {/* 1. Added Wrapper Div for extra spacing */}
+          <div className="mt-12">
             <Link
               href="/dashboard"
               className="block text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors"
