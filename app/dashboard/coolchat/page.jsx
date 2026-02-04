@@ -128,7 +128,7 @@ export default function CoolChat() {
             onClick={() => { if (inputRef.current) { handleUnlock(inputRef.current.value); inputRef.current.value = ''; } }}
             className="w-full bg-black dark:bg-white text-white dark:text-black p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all mb-6 active:scale-95"
           >
-            UNLOCK
+            UNLOCK CHAT
           </button>
           <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest transition-colors">
             RETURN TO DASHBOARD
@@ -143,25 +143,13 @@ export default function CoolChat() {
       <div
         className="w-full max-w-[600px] h-[88vh] sm:h-[650px] bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl flex flex-col border border-zinc-400 dark:border-zinc-800 overflow-hidden"
       >
-        {/* HEADER WITH KEY MOVED TO RIGHT SIDE */}
+        {/* HEADER WITH KEY MOVED UNDER TITLE */}
         <div className="w-full px-4 sm:px-6 py-3 sm:py-4 border-b dark:border-zinc-800 bg-white dark:bg-zinc-900 flex flex-col sm:grid sm:grid-cols-3 items-center gap-2 sm:gap-0 min-h-fit sm:min-h-[90px]">
-          {/* LEFT: TITLE */}
-          <div className="flex justify-center sm:justify-start w-full sm:w-auto">
+
+          {/* LEFT: TITLE + KEY DISPLAY */}
+          <div className="flex flex-col items-center sm:items-start w-full sm:w-auto">
             <h1 className="font-black text-[9px] sm:text-[10px] tracking-[0.2em] text-black dark:text-white uppercase">COOLCHAT</h1>
-          </div>
-
-          {/* CENTER: STATUS ONLY */}
-          <div className="flex flex-col items-center text-center">
-            <div className="flex items-center justify-center gap-1.5">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] sm:text-[8px] font-bold text-green-600 uppercase tracking-widest">SECURE</span>
-            </div>
-            <p className="text-[6px] sm:text-[7px] font-black text-zinc-300 dark:text-zinc-600 uppercase tracking-widest mt-0.5 sm:mt-1">24H AUTO-ERASE</p>
-          </div>
-
-          {/* RIGHT: KEY DISPLAY + ACTIONS */}
-          <div className="flex flex-col items-center sm:items-end gap-1 w-full sm:w-auto">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mt-1">
               <p className="text-[6px] sm:text-[7px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest truncate max-w-[90px] sm:max-w-[120px]">
                 KEY: {showKey ? chatPassword : '•'.repeat(8)}
               </p>
@@ -173,11 +161,22 @@ export default function CoolChat() {
                 )}
               </button>
             </div>
-            <div className="flex justify-center sm:justify-end items-center gap-3 sm:gap-4">
-              <button onClick={() => setIsDarkMode(!isDarkMode)} className="text-[9px] sm:text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest">{isDarkMode ? 'LIGHT' : 'DARK'}</button>
-              <button onClick={clearChat} className="text-[9px] sm:text-[10px] font-black text-zinc-300 hover:text-red-600 uppercase tracking-widest">CLEAR</button>
-              <button onClick={() => setIsLocked(true)} className="text-[9px] sm:text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest">LOCK</button>
+          </div>
+
+          {/* CENTER: STATUS ONLY */}
+          <div className="flex flex-col items-center text-center">
+            <div className="flex items-center justify-center gap-1.5">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
+              <span className="text-[7px] sm:text-[8px] font-bold text-green-600 uppercase tracking-widest">SECURE</span>
             </div>
+            <p className="text-[6px] sm:text-[7px] font-black text-zinc-300 dark:text-zinc-600 uppercase tracking-widest mt-0.5 sm:mt-1">24H AUTO-ERASE</p>
+          </div>
+
+          {/* RIGHT: ACTIONS ONLY */}
+          <div className="flex justify-center sm:justify-end items-center gap-3 sm:gap-4 w-full sm:w-auto">
+            <button onClick={() => setIsDarkMode(!isDarkMode)} className="text-[9px] sm:text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest">{isDarkMode ? 'LIGHT' : 'DARK'}</button>
+            <button onClick={clearChat} className="text-[9px] sm:text-[10px] font-black text-zinc-300 hover:text-red-600 uppercase tracking-widest">CLEAR</button>
+            <button onClick={() => setIsLocked(true)} className="text-[9px] sm:text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest">LOCK</button>
           </div>
         </div>
 
