@@ -99,7 +99,7 @@ export default function CoolChat() {
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || !chatPassword) return;
-    const myUsername = session?.user?.username || 'Anonymous';
+    const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
