@@ -1,40 +1,85 @@
+'use client';
+
 import Link from 'next/link';
 import { Form } from 'app/form';
 import { signIn } from 'app/auth';
-import { SubmitButton } from 'app/submit-button';
+import { useFormStatus } from 'react-dom';
 import { isRedirectError } from 'next/dist/client/components/redirect';
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full rounded bg-black px-4 py-2 text-sm font-medium text-white transition-all hover:bg-zinc-800 disabled:opacity-50"
+    >
+      {pending ? 'Checking...' : 'Continue'}
+    </button>
+  );
+}
 
 export default function Login() {
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
-      <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-xl">
-        <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 bg-white px-4 py-6 pt-8 text-center sm:px-16">
-          <h3 className="text-xl font-semibold">Sign In</h3>
-          <p className="text-sm text-gray-500">
-            Use your username and password to sign in
-          </p>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6">
+      <div className="w-full max-w-[320px] animate-in fade-in duration-700">
+        <div className="mb-10 flex flex-col items-start">
+          <h1 className="text-lg font-medium text-zinc-950">Sign in</h1>
+          <p className="text-sm text-zinc-500">to continue to your dashboard</p>
         </div>
-        <Form
-          // Added prevState as the first argument to match useFormState
-          action={async (prevState: any, formData: FormData) => {
-            'use server';
-            try {
-              await signIn('credentials', {
-                redirectTo: '/dashboard',
-                username: formData.get('username') as string,
-                password: formData.get('password') as string,
-              });
-            } catch (error) {
-              if (isRedirectError(error)) {
-                throw error;
-              }
 
-              return 'Invalid username or password';
-            }
-          }}
-        >
-          <SubmitButton>Sign in</SubmitButton>
-        </Form>
+        {/* Wrap the Form in a div to fix the className TS error */}
+        <div className="space-y-6">
+          <Form
+            action={async (prevState: any, formData: FormData) => {
+              'use server';
+              try {
+                await signIn('credentials', {
+                  redirectTo: '/dashboard',
+                  username: formData.get('username') as string,
+                  password: formData.get('password') as string,
+                });
+              } catch (error) {
+                if (isRedirectError(error)) throw error;
+                return 'Invalid username or password';
+              }
+            }}
+          >
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="username" className="text-[12px] font-medium text-zinc-500 uppercase tracking-tight">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  autoFocus
+                  className="w-full border-b border-zinc-200 bg-transparent py-1 text-sm outline-none transition-colors focus:border-black"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-[12px] font-medium text-zinc-500 uppercase tracking-tight">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  className="w-full border-b border-zinc-200 bg-transparent py-1 text-sm outline-none transition-colors focus:border-black"
+                />
+              </div>
+
+              <div className="pt-2">
+                <SubmitButton />
+              </div>
+            </div>
+          </Form>
+        </div>
       </div>
     </div>
   );
