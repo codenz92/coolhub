@@ -1,97 +1,107 @@
-'use client';
+// app/dashboard/page.tsx
+import { auth } from '../auth';
+import { redirect } from 'next/navigation';
+import Link from "next/link";
 
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { useState, useEffect } from "react";
-// Ensure crypto-js is installed: pnpm add crypto-js
-import CryptoJS from "crypto-js";
+const MY_APPS = [
+  {
+    name: "COOLCHAT",
+    description: "Launch the coolest end-to-end encrypted chat ever.",
+    url: "/dashboard/coolchat",
+    icon: "💬",
+    color: "bg-zinc-900",
+    permissionKey: "coolchat"
+  },
+  {
+    name: "Hangman Game",
+    description: "Launch the internal demo app living in your project.",
+    url: "/dashboard/hangman-app",
+    icon: "🚀",
+    color: "bg-orange-500",
+  },
+];
 
-export default function CoolChatPage() {
-  // 1. Get the session on the client side
-  const { data: session, status } = useSession();
-  const [message, setMessage] = useState("");
-  const [chatLog, setChatLog] = useState<{ user: string; text: string }[]>([]);
+export default async function Dashboard() {
+  const session = await auth();
 
-  // 2. Handle Loading and Protection
-  if (status === "loading") {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-zinc-900"></div>
-      </div>
-    );
-  }
+  if (!session) redirect('/login');
 
-  if (!session) {
-    redirect("/login");
-  }
+  // DEBUG: This will print in your Vercel Terminal/Logs
+  // If 'coolchat' is missing here, the issue is in your auth.ts callbacks or auth.config.ts
+  console.log("DEBUG: User Session Data:", JSON.stringify(session.user, null, 2));
 
-  // 3. Simple Encryption Example
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim()) return;
-
-    // Encrypting the message before "sending" (Simulation)
-    const secretKey = "cool-hub-secret";
-    const encrypted = CryptoJS.AES.encrypt(message, secretKey).toString();
-    console.log("Sending Encrypted:", encrypted);
-
-    // Update UI with the plain text for the sender
-    setChatLog([...chatLog, {
-      user: session.user?.username || "Unknown",
-      text: message
-    }]);
-    setMessage("");
-  };
+  const userPermissions = (session.user as any) || {};
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-12">
-      <div className="bg-white border border-zinc-200 rounded-2xl shadow-xl overflow-hidden flex flex-col h-[600px]">
-        {/* Header */}
-        <div className="bg-zinc-900 p-4 text-white flex justify-between items-center">
-          <h2 className="font-bold flex items-center gap-2">
-            <span className="text-xl">💬</span> COOLCHAT (E2E Encrypted)
-          </h2>
-          <span className="text-xs bg-blue-500 px-2 py-1 rounded-full uppercase font-black">
-            Premium Access
-          </span>
-        </div>
+    <main className="max-w-7xl mx-auto px-6 py-12">
+      <header className="mb-10">
+        <h1 className="text-4xl font-extrabold tracking-tight">Welcome back</h1>
+        <p className="text-lg text-gray-500 mt-2 font-light">
+          Logged in as <span className="font-medium text-black">{session.user?.username || session.user?.name}</span>
+        </p>
+      </header>
 
-        {/* Chat Area */}
-        <div className="flex-1 p-6 overflow-y-auto bg-zinc-50 space-y-4">
-          {chatLog.map((msg, i) => (
-            <div key={i} className={`flex flex-col ${msg.user === session.user?.username ? 'items-end' : 'items-start'}`}>
-              <span className="text-[10px] text-gray-400 mb-1">{msg.user}</span>
-              <div className={`px-4 py-2 rounded-2xl max-w-xs ${msg.user === session.user?.username
-                ? 'bg-blue-600 text-white rounded-tr-none'
-                : 'bg-white border border-zinc-200 text-zinc-900 rounded-tl-none'
-                }`}>
-                {msg.text}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {MY_APPS.map((app) => {
+          // Robust check: handles "1", 1, and ignores undefined/null
+          const rawValue = app.permissionKey ? userPermissions[app.permissionKey] : null;
+          const hasAccess = app.permissionKey
+            ? String(rawValue) === "1"
+            : true;
+
+          const CardContent = (
+            <div className={`h-full flex flex-col ${!hasAccess ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}>
+              <div className={`w-12 h-12 ${app.color} rounded-xl mb-4 flex items-center justify-center text-2xl text-white shadow-inner`}>
+                {app.icon}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <h3 className={`text-xl font-bold ${hasAccess ? 'group-hover:text-blue-600' : ''} transition-colors`}>
+                  {app.name}
+                </h3>
+                {app.name === "COOLCHAT" && hasAccess && (
+                  <span className="relative flex h-5 w-fit items-center justify-center">
+                    <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-20"></span>
+                    <span className="relative inline-flex items-center text-[10px] font-black text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full border border-blue-300 shadow-[0_0_10px_rgba(34,197,94,0.3)]">
+                      PREMIUM
+                    </span>
+                  </span>
+                )}
+                {!hasAccess && (
+                  <span className="text-[10px] font-black text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded-full border border-zinc-300 uppercase">
+                    Locked
+                  </span>
+                )}
+              </div>
+
+              <p className="text-gray-500 text-sm mt-2 leading-relaxed">
+                {app.description}
+              </p>
+
+              <div className="mt-6 flex items-center text-sm font-semibold text-blue-600 transition-all">
+                {hasAccess ? "Launch Application →" : "Access Restricted"}
               </div>
             </div>
-          ))}
-          {chatLog.length === 0 && (
-            <div className="text-center text-gray-400 mt-20 italic">
-              No messages yet. Your session is active as {session.user?.username}.
-            </div>
-          )}
-        </div>
+          );
 
-        {/* Input Area */}
-        <form onSubmit={handleSendMessage} className="p-4 bg-white border-t border-zinc-200 flex gap-2">
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type an encrypted message..."
-            className="flex-1 bg-zinc-100 border-none rounded-xl px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-          />
-          <button
-            type="submit"
-            className="bg-zinc-900 text-white px-6 py-2 rounded-xl font-bold hover:bg-zinc-800 transition-colors"
-          >
-            Send
-          </button>
-        </form>
+          if (!hasAccess) {
+            return (
+              <div key={app.name} className="relative bg-zinc-50 border border-zinc-200 rounded-2xl p-6 shadow-sm">
+                {CardContent}
+              </div>
+            );
+          }
+
+          return (
+            <Link
+              key={app.name}
+              href={app.url}
+              className="group relative bg-white border border-gray-200 rounded-2xl p-6 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
+            >
+              {CardContent}
+            </Link>
+          );
+        })}
       </div>
     </main>
   );
