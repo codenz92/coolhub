@@ -121,7 +121,7 @@ export default function CoolChat() {
     <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
 
       {/* 1. THE CONTAINED BOX: Fixed width, height, and white background */}
-      <div className="w-[450px] h-[750px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
+      <div className="w-[750px] h-[750px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
         {/* THE HEADER: Divided into 3 columns */}
         <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[85px]">
