@@ -1,242 +1,106 @@
-'use client';
-import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import CryptoJS from 'crypto-js';
-import { useSession } from 'next-auth/react';
+// app/dashboard/page.tsx
+import { auth, signOut } from '../auth';
+import { redirect } from 'next/navigation';
+import Link from "next/link";
 
-export default function CoolChat() {
-  const { data: session } = useSession();
+const MY_APPS = [
+  {
+    name: "COOLCHAT",
+    description: "Launch the coolest end-to-end encrypted chat ever.",
+    url: "/dashboard/coolchat", // Ensure this matches your folder name in /app
+    icon: "💬",
+    color: "bg-zinc-900",
+  },
+  {
+    name: "Hangman Game",
+    description: "Launch the internal demo app living in your project.",
+    url: "/dashboard/hangman-app", // Ensure this matches your folder name in /app
+    icon: "🚀",
+    color: "bg-orange-500",
+  },
+  {
+    name: "Internal Demo 3",
+    description: "Launch the internal demo app living in your project.",
+    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
+    icon: "🚀",
+    color: "bg-orange-500",
+  },
+  {
+    name: "Internal Demo 4",
+    description: "Launch the internal demo app living in your project.",
+    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
+    icon: "🚀",
+    color: "bg-orange-500",
+  },
+  {
+    name: "Internal Demo 5",
+    description: "Launch the internal demo app living in your project.",
+    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
+    icon: "🚀",
+    color: "bg-orange-500",
+  },
+  {
+    name: "Internal Demo 6",
+    description: "Launch the internal demo app living in your project.",
+    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
+    icon: "🚀",
+    color: "bg-orange-500",
+  },
+];
 
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [chatPassword, setChatPassword] = useState('');
-  const [isLocked, setIsLocked] = useState(true);
-  const [showKey, setShowKey] = useState(false);
+export default async function Dashboard() {
+  const session = await auth(); //
 
-  // FIX: Added explicit types to refs to solve the 'never' and 'scrollTop' issues
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  if (!session) redirect('/login'); //
 
-  console.log("DEBUG SESSION USER:", session?.user);
-
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('theme') === 'dark';
-    }
-    return false;
-  });
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (isDarkMode) {
-      root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      // TypeScript now allows this because scrollRef is typed as HTMLDivElement
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  // FIX: Explicitly defined 'enteredValue' as a string
-  const handleUnlock = (enteredValue: string) => {
-    if (!enteredValue || enteredValue.length < 16) {
-      alert("SECURITY ERROR: SECRET_KEY MUST BE AT LEAST 16 CHARACTERS.");
-      return;
-    }
-    setMessages([]);
-    setChatPassword(enteredValue);
-    setIsLocked(false);
-  };
-
-  const clearChat = async () => {
-    const visibleMessageIds = messages.map((msg: any) => msg.id).filter(Boolean);
-    if (visibleMessageIds.length === 0) return;
-    if (!confirm(`PERMANENTLY DELETE ${visibleMessageIds.length} DECRYPTED MESSAGES?`)) return;
-
-    try {
-      const response = await fetch('/api/messages', {
-        method: 'DELETE',
-        body: JSON.stringify({ ids: visibleMessageIds }),
-        headers: { 'Content-Type': 'application/json' }
-      });
-      if (response.ok) setMessages([]);
-    } catch (err) {
-      console.error("Failed to clear vault:", err);
-    }
-  };
-
-  useEffect(() => {
-    if (isLocked) return;
-    const fetchMessages = async () => {
-      try {
-        const res = await fetch('/api/messages', { cache: 'no-store' });
-        const data = await res.json();
-        if (!Array.isArray(data)) return;
-
-        const decryptedData = data.map((msg: any) => {
-          try {
-            const textBytes = CryptoJS.AES.decrypt(msg.text || '', chatPassword);
-            const decryptedText = textBytes.toString(CryptoJS.enc.Utf8);
-            if (!decryptedText) return null;
-            const userBytes = CryptoJS.AES.decrypt(msg.username || '', chatPassword);
-            const decryptedUser = userBytes.toString(CryptoJS.enc.Utf8);
-            const timeBytes = CryptoJS.AES.decrypt(msg.created_at || '', chatPassword);
-            const decryptedTime = timeBytes.toString(CryptoJS.enc.Utf8);
-            return {
-              ...msg,
-              username: decryptedUser || 'Anonymous',
-              text: decryptedText,
-              displayTime: decryptedTime || ''
-            };
-          } catch (e) { return null; }
-        }).filter(Boolean);
-        setMessages(decryptedData as any);
-      } catch (err) { console.error("Connection failed:", err); }
-    };
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 2000);
-    return () => clearInterval(interval);
-  }, [isLocked, chatPassword]);
-
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || !chatPassword) return;
-    const myUsername = session?.user?.username || 'dev';
-    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
-    const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
-    const encryptedTime = CryptoJS.AES.encrypt(now, chatPassword).toString();
-    setInput('');
-    await fetch('/api/messages', {
-      method: 'POST',
-      body: JSON.stringify({ username: encryptedUser, text: encryptedText, created_at: encryptedTime })
-    });
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(chatPassword);
-    alert("KEY COPIED TO CLIPBOARD");
-  };
-
-  if (isLocked) {
-    return (
-      <div className="min-h-screen bg-zinc-300 dark:bg-black flex items-center justify-center p-4 transition-colors">
-        <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl border border-zinc-400 dark:border-zinc-800 p-8 sm:p-12 text-center">
-          <h1 className="font-black text-xl sm:text-2xl mb-1 tracking-tighter text-black dark:text-white uppercase">ENCRYPTED TERMINAL</h1>
-          <p className="text-[10px] font-bold text-black dark:text-zinc-400 mb-8 uppercase tracking-widest">ENTER CHAT SECRET TO ACCESS</p>
-          <input
-            ref={inputRef}
-            type="password"
-            placeholder="SECRET_KEY (MIN 16 CHARS)"
-            className="w-full p-4 border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 mb-4 font-mono text-center outline-none focus:border-black dark:focus:border-white transition-colors text-black dark:text-white"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleUnlock((e.target as HTMLInputElement).value);
-                (e.target as HTMLInputElement).value = '';
-              }
-            }}
-          />
-          <button
-            onClick={() => {
-              if (inputRef.current) {
-                handleUnlock(inputRef.current.value);
-                inputRef.current.value = '';
-              }
-            }}
-            className="w-full bg-black dark:bg-white text-white dark:text-black p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all mb-6 active:scale-95"
-          >
-            UNLOCK CHAT
-          </button>
-          <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest transition-colors">
-            RETURN TO DASHBOARD
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // Logic to allow both dev and rio admin-level view
+  const isAdminUser = ["dev", "rio"].includes(session.user?.username || "") || (session.user as any)?.role === "admin"; //
 
   return (
-    <div className="min-h-screen bg-zinc-300 dark:bg-black flex items-center justify-center p-2 sm:p-4 transition-colors">
-      <div className="w-full max-w-[600px] h-[88vh] sm:h-[650px] bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl flex flex-col border border-zinc-400 dark:border-zinc-800 overflow-hidden">
-        {/* HEADER */}
-        <div className="w-full px-4 sm:px-6 py-3 sm:py-4 border-b dark:border-zinc-800 bg-white dark:bg-zinc-900 flex flex-col sm:grid sm:grid-cols-3 items-center gap-2 sm:gap-0 min-h-fit sm:min-h-[90px]">
-          <div className="flex flex-col items-center sm:items-start w-full sm:w-auto">
-            <h1 className="font-black text-[9px] sm:text-[10px] tracking-[0.2em] text-black dark:text-white uppercase">COOLCHAT</h1>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-[6px] sm:text-[7px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest truncate max-w-[90px] sm:max-w-[120px]">
-                SECRET KEY: {showKey ? chatPassword : '•'.repeat(8)}
-              </p>
-              <div className="flex items-center gap-1">
-                <button onClick={() => setShowKey(!showKey)} className="hover:opacity-70 transition-opacity p-0.5">
-                  {showKey ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 sm:w-[10px] sm:h-[10px]"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 sm:w-[10px] sm:h-[10px]"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                  )}
-                </button>
-                <button onClick={copyToClipboard} className="hover:opacity-70 transition-opacity p-0.5" title="Copy Key">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 sm:w-[10px] sm:h-[10px]"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                </button>
-              </div>
+    <main className="max-w-7xl mx-auto px-6 py-12">
+      <header className="mb-10">
+        <h1 className="text-4xl font-extrabold tracking-tight">Welcome back</h1>
+        <p className="text-lg text-gray-500 mt-2 font-light">
+          Logged in as <span className="font-medium text-black">{session.user?.username}</span>
+        </p>
+      </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {MY_APPS.map((app) => (
+          <Link
+            key={app.name}
+            href={app.url}
+            className="group relative bg-white border border-gray-200 rounded-2xl p-6 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
+          >
+            <div className={`w-12 h-12 ${app.color} rounded-xl mb-4 flex items-center justify-center text-2xl text-white shadow-inner`}>
+              {app.icon}
             </div>
-          </div>
 
-          <div className="flex flex-col items-center text-center">
-            <div className="flex items-center justify-center gap-1.5">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] sm:text-[8px] font-bold text-green-600 uppercase tracking-widest">SECURE</span>
-            </div>
-            <p className="text-[6px] sm:text-[7px] font-black text-zinc-300 dark:text-zinc-600 uppercase tracking-widest mt-0.5 sm:mt-1">24H AUTO-ERASE</p>
-          </div>
-
-          <div className="flex justify-center sm:justify-end items-center gap-3 sm:gap-4 w-full sm:w-auto">
-            <button onClick={() => setIsDarkMode(!isDarkMode)} className="text-[9px] sm:text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest">{isDarkMode ? 'LIGHT' : 'DARK'}</button>
-            <button onClick={clearChat} className="text-[9px] sm:text-[10px] font-black text-zinc-300 hover:text-red-600 uppercase tracking-widest">CLEAR</button>
-            <button onClick={() => setIsLocked(true)} className="text-[9px] sm:text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest">LOCK</button>
-          </div>
-        </div>
-
-        {/* CHAT MESSAGES AREA */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-white dark:bg-zinc-900">
-          {messages.map((msg: any, i) => {
-            const isAdmin = msg.username?.toLowerCase() === 'dev' || msg.username?.toLowerCase() === 'rio';
-            return (
-              <div key={i} className="flex flex-col items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="flex items-center gap-2 mb-1 ml-1">
-                  <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500'}`}>
-                    {msg.username} {isAdmin && '• ADMIN'}
+            {/* Wrapper for Title and Badge */}
+            <div className="flex items-center gap-2">
+              <h3 className="text-xl font-bold group-hover:text-blue-600 transition-colors">
+                {app.name}
+              </h3>
+              {/* The Pulsing Glow Badge */}
+              {app.name === "COOLCHAT" && (
+                <span className="relative flex h-5 w-fit items-center justify-center">
+                  <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-20"></span>
+                  <span className="relative inline-flex items-center text-[10px] font-black text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full border border-blue-300 shadow-[0_0_10px_rgba(34,197,94,0.3)]">
+                    PREMIUM
                   </span>
-                  <span className="text-[8px] sm:text-[9px] font-bold text-zinc-300 dark:text-zinc-600 tracking-tighter uppercase">{msg.displayTime}</span>
-                </div>
-                <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl rounded-tl-none border text-[12px] sm:text-[14px] max-w-[90%] sm:max-w-[85%] w-fit font-medium ${isAdmin ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900 text-indigo-900 dark:text-indigo-200 shadow-sm' : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300'}`}>
-                  {msg.text}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                </span>
+              )}
+            </div>
 
-        <div className="p-3 sm:p-8 bg-white dark:bg-zinc-900 border-t dark:border-zinc-800">
-          <form onSubmit={handleSend} className="flex border-2 border-black dark:border-white bg-white dark:bg-zinc-800 overflow-hidden">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Message..."
-              className="flex-1 px-3 sm:px-5 py-2.5 sm:py-4 text-xs sm:text-base outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-500 font-mono bg-transparent dark:text-white min-w-0"
-            />
-            <button type="submit" className="bg-black dark:bg-white text-white dark:text-black px-4 sm:px-10 font-black uppercase tracking-widest border-l-2 border-black dark:border-white hover:bg-zinc-800 dark:hover:bg-zinc-200 active:scale-95 text-[9px] sm:text-[11px]">
-              SEND
-            </button>
-          </form>
-        </div>
+            <p className="text-gray-500 text-sm mt-2 leading-relaxed">
+              {app.description}
+            </p>
+            <div className="mt-6 flex items-center text-sm font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transition-all">
+              Launch Application →
+            </div>
+          </Link>
+        ))}
       </div>
-    </div>
+    </main>
   );
 }

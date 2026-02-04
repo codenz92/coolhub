@@ -24,7 +24,6 @@
     "sass": "^1.97.3"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2",
     "autoprefixer": "^10.4.16",
     "eslint": "8.56.0",
     "eslint-config-next": "^14.0.4",

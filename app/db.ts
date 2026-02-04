@@ -1,8 +1,8 @@
 // app/db.ts
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { pgTable, serial, varchar, text } from 'drizzle-orm/pg-core';
+import { pgTable, serial, varchar, timestamp, text } from 'drizzle-orm/pg-core';
 import { eq } from 'drizzle-orm';
-import postgres_lib from 'postgres';
+import postgres_lib from 'postgres'; // Renamed import to avoid conflict with the variable name
 import { genSaltSync, hashSync } from 'bcrypt-ts';
 
 // 1. Define Tables for Drizzle
@@ -11,19 +11,17 @@ export const users = pgTable('User', {
   username: varchar('username', { length: 64 }),
   password: varchar('password', { length: 64 }),
   role: varchar('role', { length: 20 }).default('user'),
-  coolchat: text('coolchat').default('0'),
 });
 
-// 2. Setup the Postgres Client
+// 2. Setup the Postgres Client and Export it
+// This fixes the "postgres is not exported" error
 export const postgres = postgres_lib(`${process.env.POSTGRES_URL!}?sslmode=require`);
 export const db = drizzle(postgres);
 
 // 3. Database Helper Functions
 export async function getUser(username: string) {
   await ensureTableExists();
-  const result = await db.select().from(users).where(eq(users.username, username));
-  // Return the first user object or undefined if not found
-  return result[0];
+  return await db.select().from(users).where(eq(users.username, username));
 }
 
 export async function createUser(username: string, password: string) {
@@ -34,21 +32,13 @@ export async function createUser(username: string, password: string) {
   return await db.insert(users).values({
     username,
     password: hash,
-    role: 'user',
-    coolchat: '0'
+    role: 'user'
   });
 }
 
-export async function updateUserCoolchat(username: string, status: string) {
-  await ensureTableExists();
-  return await db
-    .update(users)
-    .set({ coolchat: status })
-    .where(eq(users.username, username));
-}
-
-// 4. Table Guard & Migration Helper
+// 4. Table Guard - Ensures both User and ChatMessage tables exist in Neon
 async function ensureTableExists() {
+  // Check for User table
   const userTableCheck = await postgres`
     SELECT EXISTS (
       SELECT FROM information_schema.tables 
@@ -62,13 +52,27 @@ async function ensureTableExists() {
         id SERIAL PRIMARY KEY,
         username VARCHAR(64),
         password VARCHAR(64),
-        role VARCHAR(20) DEFAULT 'user',
-        coolchat TEXT DEFAULT '0'
+        role VARCHAR(20) DEFAULT 'user'
       );`;
-  } else {
-    await postgres`
-      ALTER TABLE "User" ADD COLUMN IF NOT EXISTS coolchat TEXT DEFAULT '0';
-    `;
   }
+
+  // Check for ChatMessage table
+  const chatTableCheck = await postgres`
+    SELECT EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      AND table_name = 'ChatMessage'
+    );`;
+
+  if (!chatTableCheck[0].exists) {
+    await postgres`
+      CREATE TABLE "ChatMessage" (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(64) NOT NULL,
+        text TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );`;
+  }
+
   return users;
 }

@@ -11,7 +11,6 @@ export default function CoolChat() {
   const [showKey, setShowKey] = useState(false);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
-  console.log("DEBUG SESSION USER:", session?.user);
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {

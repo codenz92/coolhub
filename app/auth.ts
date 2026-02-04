@@ -1,4 +1,3 @@
-// app/auth.ts
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { compare } from 'bcrypt-ts';
@@ -15,34 +14,30 @@ export const {
   providers: [
     Credentials({
       async authorize({ username, password }: any) {
-        // getUser now returns the user object directly
-        const user = await getUser(username);
+        let user = await getUser(username);
+        if (user.length === 0) return null;
+        let passwordsMatch = await compare(password, user[0].password!);
 
-        // Check if user exists
-        if (!user) return null;
-
-        // Compare password directly from the user object
-        const passwordsMatch = await compare(password, user.password!);
-
-        if (passwordsMatch) return user as any;
+        // Ensure the object returned here contains the username
+        if (passwordsMatch) return user[0] as any;
         return null;
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }: { token: any; user?: any }) {
+      // 'user' is the object returned from authorize() above
       if (user) {
         token.username = (user as any).username;
         token.role = (user as any).role;
-        token.coolchat = (user as any).coolchat;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
+        // Assign the username from the token to the session
         (session.user as any).username = token.username;
         (session.user as any).role = token.role;
-        (session.user as any).coolchat = token.coolchat;
       }
       return session;
     },
