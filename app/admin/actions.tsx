@@ -21,6 +21,7 @@ export async function deleteUser(formData: FormData) {
 export async function addUser(formData: FormData) {
     const username = formData.get("username") as string;
     const password = formData.get("password") as string;
+    const role = formData.get("role") as string;
 
     if (!username || !password) return;
 
@@ -29,9 +30,10 @@ export async function addUser(formData: FormData) {
 
     await db.insert(users).values({
         username,
-        password: hash
+        password: hash,
+        role: role || 'user',
+        coolchat: '0'
     });
-    await db.insert(users).values({ username, password: hash, coolchat: '0' });
     revalidatePath("/admin");
 }
 
