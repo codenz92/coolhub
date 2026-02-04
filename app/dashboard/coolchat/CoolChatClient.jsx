@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
 
-export default function CoolChat() {
+export default function CoolChatClient({ session }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [chatPassword, setChatPassword] = useState('');
@@ -99,7 +99,7 @@ export default function CoolChat() {
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || !chatPassword) return;
-    const myUsername = 'dev';
+    const myUsername = session?.user?.username || 'Anonymous';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
