@@ -108,7 +108,7 @@ export default function CoolChat() {
           </button>
           <div className="mt-8">
             <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors">
-              ← RETURN TO DASHBOARD
+              RETURN TO DASHBOARD
             </Link>
           </div>
         </div>
