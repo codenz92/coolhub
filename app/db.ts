@@ -11,6 +11,7 @@ export const users = pgTable('User', {
   username: varchar('username', { length: 64 }),
   password: varchar('password', { length: 64 }),
   role: varchar('role', { length: 20 }).default('user'),
+  coolchat: varchar('coolchat', { length: 20 }).default('0'),
 });
 
 // 2. Setup the Postgres Client and Export it
@@ -32,7 +33,8 @@ export async function createUser(username: string, password: string) {
   return await db.insert(users).values({
     username,
     password: hash,
-    role: 'user'
+    role: 'user',
+    coolchat: '0',
   });
 }
 
@@ -52,8 +54,12 @@ async function ensureTableExists() {
         id SERIAL PRIMARY KEY,
         username VARCHAR(64),
         password VARCHAR(64),
-        role VARCHAR(20) DEFAULT 'user'
+        role VARCHAR(20) DEFAULT 'user',
+        coolchat TEXT DEFAULT '0'
       );`;
+  } else {
+    // Migration: Ensure the column exists if the table already exists
+    await postgres`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS coolchat TEXT DEFAULT '0';`;
   }
 
   // Check for ChatMessage table

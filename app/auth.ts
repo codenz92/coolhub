@@ -30,6 +30,7 @@ export const {
       if (user) {
         token.username = (user as any).username;
         token.role = (user as any).role;
+        token.coolchat = (user as any).coolchat;
       }
       return token;
     },
@@ -38,6 +39,7 @@ export const {
         // Assign the username from the token to the session
         (session.user as any).username = token.username;
         (session.user as any).role = token.role;
+        (session.user as any).coolchat = token.coolchat;
       }
       return session;
     },
