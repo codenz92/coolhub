@@ -11,7 +11,7 @@ export default function CoolChat() {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
-  // 1. Initialize state from localStorage if available
+  // Initialize state from localStorage with SSR safety
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') === 'dark';
@@ -19,6 +19,7 @@ export default function CoolChat() {
     return false;
   });
 
+  // Sync state with document class and localStorage for persistence
   useEffect(() => {
     const root = window.document.documentElement;
     if (isDarkMode) {
@@ -29,6 +30,13 @@ export default function CoolChat() {
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleUnlock = (enteredValue) => {
     if (!enteredValue || enteredValue.length < 16) {
@@ -107,7 +115,7 @@ export default function CoolChat() {
 
   if (isLocked) {
     return (
-      <div className="min-h-screen bg-zinc-300 dark:bg-zinc-950 flex items-center justify-center p-4 transition-colors">
+      <div className="min-h-screen bg-zinc-300 dark:bg-black flex items-center justify-center p-4 transition-colors">
         <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] border border-zinc-400 dark:border-zinc-800 p-12 text-center">
           <h1 className="font-black text-2xl mb-1 tracking-tighter text-black dark:text-white uppercase">ENCRYPTED TERMINAL</h1>
           <p className="text-[10px] font-bold text-black dark:text-zinc-400 mb-8 uppercase tracking-widest">ENTER CHAT SECRET TO ACCESS</p>
@@ -135,7 +143,7 @@ export default function CoolChat() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-300 dark:bg-zinc-950 flex items-center justify-center p-4 transition-colors">
+    <div className="min-h-screen bg-zinc-300 dark:bg-black flex items-center justify-center p-4 transition-colors">
       <div
         style={{ width: '600px', height: '650px' }}
         className="bg-white dark:bg-zinc-900 rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 dark:border-zinc-800 overflow-hidden"
@@ -160,7 +168,6 @@ export default function CoolChat() {
           </div>
 
           <div className="flex justify-end items-center gap-4">
-            {/* Dark Mode Toggle */}
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
               className="text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white transition-colors uppercase tracking-widest"
@@ -182,11 +189,11 @@ export default function CoolChat() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white dark:bg-zinc-900">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-4 bg-white dark:bg-zinc-900">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
             return (
-              <div key={i} className="flex flex-col items-start">
+              <div key={i} className="flex flex-col items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="flex items-center gap-2 mb-1 ml-1">
                   <span className={`text-[10px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500'}`}>
                     {msg.username} {isAdmin && '• ADMIN'}
@@ -201,15 +208,22 @@ export default function CoolChat() {
           })}
         </div>
 
-        <div className="p-5 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800">
-          <form onSubmit={handleSend} className="flex border-2 border-black dark:border-white bg-white dark:bg-zinc-800 shadow-[4px_4px_0px_black] dark:shadow-[4px_4px_0px_white]">
+        {/* INPUT AREA REFINED TO MATCH TARGET IMAGE */}
+        <div className="p-8 bg-white dark:bg-zinc-900 border-t dark:border-zinc-800 transition-colors">
+          <form
+            onSubmit={handleSend}
+            className="flex border-2 border-black dark:border-white bg-white dark:bg-zinc-800 shadow-[4px_4px_0px_black] dark:shadow-[4px_4px_0px_white] transition-all"
+          >
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Secure transmission..."
-              className="flex-1 px-4 py-4 text-base outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-500 font-mono bg-transparent dark:text-white"
+              className="flex-1 px-5 py-4 text-base outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-500 font-mono bg-transparent dark:text-white"
             />
-            <button type="submit" className="bg-black dark:bg-white text-white dark:text-black px-8 rounded-none text-[11px] font-black uppercase tracking-widest">
+            <button
+              type="submit"
+              className="bg-black dark:bg-white text-white dark:text-black px-10 rounded-none text-[11px] font-black uppercase tracking-[0.2em] border-l-2 border-black dark:border-white hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all active:scale-95"
+            >
               SEND
             </button>
           </form>
