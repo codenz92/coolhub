@@ -116,24 +116,24 @@ export default function CoolChat() {
     );
   }
 
-  // --- CHAT INTERFACE: UPSIZED BOX ---
+  // --- CHAT INTERFACE: BOXED AND RIGHT-ALIGNED BUTTONS ---
   return (
     <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
 
-      {/* UPSIZED CONTAINER: w-[550px] and h-[800px] */}
-      <div className="w-[550px] h-[800px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
+      {/* 1. THE CONTAINED BOX: Fixed width, height, and white background */}
+      <div className="w-[450px] h-[750px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* HEADER: 3-column grid for alignment */}
-        <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[90px]">
+        {/* 2. THE HEADER: Divided into 3 columns */}
+        <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[85px]">
 
-          {/* Col 1: Logo */}
+          {/* Logo (Left) */}
           <div className="justify-self-start">
-            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
+            <h1 className="font-black text-[9px] tracking-[0.2em] text-black uppercase">
               COOLCHAT
             </h1>
           </div>
 
-          {/* Col 2: Status */}
+          {/* Status (Center) */}
           <div className="justify-self-center text-center">
             <div className="flex items-center justify-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
@@ -146,36 +146,36 @@ export default function CoolChat() {
             </p>
           </div>
 
-          {/* Col 3: Buttons (FORCED RIGHT) */}
-          <div className="justify-self-end flex items-center gap-4">
+          {/* 3. THE BUTTONS: Forced to the right side of the box */}
+          <div className="justify-self-end flex items-center gap-3">
             <button
               onClick={clearChat}
-              className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest whitespace-nowrap"
+              className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest"
             >
               CLEAR
             </button>
             <button
               onClick={() => setIsLocked(true)}
-              className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-widest whitespace-nowrap"
+              className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-widest"
             >
               LOCK
             </button>
           </div>
         </div>
 
-        {/* Message Viewport */}
-        <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-white">
+        {/* Message Area */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
             return (
               <div key={i} className="flex flex-col items-start">
-                <div className="flex items-center gap-2 mb-1.5 ml-1">
-                  <span className={`text-[10px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
+                <div className="flex items-center gap-2 mb-1 ml-1">
+                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
                     {msg.username} {isAdmin && '• ADMIN'}
                   </span>
                   <span className="text-[8px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
-                <div className={`px-5 py-3 rounded-2xl rounded-tl-none border text-[14px] max-w-[85%] font-medium leading-relaxed ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
                   {msg.text}
                 </div>
               </div>
@@ -183,16 +183,16 @@ export default function CoolChat() {
           })}
         </div>
 
-        {/* Input Footer */}
-        <div className="p-6 bg-zinc-50 border-t border-zinc-200">
-          <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[4px_4px_0px_black]">
+        {/* Input area */}
+        <div className="p-5 bg-zinc-50 border-t border-zinc-200">
+          <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[3px_3px_0px_black]">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Secure transmission..."
-              className="flex-1 px-5 py-4 text-sm outline-none placeholder:text-zinc-400 font-mono"
+              className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono"
             />
-            <button type="submit" className="bg-black text-white px-8 rounded-none text-[11px] font-black uppercase tracking-widest active:bg-zinc-800 transition-colors">
+            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest">
               SEND
             </button>
           </form>
