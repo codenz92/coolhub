@@ -3,26 +3,14 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
 
-interface CoolChatProps {
-  session: any;
-}
-
-interface Message {
-  id: string;
-  username: string;
-  text: string;
-  created_at: string;
-  displayTime?: string
-}
-
-export default function CoolChatClient({ session }: CoolChatProps['session']) {
-  const [messages, setMessages] = useState<Message[]>([]);
+export default function CoolChat() {
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [chatPassword, setChatPassword] = useState('');
   const [isLocked, setIsLocked] = useState(true);
   const [showKey, setShowKey] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);;
-  const inputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef(null);
+  const inputRef = useRef(null);
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -48,7 +36,7 @@ export default function CoolChatClient({ session }: CoolChatProps['session']) {
     }
   }, [messages]);
 
-  const handleUnlock = (enteredValue: string) => {
+  const handleUnlock = (enteredValue) => {
     if (!enteredValue || enteredValue.length < 16) {
       alert("SECURITY ERROR: SECRET_KEY MUST BE AT LEAST 16 CHARACTERS.");
       return;
@@ -108,10 +96,10 @@ export default function CoolChatClient({ session }: CoolChatProps['session']) {
     return () => clearInterval(interval);
   }, [isLocked, chatPassword]);
 
-  const handleSend = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || !chatPassword) return;
-    const myUsername = session?.user?.username || 'Anonymous';
+    const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
@@ -139,13 +127,7 @@ export default function CoolChatClient({ session }: CoolChatProps['session']) {
             type="password"
             placeholder="SECRET_KEY (MIN 16 CHARS)"
             className="w-full p-4 border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 mb-4 font-mono text-center outline-none focus:border-black dark:focus:border-white transition-colors text-black dark:text-white"
-            onKeyDown={(e) => {
-              const target = e.target as HTMLInputElement;
-              if (e.key === 'Enter') {
-                handleUnlock(target.value);
-                target.value = '';
-              }
-            }}
+            onKeyDown={(e) => { if (e.key === 'Enter') { handleUnlock(e.target.value); e.target.value = ''; } }}
           />
           <button
             onClick={() => { if (inputRef.current) { handleUnlock(inputRef.current.value); inputRef.current.value = ''; } }}
@@ -231,7 +213,7 @@ export default function CoolChatClient({ session }: CoolChatProps['session']) {
           <form onSubmit={handleSend} className="flex border-2 border-black dark:border-white bg-white dark:bg-zinc-800 overflow-hidden">
             <input
               value={input}
-              onChange={(e) => setInput((e.target as HTMLInputElement).value)}
+              onChange={(e) => setInput(e.target.value)}
               placeholder="Message..."
               className="flex-1 px-3 sm:px-5 py-2.5 sm:py-4 text-xs sm:text-base outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-500 font-mono bg-transparent dark:text-white min-w-0"
             />
