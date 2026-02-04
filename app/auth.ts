@@ -39,7 +39,7 @@ export const {
         // Assign the username from the token to the session
         (session.user as any).username = token.username;
         (session.user as any).role = token.role;
-        (session.user as any).coolchat = token.coolchat;
+        (session.user as any).coolchat = parseInt(token.coolchat as string) || 0;
       }
       return session;
     },
