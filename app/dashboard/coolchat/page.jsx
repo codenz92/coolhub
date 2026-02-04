@@ -119,23 +119,23 @@ export default function CoolChat() {
   return (
     <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
 
-      {/* 1. THE BOX: Using inline styles for guaranteed size + Tailwind for the rest */}
+      {/* BOX: Forced dimensions via style + Tailwind for styling */}
       <div
         style={{ width: '600px', height: '850px' }}
         className="bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden"
       >
 
-        {/* 2. THE HEADER: 3-column grid to push buttons to the right edge */}
+        {/* HEADER: 3-Column Grid for perfect alignment */}
         <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[90px]">
 
-          {/* Left Column: Logo */}
+          {/* Left: Logo */}
           <div className="flex justify-start">
             <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
               COOLCHAT
             </h1>
           </div>
 
-          {/* Center Column: Status */}
+          {/* Center: Status */}
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
@@ -148,7 +148,7 @@ export default function CoolChat() {
             </p>
           </div>
 
-          {/* Right Column: Buttons pushed to the far right */}
+          {/* Right: Buttons Pushed to edge */}
           <div className="flex justify-end items-center gap-4">
             <button
               onClick={clearChat}
@@ -165,7 +165,7 @@ export default function CoolChat() {
           </div>
         </div>
 
-        {/* 3. MESSAGE AREA: w-fit makes bubbles only as wide as text */}
+        {/* MESSAGE AREA: w-fit shrinks bubbles to text size */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
@@ -185,7 +185,7 @@ export default function CoolChat() {
           })}
         </div>
 
-        {/* 4. INPUT AREA */}
+        {/* INPUT AREA */}
         <div className="p-5 bg-zinc-50 border-t border-zinc-200">
           <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[4px_4px_0px_black]">
             <input
