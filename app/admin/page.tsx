@@ -2,57 +2,71 @@
 import { db, users } from "../db";
 import { auth } from "../auth";
 import { redirect } from "next/navigation";
-import { deleteUser, addUser, togglePermission } from "./actions";
+import { deleteUser, addUser } from "./actions";
 import Link from "next/link";
-
 export default async function AdminPage() {
-    const session = await auth();
-    if (!["dev", "rio"].includes(session?.user?.username || "")) redirect("/dashboard");
+    const session = await auth(); //
+
+    // Replace 'admin_user' with your actual username for security
+    if (!["dev", "rio"].includes(session?.user?.username || "")) {
+        redirect("/dashboard");
+    }
 
     const allUsers = await db.select().from(users);
 
     return (
-        <div className="p-8 max-w-5xl mx-auto">
+        <div className="p-8 max-w-4xl mx-auto">
+            {/* 2. Flex header to place the button next to the title */}
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-                <Link href="/dashboard" className="text-sm font-medium border px-4 py-2 rounded-lg hover:bg-gray-50">← Dashboard</Link>
-            </div>
+                <h1 className="text-3xl font-bold">User Management</h1>
 
+                <Link
+                    href="/dashboard"
+                    className="text-sm font-medium text-gray-600 hover:text-black border border-gray-300 px-4 py-2 rounded-lg transition-colors"
+                >
+                    ← Back to Dashboard
+                </Link>
+            </div>
+            {/* Create User Form */}
             <div className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
                 <h2 className="text-lg font-semibold mb-4">Create New User</h2>
-                <form action={addUser} className="flex gap-4">
-                    <input name="username" placeholder="Username" className="flex-1 p-2 border rounded-lg outline-none" required />
-                    <input name="password" type="password" placeholder="Password" className="flex-1 p-2 border rounded-lg outline-none" required />
-                    <button className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors">Add User</button>
+                <form action={addUser} className="flex flex-col md:flex-row gap-4">
+                    <input
+                        name="username"
+                        placeholder="Username"
+                        className="flex-1 border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-black"
+                        required
+                    />
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        className="flex-1 border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-black"
+                        required
+                    />
+                    <button type="submit" className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+                        Add User
+                    </button>
                 </form>
             </div>
-
             <div className="bg-white border rounded-xl shadow-sm overflow-hidden">
                 <table className="w-full text-left">
-                    <thead className="bg-gray-50 border-b text-xs uppercase tracking-wider text-gray-500">
+                    <thead className="bg-gray-50 border-b">
                         <tr>
-                            <th className="p-4 font-bold">Username</th>
-                            <th className="p-4 font-bold text-center">CoolChat</th>
-                            <th className="p-4 text-right">Actions</th>
+                            <th className="p-4 font-semibold">Username</th>
+                            <th className="p-4 text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {allUsers.map((user) => (
-                            <tr key={user.id} className="border-b last:border-0 hover:bg-gray-50/50">
-                                <td className="p-4 font-medium">{user.username}</td>
-                                <td className="p-4">
-                                    <form action={togglePermission} className="flex justify-center">
-                                        <input type="hidden" name="userId" value={user.id} />
-                                        <input type="hidden" name="currentStatus" value={user.coolchat || '0'} />
-                                        <button className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border transition-all ${user.coolchat === '1' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-zinc-100 text-zinc-400 border-zinc-200'}`}>
-                                            {user.coolchat === '1' ? '● ACCESS GRANTED' : '○ ACCESS LOCKED'}
-                                        </button>
-                                    </form>
-                                </td>
+                            <tr key={user.id} className="border-b last:border-0 hover:bg-gray-50">
+                                <td className="p-4">{user.username}</td>
                                 <td className="p-4 text-right">
                                     <form action={deleteUser}>
                                         <input type="hidden" name="id" value={user.id} />
-                                        <button className="text-red-400 hover:text-red-600 text-sm font-medium">Remove</button>
+                                        <button className="text-red-500 hover:text-red-700 font-medium px-4">
+                                            Delete
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
