@@ -147,29 +147,27 @@ export default function CoolChat() {
     <div className="min-h-dvh bg-zinc-300 dark:bg-black flex items-center justify-center p-0 sm:p-4 transition-colors">
       <div className="w-full max-w-[600px] h-dvh sm:h-[650px] bg-white dark:bg-zinc-900 sm:rounded-3xl shadow-2xl flex flex-col border-none sm:border border-zinc-400 dark:border-zinc-800 overflow-hidden">
 
-        {/* HEADER WITH ALL ELEMENTS RESTORED */}
+        {/* RESTORED RESPONSIVE HEADER */}
         <div className="w-full px-4 sm:px-6 py-3 sm:py-4 border-b dark:border-zinc-800 bg-white dark:bg-zinc-900 flex flex-wrap items-center justify-between gap-2 min-h-fit">
 
           {/* LEFT: TITLE + KEY */}
-          <div className="flex flex-col min-w-[100px]">
+          <div className="flex flex-col min-w-[90px]">
             <h1 className="font-black text-[9px] sm:text-[10px] tracking-[0.2em] text-black dark:text-white uppercase">COOLCHAT</h1>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <p className="text-[7px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest truncate max-w-[70px] sm:max-w-[120px]">
+              <p className="text-[7px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest truncate max-w-[60px] sm:max-w-[120px]">
                 {showKey ? chatPassword : '•'.repeat(8)}
               </p>
-              <div className="flex items-center gap-1">
-                <button onClick={() => setShowKey(!showKey)} className="hover:opacity-70 p-0.5">
-                  {showKey ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                  )}
-                </button>
-              </div>
+              <button onClick={() => setShowKey(!showKey)} className="hover:opacity-70 p-0.5">
+                {showKey ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                )}
+              </button>
             </div>
           </div>
 
-          {/* CENTER: STATUS (Hidden on very small screens to save space, or kept small) */}
+          {/* CENTER: RESTORED STATUS */}
           <div className="hidden xs:flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-1">
               <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_#22c55e]" />
@@ -178,13 +176,13 @@ export default function CoolChat() {
             <p className="text-[5px] font-black text-zinc-300 dark:text-zinc-600 uppercase tracking-widest">24H AUTO-ERASE</p>
           </div>
 
-          {/* RIGHT: ACTIONS */}
+          {/* RIGHT: ACTIONS (CLEAR + THEME + LOCK) */}
           <div className="flex items-center gap-3 sm:gap-5">
             <button onClick={clearChat} className="text-[9px] font-black text-zinc-300 hover:text-red-600 uppercase tracking-widest transition-colors">CLEAR</button>
             <button onClick={() => setIsDarkMode(!isDarkMode)} className="text-[9px] font-black text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest">
               {isDarkMode ? 'LIGHT' : 'DARK'}
             </button>
-            <button onClick={() => setIsLocked(true)} className="bg-zinc-100 dark:bg-zinc-800 p-1.5 sm:p-2 rounded-lg active:scale-90 transition-transform">
+            <button onClick={() => setIsLocked(true)} className="bg-zinc-100 dark:bg-zinc-800 p-1.5 rounded-lg active:scale-90 transition-transform">
               <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-black dark:text-white"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </button>
           </div>
