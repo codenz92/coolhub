@@ -2,12 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
-import { useSession } from "next-auth/react"; // ADDED THIS IMPORT
 
 export default function CoolChat() {
-  // 1. Initialize the session hook
-  const { data: session, status } = useSession();
-
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [chatPassword, setChatPassword] = useState('');
@@ -15,30 +11,7 @@ export default function CoolChat() {
   const [showKey, setShowKey] = useState(false);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
-
-  // 2. Add a loading check to prevent "destructuring" errors
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen bg-zinc-300 dark:bg-black flex items-center justify-center p-4">
-        <div className="text-black dark:text-white font-bold animate-pulse uppercase tracking-widest">
-          Establishing Secure Session...
-        </div>
-      </div>
-    );
-  }
-
-  // 3. Protection: Redirect if no session exists
-  if (!session) {
-    return (
-      <div className="min-h-screen bg-zinc-300 dark:bg-black flex flex-col items-center justify-center p-4">
-        <h1 className="text-red-600 font-black mb-4">ACCESS DENIED</h1>
-        <Link href="/login" className="text-xs font-bold underline">RETURN TO LOGIN</Link>
-      </div>
-    );
-  }
-
-  // 4. Safely get the username from the session
-  const myUsername = (session.user as any)?.username || 'user';
+  console.log("DEBUG SESSION USER:", session?.user);
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -127,13 +100,11 @@ export default function CoolChat() {
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || !chatPassword) return;
-
+    const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    // Use the dynamic username from session
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
     const encryptedTime = CryptoJS.AES.encrypt(now, chatPassword).toString();
-
     setInput('');
     await fetch('/api/messages', {
       method: 'POST',
@@ -178,7 +149,10 @@ export default function CoolChat() {
       <div
         className="w-full max-w-[600px] h-[88vh] sm:h-[650px] bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl flex flex-col border border-zinc-400 dark:border-zinc-800 overflow-hidden"
       >
+        {/* HEADER WITH KEY DISPLAY AND COPY BUTTON */}
         <div className="w-full px-4 sm:px-6 py-3 sm:py-4 border-b dark:border-zinc-800 bg-white dark:bg-zinc-900 flex flex-col sm:grid sm:grid-cols-3 items-center gap-2 sm:gap-0 min-h-fit sm:min-h-[90px]">
+
+          {/* LEFT: TITLE + KEY DISPLAY + COPY */}
           <div className="flex flex-col items-center sm:items-start w-full sm:w-auto">
             <h1 className="font-black text-[9px] sm:text-[10px] tracking-[0.2em] text-black dark:text-white uppercase">COOLCHAT</h1>
             <div className="flex items-center gap-2 mt-1">
@@ -200,6 +174,7 @@ export default function CoolChat() {
             </div>
           </div>
 
+          {/* CENTER: STATUS ONLY */}
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
@@ -208,6 +183,7 @@ export default function CoolChat() {
             <p className="text-[6px] sm:text-[7px] font-black text-zinc-300 dark:text-zinc-600 uppercase tracking-widest mt-0.5 sm:mt-1">24H AUTO-ERASE</p>
           </div>
 
+          {/* RIGHT: ACTIONS ONLY */}
           <div className="flex justify-center sm:justify-end items-center gap-3 sm:gap-4 w-full sm:w-auto">
             <button onClick={() => setIsDarkMode(!isDarkMode)} className="text-[9px] sm:text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest">{isDarkMode ? 'LIGHT' : 'DARK'}</button>
             <button onClick={clearChat} className="text-[9px] sm:text-[10px] font-black text-zinc-300 hover:text-red-600 uppercase tracking-widest">CLEAR</button>
@@ -217,7 +193,7 @@ export default function CoolChat() {
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-white dark:bg-zinc-900">
           {messages.map((msg, i) => {
-            const isAdmin = msg.username?.toLowerCase() === 'dev' || msg.username?.toLowerCase() === 'rio';
+            const isAdmin = msg.username?.toLowerCase() === 'dev';
             return (
               <div key={i} className="flex flex-col items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="flex items-center gap-2 mb-1 ml-1">

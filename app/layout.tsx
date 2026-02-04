@@ -1,10 +1,11 @@
-// app/layout.tsx
 import './globals.css';
+
 import { GeistSans } from 'geist/font/sans';
-import { SessionProvider } from "next-auth/react"; // ADD THIS
+import { Providers } from './providers'; // Import the new providers component
 
 let title = 'CoolHub - Dashboard';
-let description = 'This is one of the biggest secrets ever.';
+let description =
+  'This is one of the biggest secrets ever.';
 
 export const metadata = {
   title,
@@ -24,12 +25,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={GeistSans.variable}>
-        {/* WRAP CHILDREN IN SESSIONPROVIDER */}
-        <SessionProvider>
-          {children}
-        </SessionProvider>
-      </body>
+      <body className={GeistSans.variable}>{children}</body>
+      <Providers>{children}</Providers>
     </html>
   );
 }
