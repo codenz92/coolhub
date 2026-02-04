@@ -125,7 +125,7 @@ export default function CoolChat() {
           <input
             ref={inputRef}
             type="password"
-            placeholder="SECRET_KEY (MIN 16 CHARS)"
+            placeholder="SECRET_KEY"
             className="w-full p-4 border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 mb-4 font-mono text-center outline-none focus:border-black dark:focus:border-white transition-colors text-black dark:text-white"
             onKeyDown={(e) => { if (e.key === 'Enter') { handleUnlock(e.target.value); e.target.value = ''; } }}
           />
