@@ -16,7 +16,7 @@ export const authConfig = {
       // Specifically check for COOLCHAT access
       const isCoolChatRoute = nextUrl.pathname.startsWith('/dashboard/coolchat');
 
-      if (isOnDashboard || isOnAdmin) {
+      if (isOnDashboard || isOnAdmin || isCoolChatRoute) {
         if (!isLoggedIn) return false;
 
         // If trying to access CoolChat, check for permission or admin status
