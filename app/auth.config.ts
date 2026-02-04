@@ -9,25 +9,18 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const user = auth?.user as any;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       const isOnAdmin = nextUrl.pathname.startsWith('/admin');
+      const isOnDemo = nextUrl.pathname.startsWith('/dashboard/demo-app');
 
-      // Specifically check for COOLCHAT access
-      const isCoolChatRoute = nextUrl.pathname.startsWith('/dashboard/coolchat');
-
-      if (isOnDashboard || isOnAdmin || isCoolChatRoute) {
-        if (!isLoggedIn) return false;
-
-        // If trying to access CoolChat, check for permission or admin status
-        if (isCoolChatRoute) {
-          const hasAccess = user?.coolchat === '1' || ["dev", "rio"].includes(user?.username);
-          if (!hasAccess) return Response.redirect(new URL('/dashboard', nextUrl));
-        }
-
-        return true;
+      // 1. Protect routes: If trying to access Dashboard, Admin, or Demo
+      if (isOnDashboard || isOnAdmin || isOnDemo) {
+        if (isLoggedIn) return true;
+        return false; // Redirect unauthenticated users to login
       }
 
+      // 2. Only redirect to dashboard if they are already logged in AND hitting login
+      // This prevents the redirect loop when trying to go to /admin
       if (isLoggedIn && nextUrl.pathname === '/login') {
         return Response.redirect(new URL('/dashboard', nextUrl));
       }
