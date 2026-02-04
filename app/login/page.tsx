@@ -2,18 +2,16 @@
 
 import Link from 'next/link';
 import { Form } from 'app/form';
-import { signIn } from 'app/auth';
 import { useFormStatus } from 'react-dom';
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { authenticate } from './actions'; // Import the action here
 
 function SubmitButton() {
   const { pending } = useFormStatus();
-
   return (
     <button
       type="submit"
       disabled={pending}
-      className="w-full rounded bg-black px-4 py-2 text-sm font-medium text-white transition-all hover:bg-zinc-800 disabled:opacity-50"
+      className="w-full rounded bg-black py-2 text-sm font-medium text-white transition-all hover:bg-zinc-800 disabled:opacity-50"
     >
       {pending ? 'Checking...' : 'Continue'}
     </button>
@@ -23,32 +21,18 @@ function SubmitButton() {
 export default function Login() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6">
-      <div className="w-full max-w-[320px] animate-in fade-in duration-700">
+      <div className="w-full max-w-[320px]">
         <div className="mb-10 flex flex-col items-start">
           <h1 className="text-lg font-medium text-zinc-950">Sign in</h1>
           <p className="text-sm text-zinc-500">to continue to your dashboard</p>
         </div>
 
-        {/* Wrap the Form in a div to fix the className TS error */}
         <div className="space-y-6">
-          <Form
-            action={async (prevState: any, formData: FormData) => {
-              'use server';
-              try {
-                await signIn('credentials', {
-                  redirectTo: '/dashboard',
-                  username: formData.get('username') as string,
-                  password: formData.get('password') as string,
-                });
-              } catch (error) {
-                if (isRedirectError(error)) throw error;
-                return 'Invalid username or password';
-              }
-            }}
-          >
+          {/* Pass the imported action to the Form */}
+          <Form action={authenticate}>
             <div className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="username" className="text-[12px] font-medium text-zinc-500 uppercase tracking-tight">
+                <label htmlFor="username" className="text-[12px] font-medium text-zinc-400 uppercase tracking-widest">
                   Username
                 </label>
                 <input
@@ -56,13 +40,12 @@ export default function Login() {
                   name="username"
                   type="text"
                   required
-                  autoFocus
-                  className="w-full border-b border-zinc-200 bg-transparent py-1 text-sm outline-none transition-colors focus:border-black"
+                  className="w-full border-b border-zinc-100 bg-transparent py-1 text-sm outline-none transition-colors focus:border-black"
                 />
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="password" className="text-[12px] font-medium text-zinc-500 uppercase tracking-tight">
+                <label htmlFor="password" className="text-[12px] font-medium text-zinc-400 uppercase tracking-widest">
                   Password
                 </label>
                 <input
@@ -70,11 +53,11 @@ export default function Login() {
                   name="password"
                   type="password"
                   required
-                  className="w-full border-b border-zinc-200 bg-transparent py-1 text-sm outline-none transition-colors focus:border-black"
+                  className="w-full border-b border-zinc-100 bg-transparent py-1 text-sm outline-none transition-colors focus:border-black"
                 />
               </div>
 
-              <div className="pt-2">
+              <div className="pt-4">
                 <SubmitButton />
               </div>
             </div>
