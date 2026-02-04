@@ -32,7 +32,7 @@ export default async function AdminPage() {
                     <thead className="bg-gray-50 border-b text-xs uppercase tracking-wider text-gray-500">
                         <tr>
                             <th className="p-4 font-bold">Username</th>
-                            <th className="p-4 font-bold text-center">CoolChat Permission</th>
+                            <th className="p-4 font-bold text-center">CoolChat</th>
                             <th className="p-4 text-right">Actions</th>
                         </tr>
                     </thead>
@@ -52,7 +52,7 @@ export default async function AdminPage() {
                                 <td className="p-4 text-right">
                                     <form action={deleteUser}>
                                         <input type="hidden" name="id" value={user.id} />
-                                        <button className="text-red-400 hover:text-red-600 text-sm font-medium">Remove</button>
+                                        <button className="text-red-400 hover:text-red-600 text-sm font-medium">Delete</button>
                                     </form>
                                 </td>
                             </tr>
