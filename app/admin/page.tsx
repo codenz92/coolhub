@@ -20,7 +20,7 @@ export default async function AdminPage() {
 
             <div className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
                 <h2 className="text-lg font-semibold mb-4">Create New User</h2>
-                <form action={addUser} className="flex gap-4">
+                <form action={addUser} className="flex flex-col md:flex-row gap-4">
                     <input name="username" placeholder="Username" className="flex-1 p-2 border rounded-lg outline-none" required />
                     <input name="password" type="password" placeholder="Password" className="flex-1 p-2 border rounded-lg outline-none" required />
                     <button className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors">Add User</button>
