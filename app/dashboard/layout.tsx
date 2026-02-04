@@ -23,10 +23,10 @@ export default async function DashboardLayout({
 
                 <div className="flex items-center gap-4">
                     <span className="hidden md:block text-sm text-gray-500">
-                        {session.user?.username}
+                        {session.user?.role}
                     </span>
                     {/* Corrected Admin visibility check */}
-                    {(session.user as any)?.username === "dev" || (session.user as any)?.username === "rio" ? (
+                    {(session.user as any)?.role === "admin" ? (
                         <Link
                             href="/admin"
                             className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
