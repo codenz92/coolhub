@@ -12,6 +12,8 @@ export const authConfig = {
       const user = auth?.user as any;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       const isOnAdmin = nextUrl.pathname.startsWith('/admin');
+      const username = user?.username || (auth as any)?.username;
+      const coolchatPermission = user?.coolchat || (auth as any)?.coolchat;
 
       // Specifically check for COOLCHAT access
       const isCoolChatRoute = nextUrl.pathname.startsWith('/dashboard/coolchat');
@@ -19,10 +21,13 @@ export const authConfig = {
       if (isOnDashboard || isOnAdmin) {
         if (!isLoggedIn) return false;
 
-        // If trying to access CoolChat, check for permission or admin status
         if (isCoolChatRoute) {
-          const hasAccess = user?.coolchat === '1' || ["dev", "rio"].includes(user?.username);
-          if (!hasAccess) return Response.redirect(new URL('/dashboard', nextUrl));
+          const isAdmin = ["dev", "rio"].includes(username);
+          const hasAccess = coolchatPermission === '1' || isAdmin;
+
+          if (!hasAccess) {
+            return Response.redirect(new URL('/dashboard', nextUrl));
+          }
         }
 
         return true;

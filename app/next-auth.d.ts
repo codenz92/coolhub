@@ -14,13 +14,12 @@ declare module "next-auth" {
         role?: string;
         coolchat?: string;
     }
-
-    declare module "next-auth/jwt" {
-        interface JWT {
-            username?: string;
-            role?: string;
-            coolchat?: string;
-        }
-
+}
+declare module "next-auth/jwt" {
+    interface JWT {
+        username?: string;
+        role?: string;
+        coolchat?: string;
     }
+
 }
