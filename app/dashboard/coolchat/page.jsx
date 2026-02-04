@@ -111,6 +111,11 @@ export default function CoolChat() {
     });
   };
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(chatPassword);
+    alert("KEY COPIED TO CLIPBOARD");
+  };
+
   if (isLocked) {
     return (
       <div className="min-h-screen bg-zinc-300 dark:bg-black flex items-center justify-center p-4 transition-colors">
@@ -120,7 +125,7 @@ export default function CoolChat() {
           <input
             ref={inputRef}
             type="password"
-            placeholder="SECRET_KEY"
+            placeholder="SECRET_KEY (MIN 16 CHARS)"
             className="w-full p-4 border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 mb-4 font-mono text-center outline-none focus:border-black dark:focus:border-white transition-colors text-black dark:text-white"
             onKeyDown={(e) => { if (e.key === 'Enter') { handleUnlock(e.target.value); e.target.value = ''; } }}
           />
@@ -143,23 +148,28 @@ export default function CoolChat() {
       <div
         className="w-full max-w-[600px] h-[88vh] sm:h-[650px] bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl flex flex-col border border-zinc-400 dark:border-zinc-800 overflow-hidden"
       >
-        {/* HEADER WITH KEY MOVED UNDER TITLE */}
+        {/* HEADER WITH KEY DISPLAY AND COPY BUTTON */}
         <div className="w-full px-4 sm:px-6 py-3 sm:py-4 border-b dark:border-zinc-800 bg-white dark:bg-zinc-900 flex flex-col sm:grid sm:grid-cols-3 items-center gap-2 sm:gap-0 min-h-fit sm:min-h-[90px]">
 
-          {/* LEFT: TITLE + KEY DISPLAY */}
+          {/* LEFT: TITLE + KEY DISPLAY + COPY */}
           <div className="flex flex-col items-center sm:items-start w-full sm:w-auto">
             <h1 className="font-black text-[9px] sm:text-[10px] tracking-[0.2em] text-black dark:text-white uppercase">COOLCHAT</h1>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-[6px] sm:text-[7px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-widest truncate max-w-[90px] sm:max-w-[120px]">
-                KEY: {showKey ? chatPassword : '•'.repeat(8)}
+                SECRET KEY: {showKey ? chatPassword : '•'.repeat(8)}
               </p>
-              <button onClick={() => setShowKey(!showKey)} className="hover:opacity-70 transition-opacity p-0.5">
-                {showKey ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 sm:w-[10px] sm:h-[10px]"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 sm:w-[10px] sm:h-[10px]"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                )}
-              </button>
+              <div className="flex items-center gap-1">
+                <button onClick={() => setShowKey(!showKey)} className="hover:opacity-70 transition-opacity p-0.5">
+                  {showKey ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 sm:w-[10px] sm:h-[10px]"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 sm:w-[10px] sm:h-[10px]"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  )}
+                </button>
+                <button onClick={copyToClipboard} className="hover:opacity-70 transition-opacity p-0.5" title="Copy Key">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-400 sm:w-[10px] sm:h-[10px]"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+              </div>
             </div>
           </div>
 
