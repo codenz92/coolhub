@@ -10,7 +10,7 @@ const MY_APPS = [
     url: "/dashboard/coolchat",
     icon: "💬",
     color: "bg-zinc-900",
-    permissionKey: "coolchat" // Key to check in the user object
+    permissionKey: "coolchat"
   },
   {
     name: "Hangman Game",
@@ -26,10 +26,7 @@ export default async function Dashboard() {
 
   if (!session) redirect('/login');
 
-  // Assuming your database adapter adds the 'coolchat' column to the session user object
-  // If your session doesn't have it yet, ensure your auth config includes it in the session callback
   const userPermissions = session.user as any;
-  const hasAccess = userPermissions.coolchat === "1";
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
@@ -42,9 +39,9 @@ export default async function Dashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {MY_APPS.map((app) => {
-          // CHECK ACCESS: If the app requires 'coolchat' permission, check if user.coolchat === 1
+          // FIXED: Convert to string to match the database "text" type
           const hasAccess = app.permissionKey
-            ? userPermissions[app.permissionKey] === 1
+            ? String(userPermissions[app.permissionKey]) === "1"
             : true;
 
           const CardContent = (
