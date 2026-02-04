@@ -52,7 +52,7 @@ export default async function AdminPage() {
                                 <td className="p-4 text-right">
                                     <form action={deleteUser}>
                                         <input type="hidden" name="id" value={user.id} />
-                                        <button className="text-red-400 hover:text-red-600 text-sm font-medium">Delete</button>
+                                        <button className="text-red-400 hover:text-red-600 text-sm font-bold">Delete</button>
                                     </form>
                                 </td>
                             </tr>
