@@ -12,35 +12,7 @@ const MY_APPS = [
     color: "bg-zinc-900",
   },
   {
-    name: "Hangman Game",
-    description: "Launch the internal demo app living in your project.",
-    url: "/dashboard/hangman-app", // Ensure this matches your folder name in /app
-    icon: "🚀",
-    color: "bg-orange-500",
-  },
-  {
-    name: "Internal Demo 3",
-    description: "Launch the internal demo app living in your project.",
-    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
-    icon: "🚀",
-    color: "bg-orange-500",
-  },
-  {
-    name: "Internal Demo 4",
-    description: "Launch the internal demo app living in your project.",
-    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
-    icon: "🚀",
-    color: "bg-orange-500",
-  },
-  {
-    name: "Internal Demo 5",
-    description: "Launch the internal demo app living in your project.",
-    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
-    icon: "🚀",
-    color: "bg-orange-500",
-  },
-  {
-    name: "Internal Demo 6",
+    name: "Demo app",
     description: "Launch the internal demo app living in your project.",
     url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
     icon: "🚀",
