@@ -55,11 +55,11 @@ async function ensureTableExists() {
         username VARCHAR(64),
         password VARCHAR(64),
         role VARCHAR(20) DEFAULT 'user',
-        coolchat TEXT DEFAULT '0'
+        coolchat VARCHAR(20) DEFAULT '0'
       );`;
   } else {
     // Migration: Ensure the column exists if the table already exists
-    await postgres`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS coolchat TEXT DEFAULT '0';`;
+    await postgres`ALTER TABLE "User" ADD COLUMN IF NOT EXISTS coolchat VARCHAR(20) DEFAULT '0';`;
   }
 
   // Check for ChatMessage table
