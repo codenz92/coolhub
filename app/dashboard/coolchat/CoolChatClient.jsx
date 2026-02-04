@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
-import CoolChat from './CoolChatClient';
 
 export default function CoolChat() {
   const [messages, setMessages] = useState([]);
