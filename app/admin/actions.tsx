@@ -31,5 +31,17 @@ export async function addUser(formData: FormData) {
         username,
         password: hash
     });
+    await db.insert(users).values({ username, password: hash, coolchat: '0' });
     revalidatePath("/admin");
+}
+
+export async function togglePermission(formData: FormData) {
+    const userId = Number(formData.get("userId"));
+    const currentStatus = formData.get("currentStatus") as string;
+    const newStatus = currentStatus === '1' ? '0' : '1';
+
+    await db.update(users).set({ coolchat: newStatus }).where(eq(users.id, userId));
+
+    revalidatePath("/admin");
+    revalidatePath("/dashboard");
 }
