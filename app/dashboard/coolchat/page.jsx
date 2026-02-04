@@ -123,18 +123,18 @@ export default function CoolChat() {
       {/* 1. THE CONTAINED BOX: Fixed width, height, and white background */}
       <div className="w-[450px] h-[750px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
 
-        {/* 2. THE HEADER: Divided into 3 columns */}
+        {/* THE HEADER: Divided into 3 columns */}
         <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[85px]">
 
           {/* Logo (Left) */}
-          <div className="justify-self-start">
+          <div className="flex justify-start">
             <h1 className="font-black text-[9px] tracking-[0.2em] text-black uppercase">
               COOLCHAT
             </h1>
           </div>
 
           {/* Status (Center) */}
-          <div className="justify-self-center text-center">
+          <div className="flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
               <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
@@ -146,8 +146,8 @@ export default function CoolChat() {
             </p>
           </div>
 
-          {/* 3. THE BUTTONS: Forced to the right side of the box */}
-          <div className="justify-self-end flex items-center gap-3">
+          {/* The Buttons (Pushed to the Right) */}
+          <div className="flex justify-end items-center gap-3">
             <button
               onClick={clearChat}
               className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest"
