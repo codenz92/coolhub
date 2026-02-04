@@ -69,7 +69,7 @@ export default async function Dashboard() {
                 </div>
 
                 <p className="text-gray-500 text-sm mt-2 leading-relaxed">
-                  {hasAccess ? app.description : "You do not have permission to access this app."}
+                  {hasAccess ? app.description : "You do not have access to this app."}
                 </p>
 
                 {hasAccess ? (
