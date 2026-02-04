@@ -6,37 +6,43 @@ export const authConfig = {
     signIn: '/login',
   },
   providers: [],
+  // app/auth.config.ts
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user || !!auth;
-      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      const isOnAdmin = nextUrl.pathname.startsWith('/admin');
-      const isOnDemo = nextUrl.pathname.startsWith('/dashboard/demo-app');
-      const isOnCoolChat = nextUrl.pathname.startsWith('/dashboard/coolchat');
+      const nextPath = nextUrl.pathname;
+      const isOnDashboard = nextPath.startsWith('/dashboard');
+      const isOnCoolChat = nextPath.startsWith('/dashboard/coolchat');
+      const isOnAdmin = nextPath.startsWith('/admin');
 
-      // Fallback: in Middleware, properties might be on auth or auth.user
-      const userData = auth?.user as any;
-      const username = userData?.username || (auth as any)?.username;
-      const coolchatPermission = userData?.coolchat || (auth as any)?.coolchat;
-
-      // 1. Protect routes: If trying to access Dashboard, Admin, or Demo or CoolChat
-      if (isOnDashboard || isOnAdmin || isOnDemo || isOnCoolChat) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login
+      // 1. If not logged in and trying to access protected areas, redirect to login
+      if ((isOnDashboard || isOnAdmin) && !isLoggedIn) {
+        return false;
       }
 
-      // 2. Only redirect to dashboard if they are already logged in AND hitting login
-      // This prevents the redirect loop when trying to go to /admin
-      if (isLoggedIn && nextUrl.pathname === '/login') {
-        return Response.redirect(new URL('/dashboard', nextUrl));
-      }
-
+      // 2. SPECIFIC CHECK: CoolChat Permissions
+      // This must happen BEFORE 'return true' for the dashboard
       if (isOnCoolChat) {
+        const userData = auth?.user as any;
+        const username = userData?.username || (auth as any)?.username;
+        const coolchatPermission = userData?.coolchat || (auth as any)?.coolchat;
+
         const isSuperAdmin = ["dev", "rio"].includes(username);
         const hasAccess = coolchatPermission === '1' || isSuperAdmin;
 
-        // If no access, kick back to main dashboard
-        if (!hasAccess) return Response.redirect(new URL('/dashboard', nextUrl));
+        if (!hasAccess) {
+          return Response.redirect(new URL('/dashboard', nextUrl));
+        }
+      }
+
+      // 3. General Dashboard/Admin access (if they got past the specific checks)
+      if (isOnDashboard || isOnAdmin) {
+        return true;
+      }
+
+      // 4. Redirect logged-in users away from login page
+      if (isLoggedIn && nextPath === '/login') {
+        return Response.redirect(new URL('/dashboard', nextUrl));
       }
 
       return true;
