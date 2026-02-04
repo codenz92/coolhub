@@ -1,7 +1,7 @@
 // app/dashboard/coolchat/page.tsx
 import { auth } from 'app/auth';
 import { redirect } from 'next/navigation';
-import CoolChatClient from './CoolChatClient'; // This is your chat UI file
+import CoolChatClient from '../coolchat/coolchatclient'; // This is your chat UI file
 
 export default async function CoolChatPage() {
     const session = await auth();
