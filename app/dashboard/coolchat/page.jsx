@@ -208,11 +208,11 @@ export default function CoolChat() {
           })}
         </div>
 
-        {/* INPUT AREA REFINED TO MATCH TARGET IMAGE */}
+        {/* INPUT AREA REFINED - SHADOW REMOVED */}
         <div className="p-8 bg-white dark:bg-zinc-900 border-t dark:border-zinc-800 transition-colors">
           <form
             onSubmit={handleSend}
-            className="flex border-2 border-black dark:border-white bg-white dark:bg-zinc-800 shadow-[4px_4px_0px_black] dark:shadow-[4px_4px_0px_white] transition-all"
+            className="flex border-2 border-black dark:border-white bg-white dark:bg-zinc-800 transition-all"
           >
             <input
               value={input}
