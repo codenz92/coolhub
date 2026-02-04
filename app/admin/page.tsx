@@ -32,7 +32,7 @@ export default async function AdminPage() {
                     <thead className="bg-gray-50 border-b text-xs uppercase tracking-wider text-gray-500">
                         <tr>
                             <th className="p-4 font-bold">Username</th>
-                            <th className="p-4 font-bold text-center">CoolChat Permission</th>
+                            <th className="p-4 font-bold text-center">CoolChat</th>
                             <th className="p-4 text-right">Actions</th>
                         </tr>
                     </thead>
