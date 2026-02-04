@@ -26,22 +26,27 @@ export default async function Dashboard() {
 
   if (!session) redirect('/login');
 
-  const userPermissions = session.user as any;
+  // DEBUG: This will print in your Vercel Terminal/Logs
+  // If 'coolchat' is missing here, the issue is in your auth.ts callbacks or auth.config.ts
+  console.log("DEBUG: User Session Data:", JSON.stringify(session.user, null, 2));
+
+  const userPermissions = (session.user as any) || {};
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
       <header className="mb-10">
         <h1 className="text-4xl font-extrabold tracking-tight">Welcome back</h1>
         <p className="text-lg text-gray-500 mt-2 font-light">
-          Logged in as <span className="font-medium text-black">{session.user?.username}</span>
+          Logged in as <span className="font-medium text-black">{session.user?.username || session.user?.name}</span>
         </p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {MY_APPS.map((app) => {
-          // FIXED: Convert to string to match the database "text" type
+          // Robust check: handles "1", 1, and ignores undefined/null
+          const rawValue = app.permissionKey ? userPermissions[app.permissionKey] : null;
           const hasAccess = app.permissionKey
-            ? String(userPermissions[app.permissionKey]) === "1"
+            ? String(rawValue) === "1"
             : true;
 
           const CardContent = (
