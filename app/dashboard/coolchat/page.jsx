@@ -11,6 +11,25 @@ export default function CoolChat() {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
+  // 1. Initialize state from localStorage if available
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark';
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (isDarkMode) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
   const handleUnlock = (enteredValue) => {
     if (!enteredValue || enteredValue.length < 16) {
       alert("SECURITY ERROR: SECRET_KEY MUST BE AT LEAST 16 CHARACTERS.");
@@ -86,28 +105,27 @@ export default function CoolChat() {
     });
   };
 
-  // --- LOGIN SCREEN ---
   if (isLocked) {
     return (
-      <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] border border-zinc-400 p-12 text-center">
-          <h1 className="font-black text-2xl mb-1 tracking-tighter text-black uppercase">ENCRYPTED TERMINAL</h1>
-          <p className="text-[10px] font-bold text-black mb-8 uppercase tracking-widest">ENTER CHAT SECRET TO ACCESS</p>
+      <div className="min-h-screen bg-zinc-300 dark:bg-zinc-950 flex items-center justify-center p-4 transition-colors">
+        <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] border border-zinc-400 dark:border-zinc-800 p-12 text-center">
+          <h1 className="font-black text-2xl mb-1 tracking-tighter text-black dark:text-white uppercase">ENCRYPTED TERMINAL</h1>
+          <p className="text-[10px] font-bold text-black dark:text-zinc-400 mb-8 uppercase tracking-widest">ENTER CHAT SECRET TO ACCESS</p>
           <input
             ref={inputRef}
             type="password"
             placeholder="SECRET_KEY (MIN. 16 CHARS)"
-            className="w-full p-4 border border-zinc-200 mb-4 font-mono text-center outline-none focus:border-black transition-colors text-black"
+            className="w-full p-4 border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 mb-4 font-mono text-center outline-none focus:border-black dark:focus:border-white transition-colors text-black dark:text-white"
             onKeyDown={(e) => { if (e.key === 'Enter') { handleUnlock(e.target.value); e.target.value = ''; } }}
           />
           <button
             onClick={() => { if (inputRef.current) { handleUnlock(inputRef.current.value); inputRef.current.value = ''; } }}
-            className="w-full bg-black text-white p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all mb-6 active:scale-95"
+            className="w-full bg-black dark:bg-white text-white dark:text-black p-4 font-bold uppercase tracking-widest hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-all mb-6 active:scale-95"
           >
             UNLOCK CHAT
           </button>
           <div className="mt-8">
-            <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black uppercase tracking-widest transition-colors">
+            <Link href="/dashboard" className="text-[10px] font-bold text-zinc-400 hover:text-black dark:hover:text-white uppercase tracking-widest transition-colors">
               RETURN TO DASHBOARD
             </Link>
           </div>
@@ -117,25 +135,18 @@ export default function CoolChat() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
-
-      {/* BOX: Forced dimensions via style + Tailwind for styling */}
+    <div className="min-h-screen bg-zinc-300 dark:bg-zinc-950 flex items-center justify-center p-4 transition-colors">
       <div
         style={{ width: '600px', height: '650px' }}
-        className="bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden"
+        className="bg-white dark:bg-zinc-900 rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 dark:border-zinc-800 overflow-hidden"
       >
-
-        {/* HEADER: 3-Column Grid for perfect alignment */}
-        <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[90px]">
-
-          {/* Left: Logo */}
+        <div className="w-full px-6 py-5 border-b dark:border-zinc-800 bg-white dark:bg-zinc-900 grid grid-cols-3 items-center min-h-[90px]">
           <div className="flex justify-start">
-            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
+            <h1 className="font-black text-[10px] tracking-[0.2em] text-black dark:text-white uppercase">
               COOLCHAT
             </h1>
           </div>
 
-          {/* Center: Status */}
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
@@ -143,13 +154,19 @@ export default function CoolChat() {
                 SECURE
               </span>
             </div>
-            <p className="text-[7px] font-black text-zinc-300 uppercase tracking-widest mt-1">
+            <p className="text-[7px] font-black text-zinc-300 dark:text-zinc-600 uppercase tracking-widest mt-1">
               24H AUTO-ERASE
             </p>
           </div>
 
-          {/* Right: Buttons Pushed to edge */}
           <div className="flex justify-end items-center gap-4">
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white transition-colors uppercase tracking-widest"
+            >
+              {isDarkMode ? 'LIGHT' : 'DARK'}
+            </button>
             <button
               onClick={clearChat}
               className="text-[10px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest"
@@ -158,26 +175,25 @@ export default function CoolChat() {
             </button>
             <button
               onClick={() => setIsLocked(true)}
-              className="text-[10px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-widest"
+              className="text-[10px] font-black text-zinc-400 hover:text-black dark:hover:text-white transition-colors uppercase tracking-widest"
             >
               LOCK
             </button>
           </div>
         </div>
 
-        {/* MESSAGE AREA: w-fit shrinks bubbles to text size */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white dark:bg-zinc-900">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
             return (
               <div key={i} className="flex flex-col items-start">
                 <div className="flex items-center gap-2 mb-1 ml-1">
-                  <span className={`text-[10px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
+                  <span className={`text-[10px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500'}`}>
                     {msg.username} {isAdmin && '• ADMIN'}
                   </span>
-                  <span className="text-[9px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
+                  <span className="text-[9px] font-bold text-zinc-300 dark:text-zinc-600 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
-                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[14px] max-w-[85%] w-fit font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[14px] max-w-[85%] w-fit font-medium ${isAdmin ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900 text-indigo-900 dark:text-indigo-200 shadow-sm' : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300'}`}>
                   {msg.text}
                 </div>
               </div>
@@ -185,16 +201,15 @@ export default function CoolChat() {
           })}
         </div>
 
-        {/* INPUT AREA */}
-        <div className="p-5 bg-zinc-50 border-t border-zinc-200">
-          <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[4px_4px_0px_black]">
+        <div className="p-5 bg-zinc-50 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800">
+          <form onSubmit={handleSend} className="flex border-2 border-black dark:border-white bg-white dark:bg-zinc-800 shadow-[4px_4px_0px_black] dark:shadow-[4px_4px_0px_white]">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Secure transmission..."
-              className="flex-1 px-4 py-4 text-base outline-none placeholder:text-zinc-400 font-mono"
+              className="flex-1 px-4 py-4 text-base outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-500 font-mono bg-transparent dark:text-white"
             />
-            <button type="submit" className="bg-black text-white px-8 rounded-none text-[11px] font-black uppercase tracking-widest">
+            <button type="submit" className="bg-black dark:bg-white text-white dark:text-black px-8 rounded-none text-[11px] font-black uppercase tracking-widest">
               SEND
             </button>
           </form>

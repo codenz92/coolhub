@@ -2,6 +2,7 @@ import type { Config } from 'tailwindcss';
 
 export default {
   // Added {js,jsx} to the pattern below
+  darkMode: 'class', // Line to enable dark mode support
   content: ['./app/**/*.{js,jsx,ts,tsx}', './content/**/*.mdx', './public/**/*.svg'],
   theme: {},
   future: {
