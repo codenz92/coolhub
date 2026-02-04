@@ -29,6 +29,7 @@ export default async function Dashboard() {
   // Assuming your database adapter adds the 'coolchat' column to the session user object
   // If your session doesn't have it yet, ensure your auth config includes it in the session callback
   const userPermissions = session.user as any;
+  const hasAccess = userPermissions.coolchat === 1;
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
