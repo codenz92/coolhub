@@ -1,6 +1,7 @@
 import './globals.css';
 
 import { GeistSans } from 'geist/font/sans';
+import { Providers } from './providers'; // Import the new providers component
 
 let title = 'CoolHub - Dashboard';
 let description =
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={GeistSans.variable}>{children}</body>
+      <Providers>{children}</Providers>
     </html>
   );
 }
