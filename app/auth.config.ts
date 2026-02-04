@@ -12,9 +12,10 @@ export const authConfig = {
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       const isOnAdmin = nextUrl.pathname.startsWith('/admin');
       const isOnDemo = nextUrl.pathname.startsWith('/dashboard/demo-app');
+      const isOnCoolChat = nextUrl.pathname.startsWith('/dashboard/coolchat');
 
       // 1. Protect routes: If trying to access Dashboard, Admin, or Demo
-      if (isOnDashboard || isOnAdmin || isOnDemo) {
+      if (isOnDashboard || isOnAdmin || isOnDemo || isOnCoolChat) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login
       }
