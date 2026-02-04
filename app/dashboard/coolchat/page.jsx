@@ -116,68 +116,68 @@ export default function CoolChat() {
     );
   }
 
-  // --- CHAT INTERFACE: BOXED AND RIGHT-ALIGNED BUTTONS ---
   return (
     <div className="min-h-screen bg-zinc-300 flex items-center justify-center p-4">
 
-      {/* 1. THE CONTAINED BOX: Fixed width, height, and white background */}
-      <div className="w-[600px] h-[850px] bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden">
+      {/* 1. THE BOX: Using inline styles for guaranteed size + Tailwind for the rest */}
+      <div
+        style={{ width: '600px', height: '850px' }}
+        className="bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden"
+      >
 
-        {/* THE HEADER: Divided into 3 columns */}
-        <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[100px]">
+        {/* 2. THE HEADER: 3-column grid to push buttons to the right edge */}
+        <div className="w-full px-6 py-5 border-b bg-white grid grid-cols-3 items-center min-h-[90px]">
 
-          {/* Logo (Left) */}
+          {/* Left Column: Logo */}
           <div className="flex justify-start">
-            <h1 className="font-black text-[9px] tracking-[0.2em] text-black uppercase">
+            <h1 className="font-black text-[10px] tracking-[0.2em] text-black uppercase">
               COOLCHAT
             </h1>
           </div>
 
-          {/* Status (Center) */}
+          {/* Center Column: Status */}
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center justify-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_#22c55e]" />
-              <span className="text-[7px] font-bold text-green-600 uppercase tracking-widest whitespace-nowrap">
+              <span className="text-[8px] font-bold text-green-600 uppercase tracking-widest">
                 SECURE
               </span>
             </div>
-            <p className="text-[6px] font-black text-zinc-300 uppercase tracking-widest mt-1">
+            <p className="text-[7px] font-black text-zinc-300 uppercase tracking-widest mt-1">
               24H AUTO-ERASE
             </p>
           </div>
 
-          {/* The Buttons (Pushed to the Right) */}
-          <div className="flex justify-end items-center gap-3">
+          {/* Right Column: Buttons pushed to the far right */}
+          <div className="flex justify-end items-center gap-4">
             <button
               onClick={clearChat}
-              className="text-[9px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest"
+              className="text-[10px] font-black text-zinc-300 hover:text-red-600 transition-colors uppercase tracking-widest"
             >
               CLEAR
             </button>
             <button
               onClick={() => setIsLocked(true)}
-              className="text-[9px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-widest"
+              className="text-[10px] font-black text-zinc-400 hover:text-black transition-colors uppercase tracking-widest"
             >
               LOCK
             </button>
           </div>
         </div>
 
-        {/* Message Area */}
+        {/* 3. MESSAGE AREA: w-fit makes bubbles only as wide as text */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
             return (
               <div key={i} className="flex flex-col items-start">
                 <div className="flex items-center gap-2 mb-1 ml-1">
-                  <span className={`text-[9px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
+                  <span className={`text-[10px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600' : 'text-zinc-400'}`}>
                     {msg.username} {isAdmin && '• ADMIN'}
                   </span>
-                  <span className="text-[8px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
+                  <span className="text-[9px] font-bold text-zinc-300 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
-
-                {/* Added w-fit here so the bubble wraps the text tightly */}
-                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[13px] max-w-[90%] w-fit font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
+                <div className={`px-4 py-2 rounded-2xl rounded-tl-none border text-[14px] max-w-[85%] w-fit font-medium ${isAdmin ? 'bg-indigo-50 border-indigo-100 text-indigo-900 shadow-sm' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
                   {msg.text}
                 </div>
               </div>
@@ -185,16 +185,16 @@ export default function CoolChat() {
           })}
         </div>
 
-        {/* Input area */}
+        {/* 4. INPUT AREA */}
         <div className="p-5 bg-zinc-50 border-t border-zinc-200">
-          <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[3px_3px_0px_black]">
+          <form onSubmit={handleSend} className="flex border-2 border-black bg-white shadow-[4px_4px_0px_black]">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Secure transmission..."
-              className="flex-1 px-4 py-3 text-sm outline-none placeholder:text-zinc-400 font-mono"
+              className="flex-1 px-4 py-4 text-base outline-none placeholder:text-zinc-400 font-mono"
             />
-            <button type="submit" className="bg-black text-white px-6 rounded-none text-[10px] font-black uppercase tracking-widest">
+            <button type="submit" className="bg-black text-white px-8 rounded-none text-[11px] font-black uppercase tracking-widest">
               SEND
             </button>
           </form>
