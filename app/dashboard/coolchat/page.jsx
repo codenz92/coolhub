@@ -121,7 +121,7 @@ export default function CoolChat() {
 
       {/* BOX: Forced dimensions via style + Tailwind for styling */}
       <div
-        style={{ width: '600px', height: '850px' }}
+        style={{ width: '600px', height: '650px' }}
         className="bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.2)] flex flex-col border border-zinc-400 overflow-hidden"
       >
 
