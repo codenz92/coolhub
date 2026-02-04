@@ -26,6 +26,10 @@ export default async function Dashboard() {
 
   if (!session) redirect('/login');
 
+  // DEBUG: This will print in your Vercel Terminal/Logs
+  // If 'coolchat' is missing here, the issue is in your auth.ts callbacks or auth.config.ts
+  console.log("DEBUG: User Session Data:", JSON.stringify(session.user, null, 2));
+
   const userPermissions = (session.user as any) || {};
 
   return (
