@@ -13,7 +13,7 @@ export default function DemoApp() {
                     href="/dashboard"
                     className="bg-black text-white px-6 py-3 rounded-lg hover:bg-zinc-800 transition-all inline-block"
                 >
-                    ← Return to Dashboard
+                    Return to Dashboard
                 </Link>
             </div>
         </div>
