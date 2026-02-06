@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
 
 export default function CoolChat() {
   const { data: session } = useSession(); // 2. Get current user data
@@ -196,7 +196,7 @@ export default function CoolChat() {
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-white dark:bg-zinc-900">
           {messages.map((msg, i) => {
-            const isCurrentUser = msg.username === session?.user?.name;
+            const isCurrentUser = msg.username === myUsername;
             return (
               <div key={i} className="flex flex-col items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="flex items-center gap-2 mb-1 ml-1">
