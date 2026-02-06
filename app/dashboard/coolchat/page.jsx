@@ -5,7 +5,7 @@ import Link from 'next/link';
 import CryptoJS from 'crypto-js';
 
 export default function CoolChat() {
-  const { data: session } = useSession();
+  const session = useSession()?.data;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [chatPassword, setChatPassword] = useState('');
