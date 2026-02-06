@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
-import { useSession } from 'next-auth/react';
 
 export default function CoolChat() {
   const [messages, setMessages] = useState([]);
@@ -100,8 +99,7 @@ export default function CoolChat() {
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || !chatPassword) return;
-    const myUsername = session?.user?.username || 'Guest';
-    const isMessageFromMe = (msgUsername) => msgUsername === myUsername;
+    const myUsername = 'dev';
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
@@ -196,8 +194,7 @@ export default function CoolChat() {
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-white dark:bg-zinc-900">
           {messages.map((msg, i) => {
-            const isMe = msg.username === currentUsername;
-            const isAdmin = msg.role === 'admin';
+            const isAdmin = msg.username?.toLowerCase() === 'dev';
             return (
               <div key={i} className="flex flex-col items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="flex items-center gap-2 mb-1 ml-1">
@@ -206,10 +203,7 @@ export default function CoolChat() {
                   </span>
                   <span className="text-[8px] sm:text-[9px] font-bold text-zinc-300 dark:text-zinc-600 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
-                <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl border text-[12px] sm:text-[14px] max-w-[90%] sm:max-w-[85%] w-fit font-medium 
-                  ${isMe ? 'rounded-tr-none bg-blue-600 border-blue-500 text-white shadow-md' :
-                    isAdmin ? 'rounded-tl-none bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900 text-indigo-900 dark:text-indigo-200 shadow-sm' :
-                      'rounded-tl-none bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300'}`}>
+                <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl rounded-tl-none border text-[12px] sm:text-[14px] max-w-[90%] sm:max-w-[85%] w-fit font-medium ${isAdmin ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900 text-indigo-900 dark:text-indigo-200 shadow-sm' : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300'}`}>
                   {msg.text}
                 </div>
               </div>
