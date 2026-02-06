@@ -1,40 +1,31 @@
 import { db, users } from "../db";
 import { auth } from "../auth";
 import { redirect } from "next/navigation";
-import { deleteUser, addUser, togglePermission, updateRole } from "./actions";
+import { addUser } from "./actions";
 import Link from "next/link";
+import UserRow from "./UserRow";
 
 export default async function AdminPage() {
     const session = await auth();
     const currentUsername = session?.user?.username || "";
 
-    // Check if user is allowed to see this page
-    if (!["dev", "rio"].includes(currentUsername)) {
-        redirect("/dashboard");
-    }
+    if (!["dev", "rio"].includes(currentUsername)) redirect("/dashboard");
 
-    // Try/Catch block inside the component can help debug DB issues
-    let allUsers = [];
-    try {
-        allUsers = await db.select().from(users);
-    } catch (error) {
-        console.error("Database fetch failed:", error);
-        return <div className="p-8">Database connection error. Check Vercel logs.</div>;
-    }
+    const allUsers = await db.select().from(users);
 
     return (
         <div className="p-8 max-w-5xl mx-auto">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-                <Link href="/dashboard" className="text-sm font-medium border px-4 py-2 rounded-lg hover:bg-gray-50">← Dashboard</Link>
+                <h1 className="text-3xl font-bold tracking-tight text-black">User Management</h1>
+                <Link href="/dashboard" className="text-sm font-medium border px-4 py-2 rounded-lg hover:bg-gray-50 text-black">← Dashboard</Link>
             </div>
 
             <div className="bg-white border rounded-xl p-6 mb-8 shadow-sm">
-                <h2 className="text-lg font-semibold mb-4">Create New User</h2>
+                <h2 className="text-lg font-semibold mb-4 text-black">Create New User</h2>
                 <form action={addUser} className="flex flex-col md:flex-row gap-4">
-                    <input name="username" placeholder="Username" className="flex-1 p-2 border rounded-lg outline-none" required />
-                    <input name="password" type="password" placeholder="Password" className="flex-1 p-2 border rounded-lg outline-none" required />
-                    <select name="role" className="p-2 border rounded-lg bg-white outline-none">
+                    <input name="username" placeholder="Username" className="flex-1 p-2 border rounded-lg outline-none text-black" required />
+                    <input name="password" type="password" placeholder="Password" className="flex-1 p-2 border rounded-lg outline-none text-black" required />
+                    <select name="role" className="p-2 border rounded-lg bg-white outline-none text-black">
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
                     </select>
@@ -54,52 +45,7 @@ export default async function AdminPage() {
                     </thead>
                     <tbody>
                         {allUsers.map((user) => (
-                            <tr key={user.id} className="border-b last:border-0 hover:bg-gray-50/50">
-                                <td className="p-4 font-medium">{user.username}</td>
-
-                                <td className="p-4 text-center">
-                                    <form action={updateRole} className="flex justify-center">
-                                        <input type="hidden" name="userId" value={user.id} />
-                                        <select
-                                            name="role"
-                                            defaultValue={user.role || 'user'}
-                                            onChange={(e) => e.currentTarget.form?.requestSubmit()}
-                                            className="text-xs font-semibold border rounded px-2 py-1 bg-transparent cursor-pointer"
-                                        >
-                                            <option value="user">USER</option>
-                                            <option value="admin">ADMIN</option>
-                                        </select>
-                                    </form>
-                                </td>
-
-                                <td className="p-4">
-                                    <form action={togglePermission} className="flex justify-center">
-                                        <input type="hidden" name="userId" value={user.id} />
-                                        <input type="hidden" name="currentStatus" value={user.coolchat || '0'} />
-                                        <button className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border transition-all ${user.coolchat === '1' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-zinc-100 text-zinc-400 border-zinc-200'}`}>
-                                            {user.coolchat === '1' ? '● ACCESS GRANTED' : '○ ACCESS LOCKED'}
-                                        </button>
-                                    </form>
-                                </td>
-
-                                <td className="p-4 text-right">
-                                    {user.username !== currentUsername ? (
-                                        <form
-                                            action={deleteUser}
-                                            onSubmit={(e) => {
-                                                if (!confirm(`Are you sure you want to delete ${user.username}?`)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                        >
-                                            <input type="hidden" name="id" value={user.id} />
-                                            <button className="text-red-400 hover:text-red-600 text-sm font-medium">Delete</button>
-                                        </form>
-                                    ) : (
-                                        <span className="text-gray-400 text-xs italic">You</span>
-                                    )}
-                                </td>
-                            </tr>
+                            <UserRow key={user.id} user={user} currentUsername={currentUsername} />
                         ))}
                     </tbody>
                 </table>
