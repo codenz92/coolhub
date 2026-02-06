@@ -196,7 +196,7 @@ export default function CoolChat() {
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-white dark:bg-zinc-900">
           {messages.map((msg, i) => {
-            const isAdmin = msg.username === session?.user?.username && session?.user?.role === 'admin';
+            const isAdmin = msg.username === session?.user?.role === 'admin';
             const isMine = msg.username === session?.user?.username;
             return (
               <div key={i} className="flex flex-col items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
