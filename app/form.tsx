@@ -28,7 +28,7 @@ export function Form({
           id="username"
           name="username"
           type="text"
-          placeholder="username"
+          placeholder="cooluser"
           autoComplete="username"
           required
           className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
@@ -45,6 +45,7 @@ export function Form({
           id="password"
           name="password"
           type="password"
+          placeholder="••••••••"
           required
           className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
         />
