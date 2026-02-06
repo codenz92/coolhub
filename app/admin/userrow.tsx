@@ -2,7 +2,15 @@
 
 import { updateRole, deleteUser, togglePermission } from "./actions";
 
-export default function UserRow({ user, currentUsername }: { user: any, currentUsername: string }) {
+interface User {
+    id: number;
+    username: string | null; // Changed from string
+    role: string | null;
+    coolchat: string | null;
+    password?: string | null; // Added this just in case
+}
+
+export default function UserRow({ user, currentUsername }: { user: User, currentUsername: string }) {
     return (
         <tr className="border-b last:border-0 hover:bg-gray-50/50">
             <td className="p-4 font-medium text-black">{user.username}</td>
@@ -14,15 +22,15 @@ export default function UserRow({ user, currentUsername }: { user: any, currentU
                         name="role"
                         defaultValue={user.role || 'user'}
                         onChange={(e) => e.currentTarget.form?.requestSubmit()}
-                        className="text-xs font-semibold border rounded px-2 py-1 bg-transparent cursor-pointer text-black"
+                        className="text-xs font-semibold border rounded px-2 py-1 bg-transparent cursor-pointer text-black outline-none"
                     >
-                        <option value="user">USER PERSON</option>
+                        <option value="user">USER</option>
                         <option value="admin">ADMIN</option>
                     </select>
                 </form>
             </td>
 
-            <td className="p-4">
+            <td className="p-4 text-center">
                 <form action={togglePermission} className="flex justify-center">
                     <input type="hidden" name="userId" value={user.id} />
                     <input type="hidden" name="currentStatus" value={user.coolchat || '0'} />
@@ -43,10 +51,12 @@ export default function UserRow({ user, currentUsername }: { user: any, currentU
                         }}
                     >
                         <input type="hidden" name="id" value={user.id} />
-                        <button className="text-red-400 hover:text-red-600 text-sm font-medium">Delete</button>
+                        <button className="text-red-400 hover:text-red-600 text-sm font-medium transition-colors">
+                            Delete
+                        </button>
                     </form>
                 ) : (
-                    <span className="text-gray-400 text-xs italic font-bold">YOU</span>
+                    <span className="text-gray-400 text-xs italic font-bold select-none">YOU</span>
                 )}
             </td>
         </tr>
