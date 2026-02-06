@@ -1,11 +1,9 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import CryptoJS from 'crypto-js';
 
 export default function CoolChat() {
-  const session = useSession()?.data;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [chatPassword, setChatPassword] = useState('');
@@ -101,7 +99,7 @@ export default function CoolChat() {
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim() || !chatPassword) return;
-    const myUsername = session?.user?.username || 'Anonymous';
+    const myUsername = session?.user?.username || 'Anonymous';;
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const encryptedUser = CryptoJS.AES.encrypt(myUsername, chatPassword).toString();
     const encryptedText = CryptoJS.AES.encrypt(input, chatPassword).toString();
@@ -197,11 +195,12 @@ export default function CoolChat() {
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-white dark:bg-zinc-900">
           {messages.map((msg, i) => {
             const isAdmin = msg.username?.toLowerCase() === 'dev';
+            const isMine = msg.username === (session?.user?.name || 'Anonymous');
             return (
               <div key={i} className="flex flex-col items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <div className="flex items-center gap-2 mb-1 ml-1">
-                  <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500'}`}>
-                    {msg.username} {isAdmin && '• ADMIN'}
+                  <span className={`text-[9px] sm:text-[10px] font-black uppercase tracking-tighter ${isAdmin ? 'text-indigo-600 dark:text-indigo-400' : isMine ? 'text-green-600 dark:text-green-400' : 'text-zinc-400 dark:text-zinc-500'}`}>
+                    {msg.username} {isAdmin && '• ADMIN'} {isMine && '• YOU'}
                   </span>
                   <span className="text-[8px] sm:text-[9px] font-bold text-zinc-300 dark:text-zinc-600 tracking-tighter uppercase">{msg.displayTime}</span>
                 </div>
