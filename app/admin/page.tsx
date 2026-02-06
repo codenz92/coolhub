@@ -1,4 +1,3 @@
-// app/admin/page.tsx
 import { db, users } from "../db";
 import { auth } from "../auth";
 import { redirect } from "next/navigation";
@@ -9,9 +8,19 @@ export default async function AdminPage() {
     const session = await auth();
     const currentUsername = session?.user?.username || "";
 
-    if (!["dev", "rio"].includes(currentUsername)) redirect("/dashboard");
+    // Check if user is allowed to see this page
+    if (!["dev", "rio"].includes(currentUsername)) {
+        redirect("/dashboard");
+    }
 
-    const allUsers = await db.select().from(users);
+    // Try/Catch block inside the component can help debug DB issues
+    let allUsers = [];
+    try {
+        allUsers = await db.select().from(users);
+    } catch (error) {
+        console.error("Database fetch failed:", error);
+        return <div className="p-8">Database connection error. Check Vercel logs.</div>;
+    }
 
     return (
         <div className="p-8 max-w-5xl mx-auto">
@@ -87,7 +96,7 @@ export default async function AdminPage() {
                                             <button className="text-red-400 hover:text-red-600 text-sm font-medium">Delete</button>
                                         </form>
                                     ) : (
-                                        <span className="text-gray-300 text-xs italic">Current Session</span>
+                                        <span className="text-gray-400 text-xs italic">You</span>
                                     )}
                                 </td>
                             </tr>

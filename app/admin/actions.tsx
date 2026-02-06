@@ -11,9 +11,9 @@ export async function deleteUser(formData: FormData) {
     const currentUsername = session?.user?.username;
     const id = Number(formData.get("id"));
 
-    if (!id) return;
+    if (!id || !currentUsername) return;
 
-    // Fixed: Changed .get() to use array indexing for Postgres compatibility
+    // Postgres-compatible select
     const results = await db.select().from(users).where(eq(users.id, id)).limit(1);
     const targetUser = results[0];
 
@@ -22,12 +22,11 @@ export async function deleteUser(formData: FormData) {
     // Prevent self-deletion
     if (targetUser.username === currentUsername) return;
 
-    // Security: Only 'dev' or 'rio' can delete other admins
-    const isSuperAdmin = ["dev", "rio"].includes(currentUsername || "");
+    // Only 'dev' or 'rio' can delete other admins
+    const isSuperAdmin = ["dev", "rio"].includes(currentUsername);
     if (targetUser.role === 'admin' && !isSuperAdmin) return;
 
     await db.delete(users).where(eq(users.id, id));
-
     revalidatePath("/admin");
 }
 
