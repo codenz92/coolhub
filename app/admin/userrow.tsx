@@ -16,7 +16,7 @@ export default function UserRow({ user, currentUsername }: { user: any, currentU
                         onChange={(e) => e.currentTarget.form?.requestSubmit()}
                         className="text-xs font-semibold border rounded px-2 py-1 bg-transparent cursor-pointer text-black"
                     >
-                        <option value="user">USER</option>
+                        <option value="user">USER PERSON</option>
                         <option value="admin">ADMIN</option>
                     </select>
                 </form>

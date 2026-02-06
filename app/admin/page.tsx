@@ -3,7 +3,7 @@ import { auth } from "../auth";
 import { redirect } from "next/navigation";
 import { addUser } from "./actions";
 import Link from "next/link";
-import UserRow from "./userrow";
+import UserRow from "./UserRow";
 
 export default async function AdminPage() {
     const session = await auth();
