@@ -15,7 +15,7 @@ const MY_APPS = [
   {
     name: "Demo app",
     description: "Launch the internal demo app living in your project.",
-    url: "/dashboard/demo-app", // Ensure this matches your folder name in /app
+    url: "/dashboard/ip-lookup", // Ensure this matches your folder name in /app
     icon: "🚀",
     color: "bg-orange-500",
   },
