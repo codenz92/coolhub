@@ -15,17 +15,7 @@ export default function Login() {
           // Added prevState as the first argument to match useFormState
           action={async (prevState: any, formData: FormData) => {
             'use server';
-            try {
-              await signIn('credentials', {
-                redirectTo: '/dashboard',
-              });
-            } catch (error) {
-              if (isRedirectError(error)) {
-                throw error;
-              }
-
-              return 'Invalid username or password';
-            }
+            redirectTo: '/dashboard';
           }}
         >
           <SubmitButton>Sign in</SubmitButton>
