@@ -11,7 +11,7 @@ export default function Login() {
   return (
     <div className="relative flex min-h-screen w-screen items-center justify-center bg-[#050505] overflow-hidden font-sans selection:bg-emerald-500/30">
       {/* Background Layout */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20" />
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[120px] animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-600/10 rounded-full blur-[120px] animate-pulse [animation-delay:2s]" />
@@ -25,7 +25,7 @@ export default function Login() {
             <div className="relative w-20 h-20 bg-zinc-900 border border-zinc-800 rounded-[2rem] flex items-center justify-center shadow-[0_0_50px_-12px_rgba(16,185,129,0.3)] transition-all duration-500 group-hover:border-emerald-500/50">
               <span className="text-3xl font-black text-white tracking-tighter drop-shadow-md">CH</span>
               <div className="absolute inset-0 overflow-hidden rounded-[2rem]">
-                <div className="w-full h-[2px] bg-emerald-500/50 blur-[2px] absolute top-0 animate-[scan_3s_ease-in-out_infinite]" />
+                <div className="w-full h-[2px] bg-emerald-500/50 blur-[2px] absolute top-0 animate-scan" />
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@ export default function Login() {
                       placeholder="id_cooluser"
                     />
                   </div>
-                  {/* Password Field */}
+                  {/* Access Key Field */}
                   <div>
                     <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-2 ml-1">
                       Access Key
@@ -79,8 +79,8 @@ export default function Login() {
                 </div>
 
                 {errorMessage && (
-                  <div className="bg-red-500/10 border border-red-500/20 rounded-xl py-3 px-4 animate-in fade-in slide-in-from-top-2">
-                    <p className="text-[10px] font-black text-red-400 uppercase tracking-widest text-center">
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-xl py-3 px-4 animate-in fade-in slide-in-from-top-2 text-center">
+                    <p className="text-[10px] font-black text-red-400 uppercase tracking-widest">
                       {errorMessage}
                     </p>
                   </div>
@@ -102,9 +102,9 @@ export default function Login() {
         {/* Footer */}
         <footer className="mt-12 flex flex-col items-center gap-6">
           <div className="flex justify-center gap-8 text-[10px] font-black uppercase tracking-widest text-zinc-500">
-            <Link href="#" className="hover:text-emerald-400 transition-colors duration-300">Support</Link>
-            <Link href="#" className="hover:text-emerald-400 transition-colors duration-300">Registry</Link>
-            <Link href="#" className="hover:text-emerald-400 transition-colors duration-300">Legal</Link>
+            <Link href="#" className="hover:text-emerald-400 transition-colors">Support</Link>
+            <Link href="#" className="hover:text-emerald-400 transition-colors">Registry</Link>
+            <Link href="#" className="hover:text-emerald-400 transition-colors">Legal</Link>
           </div>
           <div className="group flex items-center gap-3 px-4 py-2 rounded-full bg-zinc-900/50 border border-white/5 hover:border-emerald-500/30 transition-all duration-500">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
@@ -114,14 +114,6 @@ export default function Login() {
           </div>
         </footer>
       </div>
-
-      <style jsx global>{`
-        @keyframes scan {
-          0% { top: 0%; opacity: 0; }
-          50% { opacity: 1; }
-          100% { top: 100%; opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 }

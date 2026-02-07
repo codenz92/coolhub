@@ -1,12 +1,24 @@
 import type { Config } from 'tailwindcss';
 
 export default {
-  // Added {js,jsx} to the pattern below
-  darkMode: 'class', // Line to enable dark mode support
+  darkMode: 'class',
   content: ['./app/**/*.{js,jsx,ts,tsx}', './content/**/*.mdx', './public/**/*.svg'],
-  theme: {},
+  theme: {
+    extend: {
+      keyframes: {
+        scan: {
+          '0%': { top: '0%', opacity: '0' },
+          '50%': { opacity: '1' },
+          '100%': { top: '100%', opacity: '0' },
+        },
+      },
+      animation: {
+        scan: 'scan 3s ease-in-out infinite',
+      },
+    },
+  },
   future: {
     hoverOnlyWhenSupported: true,
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
