@@ -13,7 +13,7 @@ const MY_APPS = [
     permission: "coolchat",
   },
   {
-    name: "IP LOOKUP",
+    name: "NET INSPECTOR",
     description: "Scan any IP address for geolocation and network details.",
     url: "/dashboard/ip-lookup", // Ensure this matches your folder name in /app
     icon: "📍",
@@ -68,7 +68,7 @@ export default async function Dashboard() {
                   )}
 
                   {/* NEW GREEN FREE Badge Logic */}
-                  {app.name === "IP LOOKUP" && (
+                  {app.name === "NET INSPECTOR" && (
                     <span className="relative flex h-5 w-fit items-center justify-center">
                       <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-20"></span>
                       <span className="relative inline-flex items-center text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">

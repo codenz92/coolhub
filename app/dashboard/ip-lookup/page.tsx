@@ -23,11 +23,11 @@ export default function IpLookupApp() {
             <div className="max-w-5xl mx-auto">
                 <header className="flex justify-between items-center mb-10">
                     <div>
-                        <h1 className="text-3xl font-mono font-bold">NET_INSPECTOR v1.0</h1>
+                        <h1 className="text-3xl font-mono font-bold">NET INSPECTOR v1.0</h1>
                         <p className="text-zinc-500 text-sm mt-1">Deep packet geolocation & routing analysis</p>
                     </div>
                     <Link href="/dashboard" className="px-4 py-2 bg-zinc-800 rounded border border-zinc-700 hover:bg-zinc-700 transition text-sm">
-                        TERMINAL_EXIT
+                        EXIT
                     </Link>
                 </header>
 
@@ -59,7 +59,7 @@ export default function IpLookupApp() {
                         {/* Detailed Technical Specs */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="bg-zinc-800/50 border border-zinc-700 p-6 rounded-xl">
-                                <h3 className="text-blue-400 font-mono text-xs mb-4 underline">GEOGRAPHIC_INTEL</h3>
+                                <h3 className="text-blue-400 font-mono text-xs mb-4 underline">GEOGRAPHIC INTEL</h3>
                                 <div className="space-y-3">
                                     <DataRow label="Country" value={data.country} />
                                     <DataRow label="Region" value={data.regionName} />
@@ -70,7 +70,7 @@ export default function IpLookupApp() {
                             </div>
 
                             <div className="bg-zinc-800/50 border border-zinc-700 p-6 rounded-xl">
-                                <h3 className="text-emerald-400 font-mono text-xs mb-4 underline">NETWORK_INTEL</h3>
+                                <h3 className="text-emerald-400 font-mono text-xs mb-4 underline">NETWORK INTEL</h3>
                                 <div className="space-y-3">
                                     <DataRow label="ISP" value={data.isp} />
                                     <DataRow label="Org" value={data.org} />
@@ -87,7 +87,7 @@ export default function IpLookupApp() {
                                 onClick={() => setShowRaw(!showRaw)}
                                 className="text-xs text-zinc-500 hover:text-zinc-300 underline font-mono"
                             >
-                                {showRaw ? 'HIDE_RAW_DATA' : 'VIEW_RAW_DATA'}
+                                {showRaw ? 'HIDE RAW DATA' : 'VIEW RAW DATA'}
                             </button>
                             {showRaw && (
                                 <pre className="mt-4 p-4 bg-black border border-zinc-800 rounded text-[10px] text-emerald-500 overflow-x-auto shadow-inner">
@@ -98,7 +98,7 @@ export default function IpLookupApp() {
                     </div>
                 ) : (
                     <div className="h-64 flex flex-col items-center justify-center border border-dashed border-zinc-700 rounded-xl bg-zinc-800/20">
-                        <div className="animate-pulse text-zinc-600 font-mono">{loading ? 'SCANNING_PORTS...' : 'AWAITING_INPUT'}</div>
+                        <div className="animate-pulse text-zinc-600 font-mono">{loading ? 'SCANNING PORTS...' : 'AWAITING INPUT'}</div>
                     </div>
                 )}
             </div>
