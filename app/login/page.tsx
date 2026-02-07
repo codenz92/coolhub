@@ -18,8 +18,6 @@ export default function Login() {
             try {
               await signIn('credentials', {
                 redirectTo: '/dashboard',
-                username: formData.get('username') as string,
-                password: formData.get('password') as string,
               });
             } catch (error) {
               if (isRedirectError(error)) {
