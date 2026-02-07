@@ -7,65 +7,88 @@ export default function IpLookupApp() {
     const [data, setData] = useState<any>(null);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
+    const [history, setHistory] = useState<string[]>([]);
+
+    // Initialize history from browser storage and load initial IP
+    useEffect(() => {
+        const saved = localStorage.getItem('ip_history');
+        if (saved) setHistory(JSON.parse(saved));
+        handleSearch();
+    }, []);
 
     const handleSearch = async (ip?: string) => {
         setLoading(true);
         const result = await getIpData(ip);
-        setData(result);
+        if (result.status === 'success') {
+            setData(result);
+            // Save to history, keeping only the 5 most recent unique scans
+            setHistory(prev => {
+                const updated = [result.query, ...prev.filter(i => i !== result.query)].slice(0, 5);
+                localStorage.setItem('ip_history', JSON.stringify(updated));
+                return updated;
+            });
+        }
         setLoading(false);
     };
 
-    // Load the user's current IP info on mount
-    useEffect(() => { handleSearch(); }, []);
-
     return (
-        <div className="min-h-screen bg-zinc-50 p-8 text-black">
-            <div className="max-w-3xl mx-auto">
-                <div className="flex justify-between items-center mb-12">
-                    <h1 className="text-3xl font-bold tracking-tight">IP Scanner 📡</h1>
+        <div className="min-h-screen bg-zinc-50 p-6 text-black flex flex-col lg:flex-row gap-8">
+            {/* Left Sidebar: Scan History */}
+            <aside className="w-full lg:w-64 space-y-4">
+                <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Recent Scans</h2>
+                <div className="flex flex-col gap-2">
+                    {history.map(ip => (
+                        <button key={ip} onClick={() => handleSearch(ip)} className="text-left p-3 text-sm font-mono bg-white border border-zinc-200 rounded-xl hover:border-black transition shadow-sm">
+                            {ip}
+                        </button>
+                    ))}
+                </div>
+            </aside>
+
+            {/* Main Content Area */}
+            <div className="flex-1 max-w-4xl">
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold">Network Intelligence 📡</h1>
                     <Link href="/dashboard" className="text-sm text-zinc-500 hover:text-black">← Back</Link>
                 </div>
 
-                {/* Search Bar */}
-                <div className="flex gap-2 mb-8 bg-white p-2 rounded-xl shadow-sm border border-zinc-200">
+                {/* Search Interface */}
+                <div className="flex gap-2 mb-8 bg-white p-2 rounded-2xl shadow-sm border border-zinc-200">
                     <input
-                        type="text"
-                        placeholder="Search any IP address..."
-                        className="flex-1 px-4 py-2 outline-none"
+                        type="text" placeholder="Scan any IP Address..." className="flex-1 px-4 outline-none"
                         onChange={(e) => setInput(e.target.value)}
                     />
-                    <button
-                        onClick={() => handleSearch(input)}
-                        className="bg-black text-white px-6 py-2 rounded-lg font-medium"
-                    >
-                        {loading ? '...' : 'Lookup'}
+                    <button onClick={() => handleSearch(input)} className="bg-black text-white px-8 py-3 rounded-xl font-bold transition-all active:scale-95">
+                        {loading ? 'Scanning...' : 'Lookup'}
                     </button>
                 </div>
 
-                {/* Results Grid */}
                 {data && data.status === 'success' ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <ResultCard label="IP Address" value={data.query} />
-                        <ResultCard label="Location" value={`${data.city}, ${data.regionName}, ${data.country}`} />
-                        <ResultCard label="Zip Code" value={data.zip || "N/A"} />
-                        <ResultCard label="ISP" value={data.isp} />
-                        <ResultCard label="Organization" value={data.org || "N/A"} />
-                        <ResultCard label="AS Number" value={data.as} />
-                        <ResultCard label="Timezone" value={data.timezone} />
-                        <ResultCard label="Latitude" value={data.lat.toString()} />
-                        <ResultCard label="Longitude" value={data.lon.toString()} />
+                    <div className="space-y-6">
+                        {/* Primary Data Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <ResultCard label="IP Address" value={data.query} />
+                            <ResultCard label="Provider" value={data.isp} />
+                            <ResultCard label="Organization" value={data.org || 'N/A'} />
+                            <ResultCard label="Location" value={`${data.city}, ${data.country}`} />
+                            <ResultCard label="Currency" value={data.currency} />
+                            <ResultCard label="Timezone" value={data.timezone} />
+                        </div>
 
-                        {/* Security / VPN Check Card */}
-                        <div className={`p-6 rounded-2xl border shadow-sm ${data.proxy ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200'}`}>
-                            <p className="text-xs font-semibold text-zinc-500 uppercase mb-1">Security Check</p>
-                            <p className={`text-lg font-bold ${data.proxy ? 'text-red-700' : 'text-emerald-700'}`}>
-                                {data.proxy ? '🚩 VPN/Proxy Detected' : '✅ Direct Connection'}
-                            </p>
+                        {/* Connection Intelligence */}
+                        <div className="bg-white border border-zinc-200 rounded-3xl p-6 shadow-sm">
+                            <h3 className="text-xs font-bold text-zinc-400 uppercase mb-4">Connection Details</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <DetailBadge label="Mobile" active={data.mobile} />
+                                <DetailBadge label="Proxy/VPN" active={data.proxy} danger />
+                                <DetailBadge label="Hosting/DC" active={data.hosting} />
+                                <DetailBadge label="Business" active={data.business} />
+                            </div>
                         </div>
                     </div>
                 ) : (
-                    <div className="p-12 text-center text-zinc-400 border-2 border-dashed rounded-2xl">
-                        {loading ? 'Locating...' : 'Enter a valid IP to see details'}
+                    <div className="p-20 text-center border-2 border-dashed rounded-3xl text-zinc-300">
+                        {loading ? 'Interpreting network packets...' : 'Ready for a new scan'}
                     </div>
                 )}
             </div>
@@ -76,8 +99,20 @@ export default function IpLookupApp() {
 function ResultCard({ label, value }: { label: string, value: string }) {
     return (
         <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
-            <p className="text-xs font-semibold text-zinc-400 uppercase mb-1">{label}</p>
-            <p className="text-lg font-mono text-zinc-900">{value}</p>
+            <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight mb-1">{label}</p>
+            <p className="text-lg font-mono font-medium truncate text-zinc-900">{value}</p>
+        </div>
+    );
+}
+
+function DetailBadge({ label, active, danger }: { label: string, active: boolean, danger?: boolean }) {
+    return (
+        <div className={`p-4 rounded-2xl text-center border transition-all ${active
+            ? (danger ? 'bg-red-50 border-red-200 text-red-700 font-bold' : 'bg-emerald-50 border-emerald-200 text-emerald-700')
+            : 'bg-zinc-50 border-zinc-100 text-zinc-400'
+            }`}>
+            <p className="text-[11px] mb-1">{label}</p>
+            <p className="text-xs">{active ? 'DETECTED' : 'NO'}</p>
         </div>
     );
 }
