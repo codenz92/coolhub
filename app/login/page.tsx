@@ -1,15 +1,21 @@
+'use client'; // Required to handle the form state in the browser
+
 import Link from 'next/link';
+import { useFormState } from 'react-dom'; // Use useActionState if on Next.js 15
 import { Form } from 'app/form';
 import { SubmitButton } from 'app/submit-button';
 import { authenticate } from './actions';
 
 export default function Login() {
+  // errorMessage captures the return value from the authenticate action
+  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+
   return (
-    <div className="relative flex min-h-screen w-screen items-center justify-center bg-[#fafafa] overflow-hidden">
+    <div className="relative flex min-h-screen w-screen items-center justify-center bg-[#fafafa] overflow-hidden font-sans">
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
 
-      {/* Decorative Glow - Matches your emerald/blue accents */}
+      {/* Decorative Glow - Matches emerald/blue accents from image_f34083.png */}
       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-50/50 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-50/50 rounded-full blur-[120px] pointer-events-none" />
 
@@ -41,9 +47,18 @@ export default function Login() {
         {/* Form Container */}
         <div className="group overflow-hidden rounded-[2.5rem] border border-gray-200 bg-white p-1 shadow-[0_20px_50px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
           <div className="bg-white rounded-[2.2rem] p-8">
-            <Form action={authenticate}>
+            {/* Pass the dispatch from useFormState to the Form component */}
+            <Form action={dispatch}>
               <div className="space-y-6">
-                {/* SubmitButton inside Form */}
+                {/* Error Message Display */}
+                {errorMessage && (
+                  <div className="bg-red-50 border border-red-100 rounded-xl py-3 px-4 animate-in fade-in slide-in-from-top-2">
+                    <p className="text-[10px] font-black text-red-600 uppercase tracking-widest text-center">
+                      {errorMessage}
+                    </p>
+                  </div>
+                )}
+
                 <SubmitButton>Access Dashboard</SubmitButton>
               </div>
             </Form>
