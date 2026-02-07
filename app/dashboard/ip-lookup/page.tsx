@@ -44,11 +44,24 @@ export default function IpLookupApp() {
 
                 {/* Results Grid */}
                 {data && data.status === 'success' ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <ResultCard label="IP Address" value={data.query} />
-                        <ResultCard label="Location" value={`${data.city}, ${data.country}`} />
-                        <ResultCard label="ISP / Provider" value={data.isp} />
+                        <ResultCard label="Location" value={`${data.city}, ${data.regionName}, ${data.country}`} />
+                        <ResultCard label="Zip Code" value={data.zip || "N/A"} />
+                        <ResultCard label="ISP" value={data.isp} />
+                        <ResultCard label="Organization" value={data.org || "N/A"} />
+                        <ResultCard label="AS Number" value={data.as} />
                         <ResultCard label="Timezone" value={data.timezone} />
+                        <ResultCard label="Latitude" value={data.lat.toString()} />
+                        <ResultCard label="Longitude" value={data.lon.toString()} />
+
+                        {/* Security / VPN Check Card */}
+                        <div className={`p-6 rounded-2xl border shadow-sm ${data.proxy ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200'}`}>
+                            <p className="text-xs font-semibold text-zinc-500 uppercase mb-1">Security Check</p>
+                            <p className={`text-lg font-bold ${data.proxy ? 'text-red-700' : 'text-emerald-700'}`}>
+                                {data.proxy ? '🚩 VPN/Proxy Detected' : '✅ Direct Connection'}
+                            </p>
+                        </div>
                     </div>
                 ) : (
                     <div className="p-12 text-center text-zinc-400 border-2 border-dashed rounded-2xl">

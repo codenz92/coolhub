@@ -9,7 +9,8 @@ export async function getIpData(targetIp?: string) {
 
     const queryIp = targetIp || visitorIp;
 
-    const response = await fetch(`http://ip-api.com/json/${queryIp}`);
+    // Added extended fields (66842623) to the fetch URL
+    const response = await fetch(`http://ip-api.com/json/${queryIp}?fields=66842623`);
     const data = await response.json();
 
     return data;
