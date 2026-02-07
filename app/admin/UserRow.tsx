@@ -16,17 +16,17 @@ export default function UserRow({ user, currentUsername }: { user: User, current
             <td className="p-4 font-medium text-black">{user.username}</td>
 
             <td className="p-4 text-center">
-                <form action={updateRole} className="flex justify-center">
+                <form action={updateRole} className="flex justify-center gap-2">
                     <input type="hidden" name="userId" value={user.id} />
                     <select
                         name="role"
                         defaultValue={user.role || 'user'}
-                        onChange={(e) => e.currentTarget.form?.requestSubmit()}
                         className="text-xs font-semibold border rounded px-2 py-1 bg-transparent cursor-pointer text-black outline-none"
                     >
                         <option value="user">USER</option>
                         <option value="admin">ADMIN</option>
                     </select>
+                    <button type="submit" className="text-xs px-2 py-1 bg-gray-900 text-white rounded hover:bg-gray-700">Update</button>
                 </form>
             </td>
 

@@ -77,16 +77,6 @@ export default async function Dashboard() {
                     </span>
                   )}
 
-                  {/* NEW GREEN FREE Badge Logic */}
-                  {app.name === "demo app" && (
-                    <span className="relative flex h-5 w-fit items-center justify-center">
-                      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-20"></span>
-                      <span className="relative inline-flex items-center text-[10px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
-                        FREE
-                      </span>
-                    </span>
-                  )}
-
                 </div>
 
                 <p className="text-gray-500 text-sm mt-2 leading-relaxed">
