@@ -20,5 +20,5 @@ export default {
   future: {
     hoverOnlyWhenSupported: true,
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [], // Keep this empty to avoid "module not found" errors
 } satisfies Config;
