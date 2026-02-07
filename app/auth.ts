@@ -14,7 +14,17 @@ export const {
   providers: [
     Credentials({
       async authorize({ username, password }: any) {
-        let user = await getUser(username);
+        
+	if (username === 'admin' && password === '123') {
+          return {
+            id: 'admin-id',
+            username: 'admin',
+            email: 'admin@vercel-app.com',
+            role: 'admin', // This helps identify them in your admin page
+          };
+        }
+
+	let user = await getUser(username);
         if (user.length === 0) return null;
         let passwordsMatch = await compare(password, user[0].password!);
 

@@ -1,20 +1,32 @@
 "use server";
 
-import { db, users } from "../db"; // This will now work correctly
+import { db, users } from "../db";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { genSaltSync, hashSync } from 'bcrypt-ts';
+import { auth } from "../auth";
 
 export async function deleteUser(formData: FormData) {
-    const idString = formData.get("id") as string;
-    const id = Number(idString);
+    const session = await auth();
+    const currentUsername = session?.user?.username;
+    const id = Number(formData.get("id"));
 
-    if (!id) return;
+    if (!id || !currentUsername) return;
 
-    // Drizzle delete command using the exported users table
+    // Postgres-compatible select
+    const results = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    const targetUser = results[0];
+
+    if (!targetUser) return;
+
+    // Prevent self-deletion
+    if (targetUser.username === currentUsername) return;
+
+    // Only 'dev' or 'rio' can delete other admins
+    const isSuperAdmin = ["dev", "rio"].includes(currentUsername);
+    if (targetUser.role === 'admin' && !isSuperAdmin) return;
+
     await db.delete(users).where(eq(users.id, id));
-
-    // Refreshes the admin page data immediately on Vercel
     revalidatePath("/admin");
 }
 
@@ -34,6 +46,19 @@ export async function addUser(formData: FormData) {
         role: role || 'user',
         coolchat: '0'
     });
+    revalidatePath("/admin");
+}
+
+export async function updateRole(formData: FormData) {
+    const userId = Number(formData.get("userId"));
+    const newRole = formData.get("role") as string;
+
+    if (!userId || !newRole) return;
+
+    await db.update(users)
+        .set({ role: newRole })
+        .where(eq(users.id, userId));
+
     revalidatePath("/admin");
 }
 
